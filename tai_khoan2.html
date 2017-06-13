@@ -1,0 +1,598 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0028)https://localhost/www/TDUONG/tai_khoan2.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">       
+        
+        <title>TÀI KHOẢN</title>
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--[if lt IE 9]>
+    	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js">
+        </script><![endif]-->
+        
+        <link rel="stylesheet" type="text/css" href="./demo2/tongquan.css">
+        <link rel="stylesheet" type="text/css" href="./demo2/animate.css">
+        <link rel="stylesheet" type="text/css" href="./demo2/hover.css">
+        <!--<link rel="stylesheet" type="text/css" href="https://localhost/www/TDUONG/css/materialize.min.css" />-->
+        <link href="https://localhost/www/TDUONG/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+        <link rel="stylesheet" href="./demo2/font-awesome.min.css">
+        
+        <style>
+			#myback {background:#FFF;}.back, #NAVBAR>ul>li, #chart-li1 ul, #MAIN .main-div > ul > li > ul, #back-one > ul > nav li .noi {background:rgba(128,128,128,0.5);}#MAIN .main-div #main-table table tr#tr-me, #MAIN .main-div #main-table table tr.tr-big, .page-number ul li:hover {background:rgba(0,0,0,0.55)}			#COLOR {position:absolute;z-index:99;top:10px;left:10px;width:auto;height:auto;}#COLOR i {font-size:44px;color:#69b42e;cursor:pointer;}#COLOR i:hover {color:#246E2C;}#COLOR i:hover ul {display:block;}#COLOR ul {width:180px;height:180px;display:none;background:#FFF;padding-left:10px;padding-top:10px;border:1px solid #dfe0f4;}#COLOR ul li {float:left;width:50px;height:50px;margin-right:10px;margin-bottom:10px;}#COLOR ul li .user-color {width:100%;height:100%;cursor:pointer;opacity:0.4;}#COLOR ul li .user-color:hover {opacity:1;}#MAIN .main-div #main-info > div p, #MAIN .main-div .main-note p, #MAIN .main-div #main-info #main-1-mid ul li span, #MAIN .main-div #main-info #main-1-mid ul li i, #MAIN .main-div .main-num p, #MAIN .main-div #main-table table td span, #MAIN .main-div #main-chart button i, #MAIN .main-div ul > ol .main-title, #MAIN .main-div ul > ol .main-point, #MAIN .main-div .main-chart3 nav.chart-line ul li i, .progress-indicator>li, .progress-indicator>li .bubble, .ask:hover .sub-ask ul li, #MAIN .main-div .main-chart3 nav.chart-button > a, #MAIN .main-div #main-chart #chart-len ul li span {color:#000;line-height:22px;}#progress1>li .bubble{margin-top:6px;}#progress2>li .bubble{margin-top:3.5px;}.progress-indicator>li.completed .bubble{background-color:#FFF}.progress-indicator>li .bubble:after, .progress-indicator>li .bubble:before {background-color:#FFF;position:relative;}.progress-indicator>li .bubble:before {top:12px;}.progress-indicator>li .bubble:after {top:7px;}.progress-indicator>li.non-completed .bubble:after, .progress-indicator>li.non-completed .bubble:before {display:none;}.line-ver {border-left:1px dashed #FFF;width:1px;position:absolute;z-index:-1;left:5.5px;}.progress-indicator>li.non-still .bubble {background-color:#FFF;width:7px;height:7px;margin-left:3px;}.last-completed .bubble:before, .last-completed .bubble:after {display:none !important;}#MAIN .main-div .main-chart4 .chart-info {position:absolute;z-index:9;top:37%;}#MAIN .main-div .main-chart4 .chart-info p {font-size:2.75em;color:#FFF;}#MAIN .main-div #main-info table tr td span i.check-buoi {font-size:1.25em;cursor:pointer;color:#FFF;}#MAIN .main-div #main-info table tr td span i.codinh {color:#FFF;}#main-chart2 ul {width:90%;margin:auto;height:45px;}#main-chart2 ul li {float:left;text-align:center;padding:7px 0 7px 0;border-radius:20px;}#main-chart2 ul li p {color:#FFF;font-size:1.375em;}table tr:last-child td:first-child, table tr:last-child td:last-child {border-bottom-left-radius:0;border-bottom-right-radius:0;}#MAIN .main-div #main-info #main-1-left .table-tkb tr td {border-bottom:1px solid rgba(0,0,0,0.15);padding-bottom:5px;}
+			/*.hideme {margin-left:-150%;opacity:0;}*/
+        </style>
+        
+        <script src="./demo2/jquery.min.js"></script>
+<script src="./demo2/materialize.js"></script>
+<script src="./demo2/county.js"></script>
+<script src="./demo2/jquery.fireworks.js"></script>
+<script src="./demo2/jquery.typewatch.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$("#sms-ok").click(function() {
+			if(confirm("Bạn có chắn chắc muốn gửi báo lỗi? Bạn chỉ được gửi tối đa 5 lần/ngày")) { 
+				con = $("#sms-con").val();
+				if(con!="") {
+					return true;
+				} else {
+					alert("Dữ liệu không chính xác!");
+					return false;
+				}
+			} else {
+				return false;
+			}
+		});
+		
+		/*$("#SMS > a.sms-new").click(function() {
+			$("#bao-error").fadeIn("fast");
+			$("#BODY").css("opacity","0.1");
+			/*if($(this).hasClass("active")) {
+				$(this).removeClass("active");
+				$(this).parent("div").animate({height: "25px"},500);
+			} else {
+				$(this).addClass("active");
+				$(this).parent("div").animate({height: "180px"},500);
+			}*/
+		//});
+		
+				$('#DateCountdown').county({ endDateTime: new Date('2017-07-01 00:00:00'), reflection: false, animation: 'scroll', theme: 'red' });
+		
+		function center(div_con, div_cha) {
+			main_width=$(div_cha).width();
+			obj_width=$(div_con).width();
+			$(div_con).css("left",(main_width / 2) - (obj_width / 2));
+		}
+		
+		function center_top(div_con, div_cha) {
+			main_height=$(div_cha).height();
+			obj_height=$(div_con).height();
+			$(div_con).css("margin-top",(main_height / 2) - (obj_height / 2));
+		}
+		
+		$("#MAIN .main-div .main-chart4").each(function(index, element) {
+            p = $(element).find(".chart-info");
+			center(p,element);
+        });
+		center("#MAIN .main-div .main-chart5 .chart-info","#MAIN .main-div .main-chart5");
+		//center(".multi-div > nav .multi-right > .chart-me .chart-info",".multi-div > nav .multi-right > .chart-me");
+		$(".multi-div > nav .multi-mid > .chart-me").each(function(index, element) {
+            p = $(element).find(".chart-info");
+			center(p,element);
+        });
+		center("body > canvas","body");
+		$(".multi-div > nav .multi-left.back").each(function(index, element) {
+            center_top($(element).find("p"),element);
+			//center_top($(element).find(">a"),element);
+        });
+		//center_top(".multi-div > nav .multi-left p",".multi-div > nav .multi-left.back");
+		center("#chart-li1 ul li > div#main-star p","#chart-li1 ul li > div#main-star");
+		
+		$(".popup button.btn_ok").click(function() {
+			$(".popup").fadeOut("fast");
+			$("#BODY").css("opacity","1");
+			return false;
+		});
+		
+		$(".popup button.btn_tb").click(function() {
+			tbID = $(this).attr("data-tbID");
+			if($.isNumeric(tbID) && tbID!=0) {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thongbao/",
+					async: false,
+					data: "tbID1=" + tbID,
+					type: "post",
+					success: function(result) {
+						$(".popup").fadeOut("fast");
+						$("#BODY").css("opacity","1");
+					}
+				});
+			}
+		});
+		
+		$("a.access_mon").click(function() {
+			$("#baoloi div p.title").html("Bạn không tham gia môn học này, nếu muốn đăng kí học, bạn vui lòng liên hệ thầy Dương theo số 09765.82.764 để đăng kí");
+			$("#baoloi").fadeIn("fast");
+			$("#BODY").css("opacity","0.1");
+		});
+		
+		$("a.nghi_mon").click(function() {
+			$("#baoloi div p.title").html("Bạn đã nghỉ học hẳn từ ngày 08/08/2016, để đăng ký học lại vui lòng liên hệ thầy Dương 09765.82.764");
+			$("#baoloi").fadeIn("fast");
+			$("#BODY").css("opacity","0.1");
+		});
+		
+		$("#tb-icon").click(function() {
+			$(this).toggleClass("active");
+			$(".popup").fadeOut("fast");
+			if($(this).hasClass("active")) {
+				$("#BODY").css("opacity","0.1");
+			} else {
+				$("#BODY").css("opacity","1");
+			}
+			$("#thongbao-menu > ul").stop().fadeToggle("fast");
+		});
+		
+		$("#BODY").click(function(e) {
+			$(this).css("opacity","1");
+			$("#tb-icon").removeClass("active");
+			$("#thongbao-menu > ul").fadeOut("fast");
+		});
+		
+		$("#thongbao-menu > ul > li > a").click(function() {
+			tbID = $(this).attr("data-tbID");
+			if($.isNumeric(tbID) && tbID!=0) {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thongbao/",
+					async: false,
+					data: "tbID=" + tbID,
+					type: "post",
+					success: function(result) {
+						return true;
+					}
+				});
+			}
+			return true;
+		});
+		
+		$("#thongbao-menu > ul > li ol.tb-action i.fa-bell-slash").click(function() {
+			me = $(this).closest("li");
+			tbID = me.find("> a").attr("data-tbID");
+			if($.isNumeric(tbID) && tbID!=0) {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thongbao/",
+					async: false,
+					data: "tbID=" + tbID,
+					type: "post",
+					success: function(result) {
+						me.fadeOut("fast");
+					}
+				});
+			}
+			return false;
+		});
+		
+		$("#tb-accept").click(function() {
+			me = $(this);
+			tdID = me.attr("data-tdID");
+			if(tdID!="") {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thachdau/",
+					async: false,
+					data: "tdID1=" + tdID,
+					type: "post",
+					success: function(result) {
+						tbID = me.attr("data-tbID");
+						if($.isNumeric(tbID) && tbID!=0) {
+							$.ajax({
+								url: "https://localhost/www/TDUONG/xuly-thongbao/",
+								async: false,
+								data: "tbID=" + tbID,
+								type: "post",
+								success: function(result) {
+									$("#thongbao-big").fadeOut("fast");
+								}
+							});
+						}
+					}
+				});
+			}
+			return false;
+		});
+		
+		$("#tb-cancle").click(function() {
+			me = $(this);
+			tdID = me.attr("data-tdID");
+			if(tdID!="") {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thachdau/",
+					async: false,
+					data: "tdID0=" + tdID,
+					type: "post",
+					success: function(result) {
+						tbID = me.attr("data-tbID");
+						if($.isNumeric(tbID) && tbID!=0) {
+							$.ajax({
+								url: "https://localhost/www/TDUONG/xuly-thongbao/",
+								async: false,
+								data: "tbID=" + tbID,
+								type: "post",
+								success: function(result) {
+									$("#thongbao-big").fadeOut("fast");
+								}
+							});
+						}
+					}
+				});
+			}
+			return false;
+		});
+		
+		/*$(document).on("mouseenter","#NAVBAR ul li.li-con",function(e) {
+			$(this).stop().animate({marginLeft: "0",opacity: "1"},400);
+		});
+		
+		$(document).on("mouseleave","#NAVBAR ul li.li-con",function(e) {
+			$(this).stop().animate({marginLeft: "-80px",opacity: "0.7"},400);
+		});*/
+	});
+	
+	var Base64 = {
+
+
+    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+
+    encode: function(input) {
+        var output = "";
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        input = Base64._utf8_encode(input);
+
+        while (i < input.length) {
+
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+
+            output = output + this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) + this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+        }
+
+        return output;
+    },
+
+
+    decode: function(input) {
+        var output = "";
+        var chr1, chr2, chr3;
+        var enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+        while (i < input.length) {
+
+            enc1 = this._keyStr.indexOf(input.charAt(i++));
+            enc2 = this._keyStr.indexOf(input.charAt(i++));
+            enc3 = this._keyStr.indexOf(input.charAt(i++));
+            enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+
+            output = output + String.fromCharCode(chr1);
+
+            if (enc3 != 64) {
+                output = output + String.fromCharCode(chr2);
+            }
+            if (enc4 != 64) {
+                output = output + String.fromCharCode(chr3);
+            }
+
+        }
+
+        output = Base64._utf8_decode(output);
+
+        return output;
+
+    },
+
+    _utf8_encode: function(string) {
+        string = string.replace(/\r\n/g, "\n");
+        var utftext = "";
+
+        for (var n = 0; n < string.length; n++) {
+
+            var c = string.charCodeAt(n);
+
+            if (c < 128) {
+                utftext += String.fromCharCode(c);
+            }
+            else if ((c > 127) && (c < 2048)) {
+                utftext += String.fromCharCode((c >> 6) | 192);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+            else {
+                utftext += String.fromCharCode((c >> 12) | 224);
+                utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+
+        }
+
+        return utftext;
+    },
+
+    _utf8_decode: function(utftext) {
+        var string = "";
+        var i = 0;
+        var c = c1 = c2 = 0;
+
+        while (i < utftext.length) {
+
+            c = utftext.charCodeAt(i);
+
+            if (c < 128) {
+                string += String.fromCharCode(c);
+                i++;
+            }
+            else if ((c > 191) && (c < 224)) {
+                c2 = utftext.charCodeAt(i + 1);
+                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                i += 2;
+            }
+            else {
+                c2 = utftext.charCodeAt(i + 1);
+                c3 = utftext.charCodeAt(i + 2);
+                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                i += 3;
+            }
+
+        }
+
+        return string;
+    }
+
+	}
+	
+</script>
+
+        <script>
+			$(document).ready(function() {
+			});
+		</script>
+       
+	<style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+.en-markup-crop-options {
+    top: 18px !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    width: 200px !important;
+    border: 2px rgba(255,255,255,.38) solid !important;
+    border-radius: 4px !important;
+}
+
+.en-markup-crop-options div div:first-of-type {
+    margin-left: 0px !important;
+}
+</style></head>
+
+    <body>
+                             
+      	<div id="BODY">
+            
+            <div id="MAIN">
+            	
+              	<div class="main-div back animated bounceInUp" id="main-top">
+                	<div id="main-person">
+                		<h1>Quản lý tài khoản<br><span>Tài khoản: 150.000đ</span></h1>
+                        <div class="clear"></div>
+                   	</div>
+                    <div id="main-avata">
+                    	<img src="./demo2/579ef0ddb76be.jpg">
+                        <a href="https://localhost/www/TDUONG/ho_so2.html" title="Hồ sơ cá nhân">
+                        	<p>99-0002 (G)</p>
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                   	</div>
+                    <!--<div id="main-code"><h2>99-0002</h2></div>-->
+                </div>
+                
+                <div class="main-div animated bounceInUp">
+                    <div id="main-info">
+                    	<div class="main-1-left back" style="margin-right:2%;">
+                        	<div>
+                            	<p class="main-title">Lịch sử cộng tiền</p>
+                            </div>
+                            <table class="table-tkb">
+                            	<tbody><tr style="background:rgba(128,128,128,0.5);text-transform:uppercase;">
+                                    <th colspan="2"><span>Tổng cộng</span></th>
+                                    <th><span>+370.000đ</span></th>
+                                </tr>
+                            	<tr style="background:rgba(128,128,128,0.5);text-transform:uppercase;">
+                                    <th style="width:25%;"><span>Thời gian</span></th>
+                                    <th style="width:45%;"><span>Nội dung</span></th>
+                                    <th style="width:30%;"><span>Số tiền</span></th>
+                                </tr>
+                                <tr>
+                                	<td colspan="3"><span>5 lần mới nhất</span></td>
+                                </tr>
+								<tr>
+                                            <td><span>23/07</span></td>
+                                            <td><span>Quá khứ bạn đã đóng 50.000đ</span></td>
+                                            <td><span>+50.000đ</span></td>
+                                        </tr><tr>
+                                            <td><span>01/07</span></td>
+                                            <td><span>Điểm kiểm tra Toán ngày 26/06/2016 được 9 (G)</span></td>
+                                            <td><span>+20.000đ</span></td>
+                                        </tr><tr>
+                                            <td><span>24/06</span></td>
+                                            <td><span>Điểm kiểm tra Toán ngày 19/06/2016 được 8.25 (G)</span></td>
+                                            <td><span>+10.000đ</span></td>
+                                        </tr><tr>
+                                            <td><span>10/06</span></td>
+                                            <td><span>Điểm kiểm tra Toán ngày 05/06/2016 được 8 (G)</span></td>
+                                            <td><span>+10.000đ</span></td>
+                                        </tr><tr>
+                                            <td><span>03/06</span></td>
+                                            <td><span>Điểm kiểm tra Toán ngày 29/05/2016 được 8.75 (G)</span></td>
+                                            <td><span>+10.000đ</span></td>
+                                        </tr>                                <tr style="background:rgba(128,128,128,0.5)">
+                                	<th colspan="3"><a href="https://localhost/www/TDUONG/tai_khoan_thuong2.html"><span>Xem tất cả</span></a></th>
+                                </tr>
+                          	</tbody></table>
+                       	</div>
+                        <div class="main-1-left back">
+                            <div>
+                            	<p class="main-title">Lịch sử trừ tiền</p>
+                            </div>
+                            <table class="table-tkb">
+                            	<tbody><tr style="background:rgba(128,128,128,0.5);text-transform:uppercase;">
+                                    <th colspan="2"><span>Tổng cộng</span></th>
+                                    <th><span>-220.000đ</span></th>
+                                </tr>
+                            	<tr style="background:rgba(128,128,128,0.5);text-transform:uppercase;">
+                                    <th style="width:25%;"><span>Thời gian</span></th>
+                                    <th style="width:45%;"><span>Nội dung</span></th>
+                                    <th style="width:30%;"><span>Số tiền</span></th>
+                                </tr>
+                                <tr>
+                                	<td colspan="3"><span>5 lần mới nhất</span></td>
+                                </tr>
+                                <tr>
+                                            <td><span>26/07</span></td>
+                                            <td><span>Thầy Dương đã thanh toán tiền thưởng đến hết tháng 02/2016: 170.000đ</span></td>
+                                            <td><span>-170.000đ</span></td>
+                                        </tr><tr>
+                                            <td><span>21/08</span></td>
+                                            <td><span>Hủy bài kiểm tra Toán ngày 16/08/2015 vì Trao đổi bài</span></td>
+                                            <td><span>-50.000đ</span></td>
+                                        </tr>                                <tr style="background:rgba(128,128,128,0.5)">
+                                	<th colspan="3"><a href="https://localhost/www/TDUONG/tai_khoan_phat2.html"><span>Xem tất cả</span></a></th>
+                                </tr>
+                            </tbody></table>
+                      	</div>
+                    </div>
+                </div>
+                     <!--<div id="NAVBAR">
+	<ul>
+    	<!--<li><a href="https://localhost/www/TDUONG/" title="Trang chủ"><i class="fa fa-home"></i></a></li>-->
+               <!-- <li class="li-con"><a href="https://localhost/www/TDUONG/dang-xuat/"><i class="fa fa-sign-out"></i></a><p>Đăng xuất</p></li>
+    </ul>
+</div>-->
+
+
+
+<div id="SMS">
+    <a href="http://m.me/Bgo.edu.vn" target="_blank" class="sms-new"><i class="fa fa-commenting"></i><span>Hỗ trợ</span></a>
+</div>
+<!--</div>-->	          
+            </div>
+        	<div class="clear"></div>
+        </div>
+        <div class="popup animated bounceIn" id="baoloi">
+    <div>
+        <p class="title"></p>
+        <div>
+            <button class="submit2 btn_ok"><i class="fa fa-check"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="popup animated bounceIn" id="bao-error">
+	<form action="https://localhost/www/TDUONG/tai_khoan2.html" method="post">
+    	<div>
+            <p class="title">Thông báo lỗi</p>
+            <div>
+            	<textarea class="input" id="sms-con" name="sms-con" style="height:80px;resize:vertical;width:96%;background:#000;padding:2%;" placeholder="Nội dung"></textarea>
+                <button class="submit2" type="submit" id="sms-ok" name="sms-ok" style="margin-top:10px;">Gửi</button>
+                <button class="submit2 btn_ok" style="margin-top:10px;">Hủy</button>
+           	</div>
+        </div>
+    </form>
+</div>
+
+
+<div class="fixed-action-btn click-to-toggle animated bounceIn" style="bottom: 0;padding-bottom:45px; right: 0; padding-right:25px; width:150px;">
+    <ul>
+    <li><a href="https://localhost/www/TDUONG/trang-chu/" class="btn-floating"><p>Trang chủ</p>
+                    <div class="my-btn" style="background:green"><i class="fa fa-home"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/dang-ky-facebook/" class="btn-floating"><p>Đăng ký Group Toán</p>
+                    <div class="my-btn" style="background:#365899"><i class="fa fa-facebook-official"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/tai_lieu2.html" class="btn-floating"><p>Tài liệu môn Toán</p>
+                    <div class="my-btn" style="background:orange;margin-top:0;"><i class="fa fa-file"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/bang_xep_hang2.html" class="btn-floating"><p>Bảng xếp hạng</p>
+                    <div class="my-btn" style="background:#2C84BD"><i class="fa fa-list-alt"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/thach_dau2.html" class="btn-floating"><p>Thách đấu</p>
+                    <div class="my-btn" style="background:#69b42e"><i class="fa fa-trophy"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/doi_ca2.html" class="btn-floating"><p>Đổi ca</p>
+                    <div class="my-btn" style="background:cyan"><i class="fa fa-exchange"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/ngoi_sao2.html" class="btn-floating"><p>Ngôi sao hy vọng</p>
+                    <div class="my-btn" style="background:#ffa85a"><i class="fa fa-star"></i></div>
+                </a></li>    </ul>
+    <a class="btn-floating btn-large" style="float:right;">
+      <div class="my-btn my-btn-big" style="background:red;"><i class="large fa fa-th-list"></i></div>
+    </a>
+</div>
+
+<div id="NAVBAR">
+	<ul>
+    	<!--<li><a href="https://localhost/www/TDUONG/trang-chu/" title="Trang chủ"><i class="fa fa-home"></i></a></li>-->
+        <li><a href="https://localhost/www/TDUONG/demo2.html" title="Môn Toán">Toán</a></li><li class="li-con"><a href="javascript:void(0)" class="access_mon" title="Môn Anh">Anh</a></li><li class="li-con"><a href="javascript:void(0)" class="access_mon" title="Môn Lý">Lý</a></li><li class="li-con"><a href="javascript:void(0)" class="access_mon" title="Môn Hóa">Hóa</a></li><li class="li-con"><a href="javascript:void(0)" class="access_mon" title="Môn Văn">Văn</a></li><li style="position:relative;" id="tb-icon">
+					<a href="javascript:void(0)" style="color:yellow;" title="Thông báo"><i class="fa fa-bell"></i></a>
+					<p style="position:absolute;right:35%;color:#FFF;background:red;border-radius:1000px;width:20px;height:20px;font-size:16px;line-height:22px;top:5%;">1</p>        	<div id="thongbao-menu">
+                <ul>
+                <li><a href="https://localhost/www/TDUONG/demo2.html" data-tbid="3793">
+                            <ol class="tb-img"><img src="./demo2/logo.jpg"></ol>
+                            <ol class="tb-con">
+                                <p>Điểm thi ngày 31/07/2016 của bạn là 7.75 điểm (G). Làm bài trên lớp</p>
+                                <p class="tb-time"><i class="fa fa-graduation-cap"></i>3 ngày trước</p>
+                            </ol>
+                            <ol class="tb-action">
+                                <i class="fa fa-bell-slash" title="Tắt"></i>
+                                
+                            </ol>
+                            <div class="clear"></div>
+                        </a></li><li style="padding:5px 0 5px 0;">                        <ol style="width:100%;">
+                            <a href="https://localhost/www/TDUONG/tai_khoan2.html" style="margin-left:10px;float:left;color:#000;font-size:16px;font-weight:600;">Tài khoản: 150.000đ</a>
+                            <a href="https://localhost/www/TDUONG/level2.html" style="margin-right:10px;float:right;color:#000;font-size:16px;font-weight:600;">LVL: 0</a>
+                        </ol>
+                        <div class="clear"></div>
+                    </li>
+                                    <li style="padding:0;padding-top:5px;"><a href="javascript:void(0)" style="color:green;">
+                        <ol style="width:100%;">
+                            <p style="margin-left:10px;color:#000;font-size:16px;font-weight:600;">Đếm ngược thi đại học</p>
+                            <div id="DateCountdown" style="padding:10px 0 5px 0;" class="county red"><span class="county-days-wrapper first"><span class="county-days" style="margin-top: 0px;">1</span></span><span class="county-hours-wrapper separator-left border-separator-right"><span class="county-hours" style="margin-top: 0px;">1</span></span><span class="county-minutes-wrapper separator-left separator-left"><span class="county-minutes" style="margin-top: 0px;">24</span></span><span class="county-seconds-wrapper separator-left last"><span class="county-seconds" style="margin-top: 0px;">5</span></span><div class="clear"></div><span class="county-label-days">Năm</span><span class="county-label-hours">Tháng</span><span class="county-label-minutes">Ngày</span><span class="county-label-seconds">Giờ</span></div>
+                        </ol>
+                        <div class="clear"></div>
+                    </a></li>
+                                    <a href="https://localhost/www/TDUONG/thong_bao2.html" style="float:right;display:block;font-size:16px;margin-top:3px;color:#FFF;">Xem tất cả</a>
+                </ul>
+            </div>
+       	</li>
+        <li class="li-con"><a href="https://localhost/www/TDUONG/dang-xuat/" title="Đăng xuất"><i class="fa fa-sign-out" style="font-size:18px;"></i></a></li>
+    </ul>
+</div>
+
+
+
+
+<div id="myback"></div>        
+    
+
+
+<div class="hiddendiv common"></div></body></html>

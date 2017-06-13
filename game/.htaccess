@@ -1,0 +1,7 @@
+Options -Indexes
+
+RewriteEngine on
+
+RewriteRule ^([a-zA-Z]+)/$ index.php [L]
+RewriteRule ^dang-nhap/$ sign_in.php [L]
+

@@ -1,0 +1,66 @@
+#LOGO {
+	position:absolute;
+	left:15px;
+	top:15px;
+	width:150px;
+	z-index:9;}
+	
+#LOGO .logo-under {
+	z-index:-1;
+	height:20px;
+	width:60px;
+	margin-bottom:10px;}
+	
+#LOGO .logo-under .under {
+	background:#000;
+	width:20px;
+	height:100%;
+	border:1px solid #FFFA03;
+	outline:2px solid #000;}
+	
+#LOGO .logo-under #under-1 {
+	float:right;}
+	
+#LOGO .logo-main {
+	position:absolute;
+	z-index:99;
+	top:10px;
+	left:10px;}
+	
+#LOGO .logo-main .above {
+	width:35px;
+	height:30px;
+	background:#000;
+	border:1px solid #FFFA03;
+	outline:2px solid #000;
+	float:left;
+	text-align:center;}
+	
+#LOGO .logo-main .above p {
+	color:#FFFA03;
+	line-height:30px;}
+	
+#LOGO .logo-main > p {
+	float:left;
+	margin-top:17px;
+	margin-left:7px;
+	font-weight:600;}
+
+@font-face {
+  font-family: 'FontLight';
+  src: url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.eot'); /* IE9 Compat Modes */
+  src: url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.woff') format('woff'), /* Pretty Modern Browsers */
+       url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.ttf')  format('truetype'), /* Safari, Android, iOS */
+	   url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.otf')  format('opentype'),
+       url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+@font-face {
+  font-family: 'FontLight';
+  src: url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.eot'); /* IE9 Compat Modes */
+  src: url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.woff') format('woff'), /* Pretty Modern Browsers */
+       url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.ttf')  format('truetype'), /* Safari, Android, iOS */
+	   url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.otf')  format('opentype'),
+	   url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.woff2')  format('woff2'),
+       url('http://localhost/www/TDUONG/mobile/font/HelveticaNeue-Thin.svg#svgFontName') format('svg'); /* Legacy iOS */
+}

@@ -1,0 +1,40 @@
+/*PHAN BO CUC CHUNG*/
+
+#search-box {
+	position:absolute;
+	z-index:9;
+	left:0;
+	top:35px;
+	width:100%;
+	background:#96c8f3;
+	display:none;
+	border:1px solid #FFF;}
+	
+#search-box li {
+	padding:0 10px 0 10px;
+	height:35px;
+	overflow:hidden;
+	border-bottom:1px solid #FFF;}
+
+#search-box li p {
+	color:#3E606F;
+	font-size:13px;
+	line-height:35px;}
+
+#search-box li a {
+	line-height:35px;
+	display:block;
+	color:#3E606F;
+	font-size:13px;}
+
+#search-box li:hover {
+	background:#3E606F;}
+
+#search-box li:hover a{
+	color:#FFF;}
+
+#search-box li a span{
+	font-size:13px;
+	float:right;}
+
+	

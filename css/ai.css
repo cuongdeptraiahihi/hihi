@@ -1,0 +1,59 @@
+/*PHAN BO CUC CHUNG*/
+
+* {
+	padding:0;
+	margin:0;}
+	
+a {
+	text-decoration:none;}
+	
+ul, li {
+	list-style-type:none;}	
+	
+.canvasjs-chart-credit {
+	display:none;}
+	
+.page-number {
+	margin-bottom:20px;}
+	
+body {
+	width:100%;		
+	margin:auto;
+	height:100%;
+	background:#D1DBBD;
+	font-family: 'FontLight';}
+	
+.clear {
+	clear:both;}
+	
+@font-face {
+  font-family: 'FontLight';
+  src: url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.eot'); /* IE9 Compat Modes */
+  src: url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.woff') format('woff'), /* Pretty Modern Browsers */
+       url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.ttf')  format('truetype'), /* Safari, Android, iOS */
+	   url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.otf')  format('opentype'),
+       url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+@font-face {
+  font-family: 'FontLight';
+  src: url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.eot'); /* IE9 Compat Modes */
+  src: url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.woff') format('woff'), /* Pretty Modern Browsers */
+       url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.ttf')  format('truetype'), /* Safari, Android, iOS */
+	   url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.otf')  format('opentype'),
+	   url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.woff2')  format('woff2'),
+       url('https://localhost/www/TDUONG/font/HelveticaNeue-Thin.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+#BODY {
+	width:100%;
+	height:100%;}
+
+#MAIN {
+	background:url(https://localhost/www/TDUONG/images/kiet.jpg);
+	background-size:cover;
+	z-index:-1;
+	overflow:auto;
+	position:fixed;
+	width:100%;
+	height:100%;}

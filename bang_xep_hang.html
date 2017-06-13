@@ -1,0 +1,791 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0032)https://localhost/www/TDUONG/bang_xep_hang.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">       
+        
+        <title>BẢNG XẾP HẠNG</title>
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--[if lt IE 9]>
+    	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js">
+        </script><![endif]-->
+        
+        <link rel="stylesheet" type="text/css" href="./demo/tongquan.css">
+        <link rel="stylesheet" type="text/css" href="./demo/animate.css">
+        <link rel="stylesheet" type="text/css" href="./demo/hover.css">
+        <!--<link rel="stylesheet" type="text/css" href="https://localhost/www/TDUONG/css/materialize.min.css" />-->
+        <link href="https://localhost/www/TDUONG/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+        <link rel="stylesheet" href="./demo/font-awesome.min.css">
+        
+        <style>
+			#myback {background-image:url(https://localhost/www/TDUONG/images/page3.jpg);}.back, #NAVBAR>ul>li, #chart-li1 ul, #MAIN .main-div > ul > li > ul, #back-one > ul > nav li .noi {background:rgba(0,0,0,0.35);}#MAIN .main-div #main-table table tr#tr-me, #MAIN .main-div #main-table table tr.tr-big, .page-number ul li:hover {background:rgba(0,0,0,0.55)}			#COLOR {position:absolute;z-index:99;top:10px;left:10px;width:auto;height:auto;}#COLOR i {font-size:44px;color:#69b42e;cursor:pointer;}#COLOR i:hover {color:#246E2C;}#COLOR i:hover ul {display:block;}#COLOR ul {width:180px;height:180px;display:none;background:#FFF;padding-left:10px;padding-top:10px;border:1px solid #dfe0f4;}#COLOR ul li {float:left;width:50px;height:50px;margin-right:10px;margin-bottom:10px;}#COLOR ul li .user-color {width:100%;height:100%;cursor:pointer;opacity:0.4;}#COLOR ul li .user-color:hover {opacity:1;}#MAIN .main-div #main-info > div p, #MAIN .main-div .main-note p, #MAIN .main-div #main-info #main-1-mid ul li span, #MAIN .main-div #main-info #main-1-mid ul li i, #MAIN .main-div .main-num p, #MAIN .main-div #main-table table td span, #MAIN .main-div #main-chart button i, #MAIN .main-div ul > ol .main-title, #MAIN .main-div ul > ol .main-point, #MAIN .main-div .main-chart3 nav.chart-line ul li i, .progress-indicator>li, .progress-indicator>li .bubble, .ask:hover .sub-ask ul li, #MAIN .main-div .main-chart3 nav.chart-button > a, #MAIN .main-div #main-chart #chart-len ul li span {color:#FFF;line-height:22px;}#progress1>li .bubble{margin-top:6px;}#progress2>li .bubble{margin-top:3.5px;}.progress-indicator>li.completed .bubble{background-color:#FFF}.progress-indicator>li .bubble:after, .progress-indicator>li .bubble:before {background-color:#FFF;position:relative;}.progress-indicator>li .bubble:before {top:12px;}.progress-indicator>li .bubble:after {top:7px;}.progress-indicator>li.non-completed .bubble:after, .progress-indicator>li.non-completed .bubble:before {display:none;}.line-ver {border-left:1px dashed #FFF;width:1px;position:absolute;z-index:-1;left:5.5px;}.progress-indicator>li.non-still .bubble {background-color:#FFF;width:7px;height:7px;margin-left:3px;}.last-completed .bubble:before, .last-completed .bubble:after {display:none !important;}#MAIN .main-div .main-chart4 .chart-info {position:absolute;z-index:9;top:37%;}#MAIN .main-div .main-chart4 .chart-info p {font-size:2.75em;color:#FFF;}#MAIN .main-div #main-info table tr td span i.check-buoi {font-size:1.25em;cursor:pointer;color:#FFF;}#MAIN .main-div #main-info table tr td span i.codinh {color:#FFF;}#main-chart2 ul {width:90%;margin:auto;height:45px;}#main-chart2 ul li {float:left;text-align:center;padding:7px 0 7px 0;border-radius:20px;}#main-chart2 ul li p {color:#FFF;font-size:1.375em;}
+			/*.hideme {margin-left:-150%;opacity:0;}*/
+        </style>
+        
+        <script src="./demo/jquery.min.js"></script>
+<script src="./demo/materialize.js"></script>
+<script src="./demo/county.js"></script>
+<script src="./demo/jquery.fireworks.js"></script>
+<script src="./demo/jquery.typewatch.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$("#sms-ok").click(function() {
+			if(confirm("Bạn có chắn chắc muốn gửi báo lỗi? Bạn chỉ được gửi tối đa 5 lần/ngày")) { 
+				con = $("#sms-con").val();
+				if(con!="") {
+					return true;
+				} else {
+					alert("Dữ liệu không chính xác!");
+					return false;
+				}
+			} else {
+				return false;
+			}
+		});
+		
+		/*$("#SMS > a.sms-new").click(function() {
+			$("#bao-error").fadeIn("fast");
+			$("#BODY").css("opacity","0.1");
+			/*if($(this).hasClass("active")) {
+				$(this).removeClass("active");
+				$(this).parent("div").animate({height: "25px"},500);
+			} else {
+				$(this).addClass("active");
+				$(this).parent("div").animate({height: "180px"},500);
+			}*/
+		//});
+		
+				$('#DateCountdown').county({ endDateTime: new Date('2017-07-01 00:00:00'), reflection: false, animation: 'scroll', theme: 'red' });
+		
+		function center(div_con, div_cha) {
+			main_width=$(div_cha).width();
+			obj_width=$(div_con).width();
+			$(div_con).css("left",(main_width / 2) - (obj_width / 2));
+		}
+		
+		function center_top(div_con, div_cha) {
+			main_height=$(div_cha).height();
+			obj_height=$(div_con).height();
+			$(div_con).css("margin-top",(main_height / 2) - (obj_height / 2));
+		}
+		
+		$("#MAIN .main-div .main-chart4").each(function(index, element) {
+            p = $(element).find(".chart-info");
+			center(p,element);
+        });
+		center("#MAIN .main-div .main-chart5 .chart-info","#MAIN .main-div .main-chart5");
+		//center(".multi-div > nav .multi-right > .chart-me .chart-info",".multi-div > nav .multi-right > .chart-me");
+		$(".multi-div > nav .multi-mid > .chart-me").each(function(index, element) {
+            p = $(element).find(".chart-info");
+			center(p,element);
+        });
+		center("body > canvas","body");
+		$(".multi-div > nav .multi-left.back").each(function(index, element) {
+            center_top($(element).find("p"),element);
+			//center_top($(element).find(">a"),element);
+        });
+		//center_top(".multi-div > nav .multi-left p",".multi-div > nav .multi-left.back");
+		center("#chart-li1 ul li > div#main-star p","#chart-li1 ul li > div#main-star");
+		
+		$(".popup button.btn_ok").click(function() {
+			$(".popup").fadeOut("fast");
+			$("#BODY").css("opacity","1");
+			return false;
+		});
+		
+		$(".popup button.btn_tb").click(function() {
+			tbID = $(this).attr("data-tbID");
+			if($.isNumeric(tbID) && tbID!=0) {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thongbao/",
+					async: false,
+					data: "tbID1=" + tbID,
+					type: "post",
+					success: function(result) {
+						$(".popup").fadeOut("fast");
+						$("#BODY").css("opacity","1");
+					}
+				});
+			}
+		});
+		
+		$("a.access_mon").click(function() {
+			$("#baoloi div p.title").html("Bạn không tham gia môn học này, nếu muốn đăng kí học, bạn vui lòng liên hệ thầy Dương theo số 09765.82.764 để đăng kí");
+			$("#baoloi").fadeIn("fast");
+			$("#BODY").css("opacity","0.1");
+		});
+		
+		$("a.nghi_mon").click(function() {
+			$("#baoloi div p.title").html("Bạn đã nghỉ học hẳn từ ngày 08/08/2016, để đăng ký học lại vui lòng liên hệ thầy Dương 09765.82.764");
+			$("#baoloi").fadeIn("fast");
+			$("#BODY").css("opacity","0.1");
+		});
+		
+		$("#tb-icon").click(function() {
+			$(this).toggleClass("active");
+			$(".popup").fadeOut("fast");
+			if($(this).hasClass("active")) {
+				$("#BODY").css("opacity","0.1");
+			} else {
+				$("#BODY").css("opacity","1");
+			}
+			$("#thongbao-menu > ul").stop().fadeToggle("fast");
+		});
+		
+		$("#BODY").click(function(e) {
+			$(this).css("opacity","1");
+			$("#tb-icon").removeClass("active");
+			$("#thongbao-menu > ul").fadeOut("fast");
+		});
+		
+		$("#thongbao-menu > ul > li > a").click(function() {
+			tbID = $(this).attr("data-tbID");
+			if($.isNumeric(tbID) && tbID!=0) {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thongbao/",
+					async: false,
+					data: "tbID=" + tbID,
+					type: "post",
+					success: function(result) {
+						return true;
+					}
+				});
+			}
+			return true;
+		});
+		
+		$("#thongbao-menu > ul > li ol.tb-action i.fa-bell-slash").click(function() {
+			me = $(this).closest("li");
+			tbID = me.find("> a").attr("data-tbID");
+			if($.isNumeric(tbID) && tbID!=0) {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thongbao/",
+					async: false,
+					data: "tbID=" + tbID,
+					type: "post",
+					success: function(result) {
+						me.fadeOut("fast");
+					}
+				});
+			}
+			return false;
+		});
+		
+		$("#tb-accept").click(function() {
+			me = $(this);
+			tdID = me.attr("data-tdID");
+			if(tdID!="") {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thachdau/",
+					async: false,
+					data: "tdID1=" + tdID,
+					type: "post",
+					success: function(result) {
+						tbID = me.attr("data-tbID");
+						if($.isNumeric(tbID) && tbID!=0) {
+							$.ajax({
+								url: "https://localhost/www/TDUONG/xuly-thongbao/",
+								async: false,
+								data: "tbID=" + tbID,
+								type: "post",
+								success: function(result) {
+									$("#thongbao-big").fadeOut("fast");
+								}
+							});
+						}
+					}
+				});
+			}
+			return false;
+		});
+		
+		$("#tb-cancle").click(function() {
+			me = $(this);
+			tdID = me.attr("data-tdID");
+			if(tdID!="") {
+				$.ajax({
+					url: "https://localhost/www/TDUONG/xuly-thachdau/",
+					async: false,
+					data: "tdID0=" + tdID,
+					type: "post",
+					success: function(result) {
+						tbID = me.attr("data-tbID");
+						if($.isNumeric(tbID) && tbID!=0) {
+							$.ajax({
+								url: "https://localhost/www/TDUONG/xuly-thongbao/",
+								async: false,
+								data: "tbID=" + tbID,
+								type: "post",
+								success: function(result) {
+									$("#thongbao-big").fadeOut("fast");
+								}
+							});
+						}
+					}
+				});
+			}
+			return false;
+		});
+		
+		/*$(document).on("mouseenter","#NAVBAR ul li.li-con",function(e) {
+			$(this).stop().animate({marginLeft: "0",opacity: "1"},400);
+		});
+		
+		$(document).on("mouseleave","#NAVBAR ul li.li-con",function(e) {
+			$(this).stop().animate({marginLeft: "-80px",opacity: "0.7"},400);
+		});*/
+	});
+	
+	var Base64 = {
+
+
+    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+
+    encode: function(input) {
+        var output = "";
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        input = Base64._utf8_encode(input);
+
+        while (i < input.length) {
+
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+
+            output = output + this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) + this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+        }
+
+        return output;
+    },
+
+
+    decode: function(input) {
+        var output = "";
+        var chr1, chr2, chr3;
+        var enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+        while (i < input.length) {
+
+            enc1 = this._keyStr.indexOf(input.charAt(i++));
+            enc2 = this._keyStr.indexOf(input.charAt(i++));
+            enc3 = this._keyStr.indexOf(input.charAt(i++));
+            enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+
+            output = output + String.fromCharCode(chr1);
+
+            if (enc3 != 64) {
+                output = output + String.fromCharCode(chr2);
+            }
+            if (enc4 != 64) {
+                output = output + String.fromCharCode(chr3);
+            }
+
+        }
+
+        output = Base64._utf8_decode(output);
+
+        return output;
+
+    },
+
+    _utf8_encode: function(string) {
+        string = string.replace(/\r\n/g, "\n");
+        var utftext = "";
+
+        for (var n = 0; n < string.length; n++) {
+
+            var c = string.charCodeAt(n);
+
+            if (c < 128) {
+                utftext += String.fromCharCode(c);
+            }
+            else if ((c > 127) && (c < 2048)) {
+                utftext += String.fromCharCode((c >> 6) | 192);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+            else {
+                utftext += String.fromCharCode((c >> 12) | 224);
+                utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+
+        }
+
+        return utftext;
+    },
+
+    _utf8_decode: function(utftext) {
+        var string = "";
+        var i = 0;
+        var c = c1 = c2 = 0;
+
+        while (i < utftext.length) {
+
+            c = utftext.charCodeAt(i);
+
+            if (c < 128) {
+                string += String.fromCharCode(c);
+                i++;
+            }
+            else if ((c > 191) && (c < 224)) {
+                c2 = utftext.charCodeAt(i + 1);
+                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                i += 2;
+            }
+            else {
+                c2 = utftext.charCodeAt(i + 1);
+                c3 = utftext.charCodeAt(i + 2);
+                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                i += 3;
+            }
+
+        }
+
+        return string;
+    }
+
+	}
+	
+</script>
+
+        <script src="./demo/iscroll.js"></script>
+        <script>
+		
+			$(document).ready(function() {
+				
+								$("#MAIN .main-div #main-table table tr td button.thachdau").click(function(){if(del_td=$(this).closest("td"),maso=$(this).attr("data-maso"),chap=0,$.isNumeric(chap)&&chap>=0&&chap<=5&&""!=maso){if("OTktMDAwMg=="==maso)alert("Bạn không thể thách đấu chính mình!");else if(confirm("Nếu bạn mang bài về nhà làm thì sẽ thua luôn! Bạn có chắc chắn gửi lời thách đấu này?"))return $("#BODY").css("opacity","0.3"),$.ajax({url:"https://localhost/www/TDUONG/xuly-thachdau/",async:!1,data:"maso="+maso+"&chap="+chap,type:"post",success:function(a){$("#BODY").css("opacity","1"),alert(a),location.reload()}}),!1}else alert("Vui lòng cung cấp đầy đủ thông tin và chính xác!")});
+				
+								var me = $("#MAIN .main-div #main-table table tr#tr-me").index();
+				if(me>10) {
+					$("#MAIN .main-div #main-table table tr").each(function(index, element) {
+						if(index>1 && index<me-5) {
+							$(element).hide();
+						}
+					});
+				}
+				
+				$('.loc3').children('span, input').hide();				$("#select-loc").change(function(){loai=$(this).val(),3==loai?$(".loc3").children("span, input").show():$(".loc3").children("span, input").hide()}),$("#locdl").click(function(){return loai=$("#select-loc").val(),3==loai?(maso=$("#maso").val(),""!=maso&&" "!=maso&&"_"!=maso&&"%"!=maso?!0:(alert("Mã số không đúng!"),!1)):!0});
+			});
+		</script>
+        <script type="text/javascript">
+            document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+			window.onload = function () {
+
+                var myScroll2 = new IScroll('#main-chart', { scrollX: true, scrollY: false, mouseWheel: false, startX: -290 });
+
+		var chart8 = new CanvasJS.Chart("chartContainerTB",
+				{
+					animationEnabled: true,
+					backgroundColor: "",
+					axisX:{
+						indexLabelFontFamily:"helvetica" ,
+						labelFontFamily:"helvetica" ,
+						gridColor: "rgba(255,255,255,0.15)",
+						tickColor: "#D0AA86",
+						gridThickness: 1,
+						tickThickness: 0,
+						lineThickness: 4,
+						lineColor: "rgba(255,255,255,0.15)",
+						//interval: 7,
+						//intervalType: "day",
+						labelFontColor: "#FFF",
+						labelFontSize: 14,
+						//valueFormatString: "DD/MM", 
+						labelFontWeight: "normal",
+					},     
+					interactivityEnabled: true,                   
+					toolTip:{
+						backgroundColor: "#FFF",
+						borderColor: "",
+						borderThickness: 0,
+						fontColor: "#000",
+					},
+					theme: "theme2",
+					axisY: {
+						//indexLabelFontFamily:"helvetica" ,
+						gridColor: "rgba(255,255,255,0.15)",
+						tickColor: "#D0AA86",
+						tickThickness: 0,
+						labelFontColor: "",
+						gridThickness: 1,
+						lineThickness: 4,
+						maximum: 11,
+						interval: 2,
+						minimum: -1,
+						lineColor: "rgba(255,255,255,0.15)",
+						//labelFontSize: 16,
+						//labelFontWeight: "normal",
+						//valueFormatString: "# điểm"
+					},
+					dataPointMaxWidth: 40,
+					data: [
+					{        
+						indexLabelFontFamily:"helvetica" ,
+						type: "column",
+						showInLegend: false,
+						indexLabelFontColor: "#FFF",
+						indexLabelFontWeight: "normal",
+						indexLabelFontSize: 14,
+						lineThickness: 2,
+						name: "Điểm TB",
+						markerSize: 10,
+						markerType: "circle",
+						color: "#FFF",
+						click: function(e) {
+							window.location.href=e.dataPoint.content;
+						},
+						dataPoints: [
+						{ label: '07/2015', y: 8.33, indexLabel: '{y} (B)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề trung bình<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 10/58<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-07/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 07/2015</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-07/'},{ label: '08/2015', y: 8.31, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 13/16<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-08/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 08/2015</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-08/'},{ label: '09/2015', y: 6.94, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 18/25<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-09/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 09/2015</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-09/'},{ label: '10/2015', y: 7.75, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 17/31<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-10/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 10/2015</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-10/'},{ label: '11/2015', y: 7.95, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 13/34<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-11/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 11/2015</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-11/'},{ label: '12/2015', y: 6.88, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 18/38<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-12/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 12/2015</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2015-12/'},{ label: '01/2016', y: 8.13, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 20/38<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-01/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 01/2016</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-01/'},{ label: '02/2016', y: 8.50, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 10/36<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-02/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 02/2016</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-02/'},{ label: '03/2016', y: 7.44, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 18/48<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-03/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 03/2016</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-03/'},{ label: '04/2016', y: 8.38, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 11/49<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-04/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 04/2016</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-04/'},{ label: '05/2016', y: 8.56, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 13/54<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-05/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 05/2016</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-05/'},{ label: '06/2016', y: 8.19, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 16/54<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-06/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 06/2016</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-06/'},{ label: '07/2016', y: 8.67, indexLabel: '{y} (G)', toolTipContent: '<span style=\'font-style:normal\'><span style=\'font-size:10px;\'>&#9899;</span> Đề khá giỏi<br /><span style=\'font-size:10px\'>&#9899;</span> Xếp hạng 10/53<br /><span style=\'font-size:10px\'>&#9899;</span><a href=\'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-07/\' style=\'color:#000;font-weight:600;\'> Click vào để xem chi tiết<br />xếp hạng tháng 07/2016</a></span>', content: 'https://localhost/www/TDUONG/bang_xep_hang.html0/2016-07/'},						]
+					},
+					{        
+						indexLabelFontFamily:"helvetica" ,
+						type: "splineArea",
+						lineThickness: 0,
+						showInLegend: false,
+						name: "Điểm TB (B)",
+						color: "rgba(0,0,0,0.35)",
+						markerType: "none",
+						toolTipContent: null,
+						dataPoints: [
+						{ label: '07/2015', y: 6.030119047619},{ label: '08/2015', y: 'X'},{ label: '09/2015', y: 'X'},{ label: '10/2015', y: 'X'},{ label: '11/2015', y: 'X'},{ label: '12/2015', y: 'X'},{ label: '01/2016', y: 'X'},{ label: '02/2016', y: 'X'},{ label: '03/2016', y: 'X'},{ label: '04/2016', y: 'X'},{ label: '05/2016', y: 'X'},{ label: '06/2016', y: 'X'},{ label: '07/2016', y: 'X'},						]
+					},
+					{        
+						indexLabelFontFamily:"helvetica" ,
+						type: "splineArea",
+						lineThickness: 0,
+						showInLegend: false,
+						name: "Điểm TB (G)",
+						color: "rgba(0,0,0,0.35)",
+						markerType: "none",
+						toolTipContent: null,
+						dataPoints: [
+						{ label: '07/2015', y: 'X'},{ label: '08/2015', y: 8.619375},{ label: '09/2015', y: 7.5324242424242},{ label: '10/2015', y: 7.9415},{ label: '11/2015', y: 7.7268},{ label: '12/2015', y: 6.7045614035088},{ label: '01/2016', y: 8.1149152542373},{ label: '02/2016', y: 7.5687341772152},{ label: '03/2016', y: 7.1260759493671},{ label: '04/2016', y: 7.39475},{ label: '05/2016', y: 7.526511627907},{ label: '06/2016', y: 7.3292783505155},{ label: '07/2016', y: 7.0405940594059},						]
+					},
+					
+					]
+				});
+		
+		chart8.render();
+		}
+		</script>
+        <script type="text/javascript" src="./demo/canvasjs.min.js"></script>
+       
+	<style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+.en-markup-crop-options {
+    top: 18px !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    width: 200px !important;
+    border: 2px rgba(255,255,255,.38) solid !important;
+    border-radius: 4px !important;
+}
+
+.en-markup-crop-options div div:first-of-type {
+    margin-left: 0px !important;
+}
+</style></head>
+
+    <body>
+                             
+      	<div id="BODY">
+        
+        	            
+            <div id="MAIN">
+            	
+              	<div class="main-div back animated bounceInUp" id="main-top">
+                	<div id="main-person">
+                		<h1 style="line-height:98px;">Bảng xếp hạng môn Toán</h1>
+                        <div class="clear"></div>
+                   	</div>
+                    <div id="main-avata">
+                    	<img src="./demo/579ef0ddb76be.jpg">
+                        <a href="https://localhost/www/TDUONG/ho_so.html" title="Hồ sơ cá nhân">
+                        	<p>99-0002 (G)</p>
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                   	</div>
+                    <!--<div id="main-code"><h2>99-0002</h2></div>-->
+                </div>
+                
+                <div class="main-div hideme animated animated2 bounceInUp">
+                	<div class="main-1 back"><h3>Biểu đồ điểm thi trung bình môn Toán qua từng tháng</h3></div>
+                    <div id="main-chart">
+                    	<div></div>
+                    	<div style="width: 1235px; transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1); transition-duration: 0ms; transform: translate(-290px, 0px) translateZ(0px);">
+                            
+                            <div class="chart-wap">
+                                <div id="chartContainerTB" style="width:1260px;margin-left:-25px;"><div class="canvasjs-chart-container" style="position: relative; text-align: left; cursor: auto;"><canvas class="canvasjs-chart-canvas" width="1260" height="320" style="position: absolute;"></canvas><canvas class="canvasjs-chart-canvas" width="1260" height="320" style="position: absolute; cursor: default;"></canvas><div class="canvasjs-chart-toolbar" style="position: absolute; right: 1px; top: 1px;"></div><div class="canvasjs-chart-tooltip" style="position: absolute; height: auto; box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 2px; z-index: 1000; display: none; border-radius: 5px; left: 1016px; bottom: -156px; transition: left 0.2s ease-out, bottom 0.2s ease-out;"><div style="width: auto; height: auto; min-width: 50px; margin: 0px; padding: 5px; font-family: Calibri, Arial, Georgia, serif; font-weight: normal; font-style: italic; font-size: 14px; color: rgb(0, 0, 0); text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px; text-align: left; border: 0px solid rgb(255, 255, 255); text-indent: 0px; white-space: nowrap; border-radius: 5px; -webkit-user-select: none; background: rgb(255, 255, 255);"><span style="font-style:normal"><span style="font-size:10px;">⚫</span> Đề khá giỏi<br><span style="font-size:10px">⚫</span> Xếp hạng 10/53<br><span style="font-size:10px">⚫</span><a href="https://localhost/www/TDUONG/bang_xep_hang.html0/2016-07/" style="color:#000;font-weight:600;"> Click vào để xem chi tiết<br>xếp hạng tháng 07/2016</a></span></div></div><a class="canvasjs-chart-credit" style="outline:none;margin:0px;position:absolute;right:3px;top:306px;color:dimgrey;text-decoration:none;font-size:10px;font-family:Lucida Grande, Lucida Sans Unicode, Arial, sans-serif" tabindex="-1" target="_blank" href="http://canvasjs.com/">CanvasJS.com</a></div></div>
+                                <!--<div id="chartContainerTB" style="width:100%;"></div>-->
+                            </div>
+                       	</div>
+                        <div id="chart-len">
+                            <ul>
+                            <li><span>10 điểm</span></li><li><span>8 điểm</span></li><li><span>6 điểm</span></li><li><span>4 điểm</span></li><li><span>2 điểm</span></li><li><span>0 điểm</span></li>                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="main-div animated bounceInUp">
+                	<div class="main-1 back" style="border-bottom:none;border-bottom-left-radius:0;border-bottom-right-radius:0;"><h3>Điểm trung bình và xếp hạng tháng 07/2016</h3></div>
+                    <div id="main-table">
+                    	<table>
+                        	<tbody><tr class="back">
+                            	<form action="https://localhost/www/TDUONG/bang_xep_hang.html" method="get"></form>
+                                    <td><span>Lọc dữ liệu</span></td>
+                                    <td colspan="2">
+                                        <select class="submit" style="width:100%;height:auto;" id="select-loc" name="select-loc">
+                                            <option value="1">Xếp hạng đề B</option>
+                                            <option value="2">Xếp hạng đề G</option>
+                                            <option value="3">Tìm theo mã số</option>
+                                            <option value="0" selected="selected">Vị trí của tôi</option>
+                                        </select>
+                                    </td>
+                                    <td class="loc3"><span style="display: none;">Nhập mã số</span></td>
+                                    <td class="loc3"><input type="text" class="input" id="maso" name="maso" value="0" style="display: none;"></td>
+                                    <input type="hidden" value="2016-07" name="select-nam">
+                                    <td><input type="submit" class="submit" id="locdl" name="loc-ok" value="Lọc"></td>
+                               	
+                            </tr>
+                        	<tr id="table-head" class="back tr-big">
+                            	<th style="width:15%;"><span>STT</span></th>
+                                <th style="width:25%;"><span>Tên học sinh</span></th>
+                                <th style="width:15%;"><span>Mã số</span></th>
+                                <th style="width:15%;"><span>Điểm TB</span></th>
+                                <th style="width:15%;"><span>Thứ hạng</span></th>
+                                <th style="width:15%;"><span></span></th>
+                      		</tr>
+                            <tr class="back" style="display: none;">
+												<td><span>1</span></td>
+												<td><span>Lê Trọng&nbsp; Trí</span></td>
+												<td><span>99-0005</span></td><td><span>9.83</span></td>
+												<td><span>1</span></td><td><button class="submit thachdau" data-maso="OTktMDAwNQ==">Thách đấu</button></td>
+											</tr><tr class="back" style="display: none;">
+												<td><span>2</span></td>
+												<td><span>Lưu Thuỳ Dương</span></td>
+												<td><span>99-0027</span></td><td><span>9.83</span></td>
+												<td><span>1</span></td><td><button class="submit thachdau" data-maso="OTktMDAyNw==">Thách đấu</button></td>
+											</tr><tr class="back" style="display: none;">
+												<td><span>3</span></td>
+												<td><span>Trần Ngọc Thảo</span></td>
+												<td><span>99-0105</span></td><td><span>9.67</span></td>
+												<td><span>2</span></td><td><button class="submit thachdau" data-maso="OTktMDEwNQ==">Thách đấu</button></td>
+											</tr><tr class="back" style="display: none;">
+												<td><span>4</span></td>
+												<td><span>Phạm Quang Huy</span></td>
+												<td><span>99-0109</span></td><td><span>9.50</span></td>
+												<td><span>3</span></td><td><button class="submit thachdau" data-maso="OTktMDEwOQ==">Thách đấu</button></td>
+											</tr><tr class="back" style="display: none;">
+												<td><span>5</span></td>
+												<td><span>Vũ Trung Dũng</span></td>
+												<td><span>99-0110</span></td><td><span>9.50</span></td>
+												<td><span>3</span></td><td><button class="submit thachdau" data-maso="OTktMDExMA==">Thách đấu</button></td>
+											</tr><tr class="back" style="display: none;">
+												<td><span>6</span></td>
+												<td><span>Lê Tuấn Hùng</span></td>
+												<td><span>99-0125</span></td><td><span>9.42</span></td>
+												<td><span>4</span></td><td><button class="submit thachdau" data-maso="OTktMDEyNQ==">Thách đấu</button></td>
+											</tr><tr class="back" style="display: none;">
+												<td><span>7</span></td>
+												<td><span>Nguyễn Bình Minh</span></td>
+												<td><span>99-0024</span></td><td><span>9.25</span></td>
+												<td><span>5</span></td><td><button class="submit thachdau" data-maso="OTktMDAyNA==">Thách đấu</button></td>
+											</tr><tr class="back" style="display: none;">
+												<td><span>8</span></td>
+												<td><span>Trần Phương Linh</span></td>
+												<td><span>99-0016</span></td><td><span>9.17</span></td>
+												<td><span>6</span></td><td><button class="submit thachdau" data-maso="OTktMDAxNg==">Thách đấu</button></td>
+											</tr><tr class="back" style="display: none;">
+												<td><span>9</span></td>
+												<td><span>Tạ Minh Hằng</span></td>
+												<td><span>99-0046</span></td><td><span>9.17</span></td>
+												<td><span>6</span></td><td><button class="submit thachdau" data-maso="OTktMDA0Ng==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>10</span></td>
+												<td><span>Vương Lê Minh Quý</span></td>
+												<td><span>99-0160</span></td><td><span>9.17</span></td>
+												<td><span>6</span></td><td><button class="submit thachdau" data-maso="OTktMDE2MA==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>11</span></td>
+												<td><span>Triệu Minh Tâm</span></td>
+												<td><span>99-0026</span></td><td><span>9.08</span></td>
+												<td><span>7</span></td><td><button class="submit thachdau" data-maso="OTktMDAyNg==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>12</span></td>
+												<td><span>Vũ Thị Ngọc Mai</span></td>
+												<td><span>99-0159</span></td><td><span>9.08</span></td>
+												<td><span>7</span></td><td><button class="submit thachdau" data-maso="OTktMDE1OQ==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>13</span></td>
+												<td><span>Nguyễn Phương Anh</span></td>
+												<td><span>99-0031</span></td><td><span>8.83</span></td>
+												<td><span>8</span></td><td><button class="submit thachdau" data-maso="OTktMDAzMQ==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>14</span></td>
+												<td><span>Lê Ngọc Trâm</span></td>
+												<td><span>99-0035</span></td><td><span>8.75</span></td>
+												<td><span>9</span></td><td><button class="submit thachdau" data-maso="OTktMDAzNQ==">Thách đấu</button></td>
+											</tr><tr id="tr-me" class="me-here">
+												<td><span>15</span></td>
+												<td><span>Vương Khánh Linh</span></td>
+												<td><span>99-0002</span></td><td><span>8.67</span></td>
+												<td><span>10</span></td><td></td>
+											</tr><tr class="back">
+												<td><span>16</span></td>
+												<td><span>Nguyễn Sơn Tùng</span></td>
+												<td><span>99-0199</span></td><td><span>8.67</span></td>
+												<td><span>10</span></td><td><button class="submit thachdau" data-maso="OTktMDE5OQ==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>17</span></td>
+												<td><span>Nguyễn Phương Anh</span></td>
+												<td><span>99-0092</span></td><td><span>8.58</span></td>
+												<td><span>11</span></td><td><button class="submit thachdau" data-maso="OTktMDA5Mg==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>18</span></td>
+												<td><span>Trương Khánh Ly</span></td>
+												<td><span>99-0021</span></td><td><span>8.33</span></td>
+												<td><span>12</span></td><td><button class="submit thachdau" data-maso="OTktMDAyMQ==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>19</span></td>
+												<td><span>Nguyễn Nhật Nam</span></td>
+												<td><span>99-0084</span></td><td><span>8.25</span></td>
+												<td><span>13</span></td><td><button class="submit thachdau" data-maso="OTktMDA4NA==">Thách đấu</button></td>
+											</tr><tr class="back">
+												<td><span>20</span></td>
+												<td><span>Nguyễn Phương Trang</span></td>
+												<td><span>99-0015</span></td><td><span>8.17</span></td>
+												<td><span>14</span></td><td><button class="submit thachdau" data-maso="OTktMDAxNQ==">Thách đấu</button></td>
+											</tr>                        </tbody></table>
+                    </div>
+                </div>
+               <!--<div id="NAVBAR">
+	<ul>
+    	<!--<li><a href="https://localhost/www/TDUONG/" title="Trang chủ"><i class="fa fa-home"></i></a></li>-->
+               <!-- <li class="li-con"><a href="https://localhost/www/TDUONG/dang-xuat/"><i class="fa fa-sign-out"></i></a><p>Đăng xuất</p></li>
+    </ul>
+</div>-->
+
+
+
+<div id="SMS">
+    <a href="http://m.me/Bgo.edu.vn" target="_blank" class="sms-new"><i class="fa fa-commenting"></i><span>Hỗ trợ</span></a>
+</div>
+<!--</div>-->	                  
+            </div>
+        
+        </div>
+        
+        <div class="popup animated bounceIn" id="baoloi">
+    <div>
+        <p class="title"></p>
+        <div>
+            <button class="submit2 btn_ok"><i class="fa fa-check"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="popup animated bounceIn" id="bao-error">
+	<form action="https://localhost/www/TDUONG/bang_xep_hang.html" method="post">
+    	<div>
+            <p class="title">Thông báo lỗi</p>
+            <div>
+            	<textarea class="input" id="sms-con" name="sms-con" style="height:80px;resize:vertical;width:96%;background:#000;padding:2%;" placeholder="Nội dung"></textarea>
+                <button class="submit2" type="submit" id="sms-ok" name="sms-ok" style="margin-top:10px;">Gửi</button>
+                <button class="submit2 btn_ok" style="margin-top:10px;">Hủy</button>
+           	</div>
+        </div>
+    </form>
+</div>
+
+
+<div class="fixed-action-btn click-to-toggle animated bounceIn" style="bottom: 0;padding-bottom:45px; right: 0; padding-right:25px; width:150px;">
+    <ul>
+    <li><a href="https://localhost/www/TDUONG/trang-chu/" class="btn-floating"><p>Trang chủ</p>
+                    <div class="my-btn" style="background:green"><i class="fa fa-home"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/dang-ky-facebook/" class="btn-floating"><p>Đăng ký Group Toán</p>
+                    <div class="my-btn" style="background:#365899"><i class="fa fa-facebook-official"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/tai_lieu.html" class="btn-floating"><p>Tài liệu môn Toán</p>
+                    <div class="my-btn" style="background:orange;margin-top:0;"><i class="fa fa-file"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/bang_xep_hang.html" class="btn-floating"><p>Bảng xếp hạng</p>
+                    <div class="my-btn" style="background:#2C84BD"><i class="fa fa-list-alt"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/thach_dau.html" class="btn-floating"><p>Thách đấu</p>
+                    <div class="my-btn" style="background:#69b42e"><i class="fa fa-trophy"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/doi_ca.html" class="btn-floating"><p>Đổi ca</p>
+                    <div class="my-btn" style="background:cyan"><i class="fa fa-exchange"></i></div>
+                </a></li><li><a href="https://localhost/www/TDUONG/ngoi_sao.html" class="btn-floating"><p>Ngôi sao hy vọng</p>
+                    <div class="my-btn" style="background:#ffa85a"><i class="fa fa-star"></i></div>
+                </a></li>    </ul>
+    <a class="btn-floating btn-large" style="float:right;">
+      <div class="my-btn my-btn-big" style="background:red;"><i class="large fa fa-th-list"></i></div>
+    </a>
+</div>
+
+<div id="NAVBAR">
+	<ul>
+    	<!--<li><a href="https://localhost/www/TDUONG/trang-chu/" title="Trang chủ"><i class="fa fa-home"></i></a></li>-->
+        <li style="background:#FFF;"><a href="https://localhost/www/TDUONG/demo.html" title="Môn Toán">Toán</a></li><li style="background:#FFF;" class="li-con"><a href="javascript:void(0)" class="access_mon" title="Môn Anh">Anh</a></li><li style="background:#FFF;" class="li-con"><a href="javascript:void(0)" class="access_mon" title="Môn Lý">Lý</a></li><li style="background:#FFF;" class="li-con"><a href="javascript:void(0)" class="access_mon" title="Môn Hóa">Hóa</a></li><li style="background:#FFF;" class="li-con"><a href="javascript:void(0)" class="access_mon" title="Môn Văn">Văn</a></li><li style="position:relative;background:#FFF;" id="tb-icon">
+					<a href="javascript:void(0)" style="color:yellow;" title="Thông báo"><i class="fa fa-bell"></i></a>
+					<p style="position:absolute;right:35%;color:#FFF;background:red;border-radius:1000px;width:20px;height:20px;font-size:14px;line-height:22px;top:5%;">1</p>        	<div id="thongbao-menu">
+                <ul>
+                <li><a href="https://localhost/www/TDUONG/demo.html" data-tbid="3793">
+                            <ol class="tb-img"><img src="./demo/logo.jpg"></ol>
+                            <ol class="tb-con">
+                                <p>Điểm thi ngày 31/07/2016 của bạn là 7.75 điểm (G). Làm bài trên lớp</p>
+                                <p class="tb-time"><i class="fa fa-graduation-cap"></i>3 ngày trước</p>
+                            </ol>
+                            <ol class="tb-action">
+                                <i class="fa fa-bell-slash" title="Tắt"></i>
+                                
+                            </ol>
+                            <div class="clear"></div>
+                        </a></li><li style="padding:5px 0 5px 0;">                        <ol style="width:100%;">
+                            <a href="https://localhost/www/TDUONG/tai_khoan.html" style="margin-left:10px;float:left;color:#000;font-size:14px;font-weight:600;">Tài khoản: 150.000đ</a>
+                            <a href="https://localhost/www/TDUONG/level.html" style="margin-right:10px;float:right;color:#000;font-size:14px;font-weight:600;">LVL: 0</a>
+                        </ol>
+                        <div class="clear"></div>
+                    </li>
+                                    <li style="padding:0;padding-top:5px;"><a href="javascript:void(0)" style="color:green;">
+                        <ol style="width:100%;">
+                            <p style="margin-left:10px;color:#000;font-size:14px;font-weight:600;">Đếm ngược thi đại học</p>
+                            <div id="DateCountdown" style="padding:10px 0 5px 0;" class="county red"><span class="county-days-wrapper first"><span class="county-days" style="margin-top: 0px;">1</span></span><span class="county-hours-wrapper separator-left border-separator-right"><span class="county-hours" style="margin-top: 0px;">1</span></span><span class="county-minutes-wrapper separator-left separator-left"><span class="county-minutes" style="margin-top: 0px;">24</span></span><span class="county-seconds-wrapper separator-left last"><span class="county-seconds" style="margin-top: 0px;">5</span></span><div class="clear"></div><span class="county-label-days">Năm</span><span class="county-label-hours">Tháng</span><span class="county-label-minutes">Ngày</span><span class="county-label-seconds">Giờ</span></div>
+                        </ol>
+                        <div class="clear"></div>
+                    </a></li>
+                                    <a href="https://localhost/www/TDUONG/thong_bao.html" style="float:right;display:block;font-size:14px;margin-top:3px;color:#FFF;">Xem tất cả</a>
+                </ul>
+            </div>
+       	</li>
+        <li style="background:#FFF;" class="li-con"><a href="https://localhost/www/TDUONG/dang-xuat/" title="Đăng xuất"><i class="fa fa-sign-out" style="font-size:18px;"></i></a></li>
+    </ul>
+</div>
+
+
+
+
+<div id="myback"></div>        
+    
+
+
+<div class="hiddendiv common"></div><span style="position: absolute; left: 0px; top: -20000px; padding: 0px; margin: 0px; border: none; white-space: pre; line-height: normal; font-family: helvetica; font-size: 14px; font-weight: normal; display: none;">Mpgyi</span></body></html>
