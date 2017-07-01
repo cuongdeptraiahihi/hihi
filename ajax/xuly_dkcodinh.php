@@ -36,10 +36,10 @@
 		}
 	}
 	
-	/*if (isset($_POST["caID0"])) {
+	if (isset($_POST["caID0"])) {
 		$caID=decode_data($_POST["caID0"],$code);
-		delete_hs_ca_codinh($caID, $hsID, get_ca_cum($caID, $cahoc_string), $ca_hientai_string, $ca_codinh_string);
-	}*/
+		delete_hs_ca_codinh($caID, $hsID, get_ca_cum($caID));
+	}
 	
 	if (isset($_POST["caID2"])) {
 		$caID=decode_data($_POST["caID2"],$code);

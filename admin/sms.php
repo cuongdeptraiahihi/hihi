@@ -53,7 +53,7 @@
 //        $thang=$temp[1];
         $content="KINH GUI PHU HUYNH EM ".mb_strtoupper(str_replace("-"," ",unicode_convert($data["fullname"])),"UTF-8").".\n+ De quan ly ket qua hoc tap, lich hoc,... cua con, phu huynh truy cap vao www.bgo.edu.vn voi ten dang nhap: \"$data[cmt]\" va mat khau: \"{sdt}\". Neu can tro giup, phu huynh co the an nut \"Ho tro\" tren website hoac goi 09.827.827.64\n";
         $query2="SELECT m.date_in,m.ID_LM,l.ID_MON,n.ID_N,g.discount FROM hocsinh_mon AS m 
-        INNER JOIN lop_mon AS l ON l.ID_LM=m.ID_LM AND l.ID_LM!='3' AND l.ID_LM!='5' AND l.ID_LM!='6'
+        INNER JOIN lop_mon AS l ON l.ID_LM=m.ID_LM AND l.ID_LM IN ('2','5')
         LEFT JOIN giam_gia AS g ON g.ID_HS='$data[ID_HS]' AND g.ID_MON=l.ID_MON 
         LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=m.ID_HS AND n.ID_LM=m.ID_LM 
         WHERE m.ID_HS='$data[ID_HS]' ORDER BY m.ID_LM ASC";

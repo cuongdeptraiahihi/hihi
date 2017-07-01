@@ -199,8 +199,8 @@
                     $(".popup").fadeOut("fast");
                     caID = $(this).attr("data-caID"), $(this).hasClass("codinh") ? ($(".btn_back").attr("data-caID", caID), $("#backca").fadeIn("fast")) : ($(".btn_codinh, .btn_tam").attr("data-caID", caID),($(this).attr("data-info") && $(this).attr("data-info2")) ? $("#info-ca").show().html("Bạn phải có mặt từ " + $(this).attr("data-info") + ". Thời gian làm bài là 90ph từ " + $(this).attr("data-info2")) : $("#info-ca").hide().html(""), $("#doica").fadeIn("fast")), $("#BODY").css("opacity", "0.1")
 				}), $("#MAIN .main-div #main-info table tr td i.fa-check-square-o").click(function() {
-					//caID = $(this).attr("data-caID"), $(".btn_thoat2").attr("data-caID", caID), $("#thoatca").fadeIn("fast"), $("#BODY").css("opacity", "0.1")
-				}), /*$(".btn_thoat2").click(function() {
+					caID = $(this).attr("data-caID"), $(".btn_thoat2").attr("data-caID", caID), $("#thoatca").fadeIn("fast"), $("#BODY").css("opacity", "0.1")
+				}), $(".btn_thoat2").click(function() {
 					$("#popup-loading").fadeIn("fast"), $("#BODY").css("opacity", "0.1"), caID = $(this).attr("data-caID"), $.ajax({
 						async: !1,
 						data: "caID0=" + caID,
@@ -209,8 +209,8 @@
 						success: function(a) {
 							alert("Lịch học của bạn sẽ chở về ban đầu!"), location.reload()
 						}
-					})
-				}),*/ $("#MAIN .main-div #main-info table tr td i.fa-ban").click(function() {
+					});
+				}), $("#MAIN .main-div #main-info table tr td i.fa-ban").click(function() {
 					$("#noneca").fadeIn("fast");
 					$("#BODY").css("opacity", "0.1");
 				});
@@ -344,7 +344,6 @@
                                                 $list_cum[]=$data["ID_CUM"];
                                                 $cum_arr[$data["ID_CUM"]]=array();
                                                 $query5="SELECT c.ID_CA,c.thu,c.siso,g.gio,g.buoi,a.ID_STT AS hientai,o.ID_STT AS codinh FROM cahoc AS c 
-                                                INNER JOIN ca_quyen AS q ON q.ID_HS='$hsID' AND q.ID_CA=c.ID_CA 
                                                 INNER JOIN cagio AS g ON g.ID_GIO=c.ID_GIO AND g.ID_LM='$lmID' AND g.ID_MON='$monID'
                                                 LEFT JOIN ca_hientai AS a ON a.ID_CA=c.ID_CA AND a.ID_HS='$hsID' AND a.cum='$data[ID_CUM]'
                                                 LEFT JOIN ca_codinh AS o ON o.ID_CA=c.ID_CA AND o.ID_HS='$hsID' AND o.cum='$data[ID_CUM]'

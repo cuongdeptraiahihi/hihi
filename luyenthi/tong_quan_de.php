@@ -63,7 +63,7 @@
                                                         $btn .= " <a href='http://localhost/www/TDUONG/luyenthi/xoa-ket-qua-thi/" . encodeData($hsID, $me) . "/" . $deID . "/' class='btn btn-primary btn-xs bg-brown-400 lam-lai' style='color:#FFF;'>LÀM LẠI</a> ";
                                                     } else {
                                                         $btn .= " <a href='http://localhost/www/TDUONG/luyenthi/ket-qua-nhap-diem/" . $deID_encode . "/' class='btn btn-primary btn-xs bg-slate-400' style='color:#FFF;'>BÀI SCAN</a> ";
-                                                        $btn .= " <a href='javascript:void(0)' class='btn btn-primary btn-xs bg-danger-400' style='color:#FFF;'>ĐỀ ĐANG KHÓA</a> ";
+                                                        $btn .= " <a href='javascript:void(0)' class='btn btn-primary btn-xs bg-danger-400' style='color:#FFF;'>ĐỀ ĐANG KHÓA, SẼ ĐƯỢC MỞ KHI CÓ THÔNG BÁO TRÊN GROUP FB</a> ";
                                                     }
                                                 } else if ($db3->checkHocSinhSpecial($hsID, $data1["nhom"]) || $data0["public"] == 1) {
                                                     $btn .= " <a href='http://localhost/www/TDUONG/luyenthi/xem-truoc/" . encodeData($deID_big, $me) . "/' class='btn btn-primary btn-xs bg-danger-400' style='color:#FFF;'>VÀO THI</a> ";

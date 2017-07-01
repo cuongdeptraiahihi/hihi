@@ -175,6 +175,7 @@
 					    if(check_access_mon($hsID,$data["ID_LM"])) {
 					        if(check_hs_nghi($hsID,$data["ID_LM"])) {
                                 $access = 2;
+                                continue;
                             } else {
                                 $access = 1;
                             }
@@ -183,6 +184,7 @@
                             }
                         } else {
                             $access = 0;
+                            continue;
                         }
                         if($dem%2==0) {
                             if($access==0) {

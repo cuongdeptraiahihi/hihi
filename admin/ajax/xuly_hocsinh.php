@@ -220,9 +220,6 @@
                 $result1=mysqli_query($db,$query1);
                 if(mysqli_num_rows($result1)!=0) {
                     $data1 = mysqli_fetch_assoc($result1);
-                    if(count(check_dong_tien_hoc($hsID,$data["ID_LM"],"$nam-$thang"))==0) {
-
-                    }
                     $string = "<span>Hỗ trợ tháng $thang_in/$nam_in? <strong style='color:red;'>" . format_price_sms($data1["content"] * 1000) . " (bắt buộc)</strong>";
 //                                $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='$data1[content]' /> <i class='del-edit-price fa fa-times' data-oID='$data1[ID_O]' style='cursor: pointer;'></i></span><br />";
                     $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam_in-$thang_in' data-lmID='$data[ID_LM]' value='$data1[content]' /> <i class='del-edit-price fa fa-times' data-oID='$data1[ID_O]' style='cursor: pointer;'></i></span><br />";
@@ -246,21 +243,25 @@
                                     $string = "<span style='color:green;'>T " . format_month2("$nam-$thang") . " miễn 100% học phí ";
                                     $tinh=false;
                                 } else {
-                                    $string .= "<span style='color:red;'>T " . format_month2("$nam-$thang") . " CẦN đóng ";
+                                    $string .= "<span>T " . format_month2("$nam-$thang") . " ";
                                 }
                             }
                             $query1="SELECT ID_O,content FROM options WHERE type='edit-tien-hoc-$data[ID_LM]' AND note='$nam-$thang' AND note2='$hsID'";
                             $result1=mysqli_query($db,$query1);
                             if(mysqli_num_rows($result1)!=0) {
                                 $data1 = mysqli_fetch_assoc($result1);
-                                $string .= "<strong>" . format_price_sms($data1["content"] * 1000) . " (bắt buộc)</strong>";
+                                if($data1["content"]!=0) {
+                                    $string .= "<strong style='color:red;'>CẦN đóng " . format_price_sms($data1["content"] * 1000) . " (bắt buộc)</strong>";
+                                } else {
+                                    $string .= "miễn đóng học";
+                                }
 //                                $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='$data1[content]' /> <i class='del-edit-price fa fa-times' data-oID='$data1[ID_O]' style='cursor: pointer;'></i></span><br />";
                                 $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='$data1[content]' /></span><br />";
                                 $first=false;
                             } else if($tinh){
                                 if (stripos($data["date_in"], "$nam-$thang") === false) {
                                     $price = du_kien_tien_hoc("$nam-$thang", date("Y-m-d"), $hsID, $mon_name);
-                                    $string .= "<strong>".format_price_sms($price)."</strong>";
+                                    $string .= "<strong style='color:red;'>CẦN đóng ".format_price_sms($price)."</strong>";
                                 } else {
                                     $lich = "";
                                     if (get_day_from_date($data["date_in"]) < 7) {
@@ -275,7 +276,7 @@
                                         $price = $price0;
                                         $price = $price - ($price * $discount / 100);
                                     }
-                                    $string .= "<strong>".format_price_sms($price) . "</strong> (giữa chừng <i class='xem_lich fa fa-eye' data-lich='$lich'></i>)";
+                                    $string .= "<strong style='color:red;'>CẦN đóng ".format_price_sms($price) . " (giữa chừng <i class='xem_lich fa fa-eye' data-lich='$lich'></i>)</strong>";
                                 }
                                 $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='".($price/1000)."' /></span><br />";
                             } else {

@@ -376,7 +376,7 @@
                 $(this).hide();
                 $("div.de-big").each(function (index2, element2) {
                     cur_height = 0;
-                    var cur_page = 0;
+                    var cur_page = 2;
                     var first_page = true;
                     $(element2).find("table.cau-hoi").each(function (index, element) {
                         if(first_page) {
@@ -403,6 +403,10 @@
                     if (cur_page % 2 != 0) {
                         $(element2).append("<page size='A4'><div class='MAIN'></div></page>");
                         cur_page++;
+                    }
+                    if(cur_page == 6 || cur_page == 10) {
+                        $(element2).append("<page size='A4'><div class='MAIN'></div></page><page size='A4'><div class='MAIN'></div></page>");
+                        cur_page+=2;
                     }
                     if ($(element2).find("table.cau-hoi").length > 1) {
                         $(element2).find(".num-trang").html(formatZero($(element2).find("page").length) + " trang");

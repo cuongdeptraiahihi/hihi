@@ -478,9 +478,9 @@
 
 	// Đã check
 	function delete_hs_ca_tam($caID, $hsID, $cum) {
-		
+
 		global $db;
-		
+
 		$query="DELETE FROM ca_hientai WHERE ID_CA='$caID' AND ID_HS='$hsID'";
 		mysqli_query($db,$query);
 		$query2="SELECT ID_CA FROM ca_codinh WHERE ID_HS='$hsID' AND cum='$cum'";
@@ -490,6 +490,19 @@
 									value('$data2[ID_CA]','$hsID','$cum')";
 		mysqli_query($db,$query3);
 	}
+
+    // Đã check
+    function delete_hs_ca_codinh($caID, $hsID, $cum) {
+
+        global $db;
+
+        $query="DELETE FROM ca_hientai WHERE ID_CA='$caID' AND ID_HS='$hsID'";
+        mysqli_query($db,$query);
+        $query="DELETE FROM ca_hientai WHERE ID_HS='$hsID' AND cum='$cum'";
+        mysqli_query($db,$query);
+        $query="DELETE FROM ca_codinh WHERE ID_HS='$hsID' AND cum='$cum'";
+        mysqli_query($db,$query);
+    }
 
 	// Đã check
 	function get_tien_hs($hsID) {

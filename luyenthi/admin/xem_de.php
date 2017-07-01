@@ -289,7 +289,7 @@
                                         echo"<a href='http://localhost/www/TDUONG/luyenthi/admin/sua-cau-hoi/$data[ID_C]/' target='_blank' class='btn btn-primary btn-sm bg-slate-400' style='float:right;'><i class='icon-pencil3'></i></a>";
                                         echo"</td></tr>
                                         <tr>
-                                            <td colspan='2'><button type='button' class='btn btn-primary btn-sm bg-primary-400 view-detail-ok'>Đáp án chi tiết</button></td>
+                                            <td colspan='2' class='view-hide'><button type='button' class='btn btn-primary btn-sm bg-primary-400 view-detail-ok'>Đáp án chi tiết</button></td>
                                             <td colspan='2' class='view-detail' style='display:none;line-height: 30px;'>";
                                             if($data["da_con"] != "none") {
                                                 echo imageToImg($data["ID_MON"],$data["da_con"],300);

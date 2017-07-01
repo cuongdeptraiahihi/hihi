@@ -1677,26 +1677,7 @@ if($string != "") {
 //    while($data=mysqli_fetch_assoc($result)) {
 //        cong_tien_hs($data["ID_HS"], 10000, "Cộng 10k tiền đi học ca vắng ca 16h-17h30 ngày 15/5/2017", "ad-nap-tien", $data["ID_STT"]);
 //    }
-//    $dem=0;
-//    $query="SELECT ID_HS,cmt,taikhoan FROM hocsinh WHERE ID_HS IN (SELECT ID_HS FROM hocsinh_mon WHERE ID_LM='1' OR ID_LM='2')";
-//    $result=mysqli_query($db,$query);
-//    while($data=mysqli_fetch_assoc($result)) {
-//        $query2="SELECT SUM(price) AS tien FROM tien_ra WHERE ID_HS='$data[ID_HS]'";
-//        $result2=mysqli_query($db,$query2);
-//        $data2=mysqli_fetch_assoc($result2);
-//        $cong=$data2["tien"];
 //
-//        $query2="SELECT SUM(price) AS tien FROM tien_vao WHERE ID_HS='$data[ID_HS]'";
-//        $result2=mysqli_query($db,$query2);
-//        $data2=mysqli_fetch_assoc($result2);
-//        $tru=$data2["tien"];
-//
-//        if($data["taikhoan"] != $cong-$tru) {
-//            echo"$dem - $data[ID_HS] - $data[cmt] - $data[taikhoan] - ". ($cong-$tru)."<br />";
-//            update_tien_hs($data["ID_HS"], $cong-$tru);
-//        }
-//        $dem++;
-//    }
 
 //    $s1 = "kietcvc";
 //    $s2 = "iet";
@@ -1783,7 +1764,40 @@ if($string != "") {
 //		delete_phat_thuong($data["ID_HS"],"kiemtra_2",160);
 //	}
 
-    $query="SELECT ID_HS FROM hoc";
+    $query="SELECT ID_BUOI FROM buoikt WHERE ID_MON='1'";
+    $result=mysqli_query($db,$query);
+	while($data=mysqli_fetch_assoc($result)) {
+        $query2="SELECT ID_HS,string,COUNT(ID_RA) AS dem FROM tien_ra WHERE string IN ('kiemtra_1','kiemtra_2') AND object='$data[ID_BUOI]' GROUP BY ID_HS";
+        $result2=mysqli_query($db,$query2);
+        while($data2=mysqli_fetch_assoc($result2)) {
+            if($data2["dem"] != 1) {
+                echo $data2["ID_HS"] . " - " . $data2["dem"] . " - " . $data["ID_BUOI"]."<br />";
+                $query3="DELETE FROM tien_ra WHERE ID_HS='$data2[ID_HS]' AND string='$data2[string]' AND object='$data[ID_BUOI]' LIMIT ".($data2["dem"]-1);
+                mysqli_query($db,$query3);
+            }
+        }
+	}
+
+    $dem=0;
+    $query="SELECT ID_HS,cmt,taikhoan FROM hocsinh WHERE ID_HS IN (SELECT ID_HS FROM hocsinh_mon WHERE ID_LM='1' OR ID_LM='2')";
+    $result=mysqli_query($db,$query);
+    while($data=mysqli_fetch_assoc($result)) {
+        $query2="SELECT SUM(price) AS tien FROM tien_ra WHERE ID_HS='$data[ID_HS]'";
+        $result2=mysqli_query($db,$query2);
+        $data2=mysqli_fetch_assoc($result2);
+        $cong=$data2["tien"];
+
+        $query2="SELECT SUM(price) AS tien FROM tien_vao WHERE ID_HS='$data[ID_HS]'";
+        $result2=mysqli_query($db,$query2);
+        $data2=mysqli_fetch_assoc($result2);
+        $tru=$data2["tien"];
+
+        if($data["taikhoan"] != $cong-$tru) {
+            echo"$dem - $data[ID_HS] - $data[cmt] - $data[taikhoan] - ". ($cong-$tru)."<br />";
+            update_tien_hs($data["ID_HS"], $cong-$tru);
+        }
+        $dem++;
+    }
 
     ob_end_flush();
     require_once("model/close_db.php");
