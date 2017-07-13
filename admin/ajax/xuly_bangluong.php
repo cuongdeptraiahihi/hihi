@@ -47,11 +47,18 @@
         $date = $ajax[$n]["date"];
         $result_arr = array();
         for($i = 0; $i < $n; $i++) {
-            $me = check_chua_dong_hoc($ajax[$i]["hsID"], $ajax[$i]["date_in"], $lmID, $monID, $date, $ajax[$i]["old"]);
-            if (!is_numeric($me)) {
-                $string = $me;
+            $query="SELECT content FROM options WHERE content!='0' AND content!='0k' AND note2='".$ajax[$i]["hsID"]."' AND type='edit-tien-hoc-$lmID' AND note='$date'";
+            $result=mysqli_query($db, $query);
+            if(mysqli_num_rows($result) == 0) {
+                $me = check_chua_dong_hoc($ajax[$i]["hsID"], $ajax[$i]["date_in"], $lmID, $monID, $date, $ajax[$i]["old"]);
+                if (!is_numeric($me)) {
+                    $string = $me;
+                } else {
+                    $string = format_price($me);
+                }
             } else {
-                $string = format_price($me);
+                $data = mysqli_fetch_assoc($result);
+                $string = format_price($data["content"]*1000) . " <strong>(bắt buộc)</strong>";
             }
             $result_arr[$ajax[$i]["index"]] = array(
                 "tien" => $string

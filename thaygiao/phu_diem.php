@@ -50,6 +50,25 @@ if(isset($_GET["buoiID"]) && isset($_GET["lmID"])) {
                     $content.=",('$buoiID','$data[ID_HS]','0','2','$data[de]','0','','$lmID','0')";
                 }
             } else if(isset($data["diem"])) {
+                if($data["loai"]==0 && ($data["de"] == "Y" || $data["de"] == "B")) {
+                    if($data["diem"] >= 9 && $data["diem"] < 10) {
+                        add_log($data["ID_HS"],"Thưởng thẻ miễn phạt được điểm $data[diem] đề $data[de]","the-mien-phat");
+                    } else if($data["diem"] == 10) {
+                        if($data["de"] = "Y") {
+                            $new_de = "B";
+                        } else {
+                            $new_de = "G";
+                        }
+                        update_de_hs($data["ID_HS"], $new_de, $lmID);
+                        add_log($data["ID_HS"],"Thưởng thẻ miễn phạt được điểm $data[diem] đề $data[de] và lên đề","the-mien-phat");
+                        add_log($data["ID_HS"],"Thưởng thẻ miễn phạt được điểm $data[diem] đề $data[de] và lên đề","the-mien-phat");
+                        add_log($data["ID_HS"],"Thưởng thẻ miễn phạt được điểm $data[diem] đề $data[de] và lên đề","the-mien-phat");
+                        add_log($data["ID_HS"],"Thưởng thẻ miễn phạt được điểm $data[diem] đề $data[de] và lên đề","the-mien-phat");
+                        add_log($data["ID_HS"],"Thưởng thẻ miễn phạt được điểm $data[diem] đề $data[de] và lên đề","the-mien-phat");
+                        add_options3(date("Y-m"),"len-de-mid",$data["ID_HS"],$lmID);
+                        add_thong_bao_hs($data["ID_HS"],1,"Bạn đã được lên đề $new_de và thưởng 5 thẻ miễn phạt vì được điểm $data[diem] đề $data[de]","nhay-de",$lmID);
+                    }
+                }
                 if($is_phat && !isset($data["ID_VAO"]) && !isset($data["ID_RA"])) {
                     if (!check_binh_voi($data["ID_HS"], $buoiID, $lmID)) {
                         if ($data["diem"] < 5.25 && isset($data["td"]) && is_numeric($data["td"])) {

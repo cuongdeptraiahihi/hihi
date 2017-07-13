@@ -1,33 +1,33 @@
 <?php
-ob_start();
-session_start();
-require_once("../model/open_db.php");
-require_once("../model/model.php");
-require_once("access_admin.php");
-if(isset($_GET["date"]) && isset($_GET["lm"]) && is_numeric($_GET["lm"]) && isset($_GET["loai"]) && is_numeric($_GET["loai"])) {
-    $lmID=$_GET["lm"];
-    $date=$_GET["date"];
-    $loai=$_GET["loai"];
-} else {
-    $lmID=0;
-    $date="0000-00";
-    $loai=0;
-}
-$monID=$_SESSION["mon"];
-//$mau=get_user_mau($hsID);
-$mau="#3E606F";
-$mon_name=get_mon_name($monID);
-$mon_lop_name=get_lop_mon_name($lmID);
+    ob_start();
+    session_start();
+    require_once("../model/open_db.php");
+    require_once("../model/model.php");
+    require_once("access_admin.php");
+    if(isset($_GET["date"]) && isset($_GET["lm"]) && is_numeric($_GET["lm"]) && isset($_GET["loai"]) && is_numeric($_GET["loai"])) {
+        $lmID=$_GET["lm"];
+        $date=$_GET["date"];
+        $loai=$_GET["loai"];
+    } else {
+        $lmID=0;
+        $date="0000-00";
+        $loai=0;
+    }
+    $monID=get_mon_of_lop($lmID);
+    //$mau=get_user_mau($hsID);
+    $mau="#3E606F";
+    $mon_name=get_mon_name($monID);
+    $mon_lop_name=get_lop_mon_name($lmID);
 
-$staff=array();
-$query="SELECT ID_O,note FROM options WHERE type='tro-giang-code' ORDER BY ID_O DESC";
-$result=mysqli_query($db,$query);
-while($data=mysqli_fetch_assoc($result)) {
-    $staff[$data["ID_O"]]=$data["note"];
-}
+    $staff=array();
+    $query="SELECT ID_O,note FROM options WHERE type='tro-giang-code' ORDER BY ID_O DESC";
+    $result=mysqli_query($db,$query);
+    while($data=mysqli_fetch_assoc($result)) {
+        $staff[$data["ID_O"]]=$data["note"];
+    }
 
-$muc_tien=get_muctien("tien_hoc_".unicode_convert($mon_name));
-$tien_tra=get_muctien("tien_hoc_tra_".unicode_convert($mon_name));
+    $muc_tien=get_muctien("tien_hoc_".unicode_convert($mon_name));
+    $tien_tra=get_muctien("tien_hoc_tra_".unicode_convert($mon_name));
 ?>
 
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -60,6 +60,41 @@ $tien_tra=get_muctien("tien_hoc_tra_".unicode_convert($mon_name));
             $(document).ready(function() {
                 $("#tong-thuong-show").html($("#tong-thuong").val());
                 $("#tong-hs-show").html($("#tong-hs").val() + " em");
+
+                setTimeout(function() {
+                    var ajax_data = "[";
+                    $("table#table-info tr").each(function (index, element) {
+                        var td_cur = $(element).find("td:last-child");
+                        if(td_cur.hasClass("td-else")) {
+                            var hsID = td_cur.attr("data-hsID");
+                            var date_in = td_cur.attr("data-in");
+                            var old = td_cur.attr("data-old");
+                            ajax_data += '{"index":"' + index + '","hsID":"' + hsID + '","date_in":"' + date_in + '","old":"' + old + '"},';
+                        }
+                    });
+                    ajax_data += '{"lmID":"<?php echo $lmID; ?>","monID":"<?php echo $monID; ?>","date":"<?php echo $date; ?>"}';
+                    ajax_data += "]";
+                    if(ajax_data != "") {
+                        $.ajax({
+                            async: true,
+                            data: "ajax_data=" + ajax_data,
+                            type: "post",
+                            url: "http://localhost/www/TDUONG/thaygiao/xuly-bangluong/",
+                            success: function (result) {
+                                if(result != "none") {
+                                    var obj = jQuery.parseJSON(result);
+                                    $("table#table-info tr").each(function (index, element) {
+                                        var td_cur = $(element).find("td:last-child");
+                                        if (td_cur.hasClass("td-else")) {
+                                            td_cur.html("<span>" + obj[index].tien + "</span>");
+                                            td_cur.removeClass("td-else");
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                },500);
             });
         </script>
 
@@ -134,85 +169,112 @@ $tien_tra=get_muctien("tien_hoc_tra_".unicode_convert($mon_name));
                         }
                         $who="";
                         $dem=$temp=$total=0;
+                        $query = array();
                         switch($loai) {
                             case 1:
-                                $query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname,hocsinh.sdt,hocsinh.sdt_bo,hocsinh.sdt_me,hocsinh_mon.date_in,tien_hoc.money AS price,tien_hoc.date_dong2,tien_hoc.note,tien_hoc.who FROM tien_hoc INNER JOIN hocsinh ON hocsinh.ID_HS=tien_hoc.ID_HS INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$date-".get_last_day($date)."' AND hocsinh_mon.ID_LM='$lmID' WHERE hocsinh.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money>=$muc_tien AND tien_hoc.ID_LM='$lmID' AND tien_hoc.date_dong='$date' ORDER BY hocsinh.cmt ASC";
+                                $query[]="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname,hocsinh.sdt,hocsinh.sdt_bo,hocsinh.sdt_me,hocsinh_mon.date_in,tien_hoc.money AS price,tien_hoc.date_dong2,tien_hoc.note,tien_hoc.who FROM tien_hoc INNER JOIN hocsinh ON hocsinh.ID_HS=tien_hoc.ID_HS INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$date-".get_last_day($date)."' AND hocsinh_mon.ID_LM='$lmID' WHERE hocsinh.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money>=$muc_tien AND tien_hoc.ID_LM='$lmID' AND tien_hoc.date_dong='$date' ORDER BY hocsinh.cmt ASC";
                                 break;
                             case 2:
-                                $query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname,hocsinh.sdt,hocsinh.sdt_bo,hocsinh.sdt_me,hocsinh_mon.date_in,tien_hoc.money AS price,tien_hoc.date_dong2,tien_hoc.note,tien_hoc.who FROM tien_hoc INNER JOIN hocsinh ON hocsinh.ID_HS=tien_hoc.ID_HS INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$date-".get_last_day($date)."' AND hocsinh_mon.ID_LM='$lmID' INNER JOIN giam_gia ON giam_gia.ID_HS=tien_hoc.ID_HS AND giam_gia.ID_MON='$monID' WHERE tien_hoc.ID_LM='$lmID' AND tien_hoc.date_dong='$date' ORDER BY hocsinh.cmt ASC";
+                                $query[]="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname,hocsinh.sdt,hocsinh.sdt_bo,hocsinh.sdt_me,hocsinh_mon.date_in,tien_hoc.money AS price,tien_hoc.date_dong2,tien_hoc.note,tien_hoc.who FROM tien_hoc INNER JOIN hocsinh ON hocsinh.ID_HS=tien_hoc.ID_HS INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$date-".get_last_day($date)."' AND hocsinh_mon.ID_LM='$lmID' INNER JOIN giam_gia ON giam_gia.ID_HS=tien_hoc.ID_HS AND giam_gia.ID_MON='$monID' WHERE tien_hoc.ID_LM='$lmID' AND tien_hoc.date_dong='$date' ORDER BY hocsinh.cmt ASC";
                                 break;
                             case 3:
-                                $query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname,hocsinh.sdt,hocsinh.sdt_bo,hocsinh.sdt_me,hocsinh_mon.date_in,tien_hoc.money AS price,tien_hoc.date_dong2,tien_hoc.note,tien_hoc.who FROM tien_hoc INNER JOIN hocsinh ON hocsinh.ID_HS=tien_hoc.ID_HS INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$date-".get_last_day($date)."' AND hocsinh_mon.ID_LM='$lmID' WHERE hocsinh.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money<$muc_tien AND tien_hoc.ID_LM='$lmID' AND tien_hoc.date_dong='$date' ORDER BY hocsinh.cmt ASC";
+                                $query[]="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname,hocsinh.sdt,hocsinh.sdt_bo,hocsinh.sdt_me,hocsinh_mon.date_in,tien_hoc.money AS price,tien_hoc.date_dong2,tien_hoc.note,tien_hoc.who FROM tien_hoc INNER JOIN hocsinh ON hocsinh.ID_HS=tien_hoc.ID_HS INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$date-".get_last_day($date)."' AND hocsinh_mon.ID_LM='$lmID' WHERE hocsinh.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money<$muc_tien AND tien_hoc.ID_LM='$lmID' AND tien_hoc.date_dong='$date' ORDER BY hocsinh.cmt ASC";
                                 break;
                             case 4:
                                 //$query="SELECT h.cmt,h.fullname,m.date_in FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND (m.date_in<'$date-01' OR m.date_in LIKE '$date-%') AND m.ID_MON='$monID' WHERE h.ID_HS NOT IN (SELECT ID_HS FROM tien_hoc WHERE ID_MON='$monID' AND date_dong='$date') AND h.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_MON='$monID' AND (date<'$date-01' OR date LIKE '$date-%')) AND h.lop='$lopID' ORDER BY h.cmt ASC";
-                                $query="SELECT h.ID_HS,h.cmt,h.fullname,h.sdt,h.sdt_bo,h.sdt_me,m.date_in FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND (m.date_in<'$date-01' OR m.date_in LIKE '$date-%') AND m.ID_LM='$lmID' WHERE h.ID_HS NOT IN (SELECT ID_HS FROM tien_hoc WHERE ID_LM='$lmID' AND date_dong='$date') AND h.ID_HS NOT IN (SELECT ID_HS FROM nghi_temp WHERE start='$date-01' AND end='$date-".get_last_day($date)."' AND ID_LM='$lmID') AND h.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE discount='100' AND ID_MON='$monID') AND h.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID') ORDER BY h.cmt ASC";
+                                $query[]="SELECT h.ID_HS,h.cmt,h.fullname,h.sdt,h.sdt_bo,h.sdt_me,h.note,m.date_in FROM hocsinh AS h
+                                INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.date_in<='$date-".get_last_day($date)."' AND m.ID_LM='$lmID' 
+                                WHERE h.ID_HS NOT IN (SELECT ID_HS FROM tien_hoc WHERE ID_LM='$lmID' AND date_dong='$date') 
+                                AND h.ID_HS NOT IN (SELECT ID_HS FROM nghi_temp WHERE start<='$date-01' AND end>='$date-".get_last_day($date)."' AND ID_LM='$lmID') 
+                                AND h.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE discount='100' AND ID_MON='$monID') 
+                                AND h.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID') 
+                                AND h.ID_HS NOT IN (SELECT note2 FROM options WHERE (content='0' OR content='0k') AND type='edit-tien-hoc-$lmID' AND note='$date')
+                                ORDER BY h.cmt ASC";
+                                $query[]="SELECT h.ID_HS,h.cmt,h.fullname,h.sdt,h.sdt_bo,h.sdt_me,h.note,m.date_in,o.content FROM hocsinh AS h
+                                INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_LM='$lmID' AND m.date_in>='$date-".get_last_day($date)."'
+                                INNER JOIN options AS o ON o.content!='0' AND o.content!='0k' AND o.type='edit-tien-hoc-$lmID' AND o.note='$date' AND o.note2=h.ID_HS
+                                WHERE h.ID_HS NOT IN (SELECT ID_HS FROM tien_hoc WHERE ID_LM='$lmID' AND date_dong='$date') 
+                                ORDER BY h.cmt ASC";
                                 break;
                             case 5:
-                                $query="SELECT h.ID_HS,h.cmt,h.fullname,h.sdt,h.sdt_bo,h.sdt_me,m.date_in,t.money AS price,t.date_dong2,t.note,t.who FROM hocsinh_nghi AS n INNER JOIN hocsinh AS h ON h.ID_HS=n.ID_HS INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_LM='$lmID' LEFT JOIN tien_hoc AS t ON t.ID_HS=h.ID_HS AND t.ID_LM='$lmID' AND t.date_dong='$date' WHERE n.ID_LM='$lmID' AND n.date LIKE '$date-%'";
+                                $query[]="SELECT h.ID_HS,h.cmt,h.fullname,h.sdt,h.sdt_bo,h.sdt_me,m.date_in,t.money AS price,t.date_dong2,t.note,t.who FROM hocsinh_nghi AS n INNER JOIN hocsinh AS h ON h.ID_HS=n.ID_HS INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_LM='$lmID' LEFT JOIN tien_hoc AS t ON t.ID_HS=h.ID_HS AND t.ID_LM='$lmID' AND t.date_dong='$date' WHERE n.ID_LM='$lmID' AND n.date LIKE '$date-%'";
                                 break;
                             case 6:
-                                $query="SELECT h.ID_HS,h.cmt,h.fullname,h.sdt,h.sdt_bo,h.sdt_me,m.date_in,t.price,t.date_dong AS date_dong2,t.note FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND (m.date_in<'$date-01' OR m.date_in LIKE '$date-%') AND m.ID_LM='$lmID' INNER JOIN buoikt AS b ON b.ngay LIKE '$date-%' AND b.ID_MON='$monID' INNER JOIN tien_ra AS t ON t.ID_HS=h.ID_HS AND t.string='kiemtra_$lmID' AND t.object=b.ID_BUOI ORDER BY h.cmt ASC";
+                                $query[]="SELECT h.ID_HS,h.cmt,h.fullname,h.sdt,h.sdt_bo,h.sdt_me,m.date_in,t.price,t.date_dong AS date_dong2,t.note FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND (m.date_in<'$date-01' OR m.date_in LIKE '$date-%') AND m.ID_LM='$lmID' INNER JOIN buoikt AS b ON b.ngay LIKE '$date-%' AND b.ID_MON='$monID' INNER JOIN tien_ra AS t ON t.ID_HS=h.ID_HS AND t.string='kiemtra_$lmID' AND t.object=b.ID_BUOI ORDER BY h.cmt ASC";
                                 break;
                         }
                         //$query="SELECT m.ID_HS,h.cmt,h.fullname,h.birth,b.ngay,d.diem,d.de,t.price FROM hocsinh_mon AS m INNER JOIN hocsinh AS h ON h.ID_HS=m.ID_HS AND h.lop='$lopID' INNER JOIN buoikt AS b ON b.ngay LIKE '$date-%' INNER JOIN diemkt AS d ON d.ID_BUOI=b.ID_BUOI AND d.ID_HS=m.ID_HS INNER JOIN tien_ra AS t ON t.ID_HS=m.ID_HS AND t.string='kiemtra_$monID' AND t.object=b.ID_BUOI ORDER BY m.ID_HS ASC,b.ID_BUOI ASC";
-                        $result=mysqli_query($db,$query);
-                        while($data=mysqli_fetch_assoc($result)) {
+                        for($i = 0; $i < count($query); $i++) {
+                            $result = mysqli_query($db, $query[$i]);
+                            echo mysqli_error($db);
+                            while ($data = mysqli_fetch_assoc($result)) {
 
-                            if($loai!=4 && $loai!=6) {
-                                if(isset($staff[$data["who"]]) && stripos($who,$staff[$data["who"]])===false) {
-                                    $who.=", ".$staff[$data["who"]];
+                                if ($loai != 4 && $loai != 6) {
+                                    if (isset($staff[$data["who"]]) && stripos($who, $staff[$data["who"]]) === false) {
+                                        $who .= ", " . $staff[$data["who"]];
+                                    }
                                 }
-                            }
 
-                            if($dem%2!=0) {
-                                echo"<tr style='background:#D1DBBD'>";
-                            } else {
-                                echo"<tr>";
-                            }
-                            echo"<td><span>".($dem+1)."</span></td>
+                                if ($dem % 2 != 0) {
+                                    echo "<tr style='background:#D1DBBD'>";
+                                } else {
+                                    echo "<tr>";
+                                }
+                                echo "<td><span>" . ($dem + 1) . "</span></td>
 										<td><span>$data[cmt]</span></td>
 										<td class='need-ex'>
 										    <span>$data[fullname]</span>
 									        <div class='explain'><span>SĐT: $data[sdt]<br />SĐT Bố: $data[sdt_bo]<br />SĐT Mẹ: $data[sdt_me]</span></div>
 									    </td>
-										<td><span>".format_dateup($data["date_in"])."</span></td>";
-                            if($loai!=4) {
-                                if($loai==1) {
-                                    if($data["price"]<$muc_tien) {
-                                        echo"<td style='background:yellow'><span>".format_price($data["price"]*2/3)."</span></td>";
-                                        $total+=$data["price"]*2/3;
+										<td><span>" . format_dateup($data["date_in"]) . "</span></td>";
+                                if ($loai != 4) {
+                                    if ($loai == 1) {
+                                        if ($data["price"] < $muc_tien) {
+                                            echo "<td style='background:yellow'><span>" . format_price($data["price"] * 2 / 3) . "</span></td>";
+                                            $total += $data["price"] * 2 / 3;
+                                        } else {
+                                            echo "<td><span>" . format_price($tien_tra) . "</span></td>";
+                                            $total += $tien_tra;
+                                        }
                                     } else {
-                                        echo"<td><span>".format_price($tien_tra)."</span></td>";
-                                        $total+=$tien_tra;
+                                        echo "<td><span>" . format_price($data["price"] * 2 / 3) . "</span></td>";
+                                        $total += $data["price"] * 2 / 3;
+                                    }
+                                    if (isset($data["date_dong2"])) {
+                                        echo "<td><span>" . format_dateup($data["date_dong2"]) . "</span></td>";
+                                    } else {
+                                        echo "<td><span></span></td>";
+                                    }
+                                    if ($loai != 6 && isset($staff[$data["who"]])) {
+                                        echo "<td><span>" . $staff[$data["who"]] . ": $data[note]</span></td>";
+                                    } else {
+                                        echo "<td><span>$data[note]</span></td>";
                                     }
                                 } else {
-                                    echo"<td><span>".format_price($data["price"]*2/3)."</span></td>";
-                                    $total+=$data["price"]*2/3;
+                                    $string = "";
+                                    if(isset($data["content"])) {
+                                        $string = format_price($data["content"]*1000)." <strong>(bắt buộc)</strong>";
+                                        $class = "";
+                                    } else {
+//                                        $me = check_chua_dong_hoc($data["ID_HS"], $data["date_in"], $lmID, $monID, $date, $old);
+//                                        if (!is_numeric($me)) {
+//                                            $string = $me;
+//                                        } else {
+//                                            $string = format_price($me);
+//                                        }
+                                        $class = "td-else";
+                                    }
+                                    if($old) {
+                                        $old2=1;
+                                    } else {
+                                        $old2=0;
+                                    }
+                                    echo "<td colspan='2'><span>".nl2br($data["note"])."</span></td>
+								    <td class='$class' data-hsID='$data[ID_HS]' data-in='$data[date_in]' data-old='$old'><span>$string</span></td>";
                                 }
-                                if(isset($data["date_dong2"])) {
-                                    echo"<td><span>".format_dateup($data["date_dong2"])."</span></td>";
-                                } else {
-                                    echo"<td><span></span></td>";
-                                }
-                                if($loai!=6 && isset($staff[$data["who"]])) {
-                                    echo"<td><span>".$staff[$data["who"]].": $data[note]</span></td>";
-                                } else {
-                                    echo"<td><span>$data[note]</span></td>";
-                                }
-                            } else {
-                                $string="";
-                                $me=check_chua_dong_hoc($data["ID_HS"],$data["date_in"],$lmID,$monID,$date,$old);
-                                if(!is_numeric($me)) {
-                                    $string=$me;
-                                } else {
-                                    $string=format_price($me);
-                                }
-                                echo"<td colspan='2'><span></span></td>
-								<td><span>$string</span></td>";
+                                echo "</tr>";
+                                $dem++;
                             }
-                            echo"</tr>";
-                            $dem++;
                         }
                         if($loai==6) {
                             $query2="SELECT money,datetime FROM tien_thanh_toan WHERE datetime LIKE '$date-%' AND ID_MON='$monID' AND note='tro_giang' ORDER BY ID_STT ASC";

@@ -1,7 +1,7 @@
 <?php
 	ob_start();
 	session_start();
-	ini_set('max_execution_time', 2000);
+	ini_set('max_execution_time', 3000);
 	require_once("../model/open_db.php");
 	require_once("../model/model.php");
     include ("include/PHPExcel/IOFactory.php");
@@ -17,6 +17,7 @@
 
     $temp=get_next_time(date("Y"),date("m"));
     $temp=explode("-",$temp);
+    $nam_toi=$temp[0]+1-1;
     $thang_toi=$temp[1]+1-1;
 
     $tien_hoc2=$tien_hoc3=array();
@@ -36,6 +37,13 @@
 
     $rowCount=2;
 
+    $lop_mon=$mon=array();
+    $result=get_all_lop_mon();
+    while($data=mysqli_fetch_assoc($result)) {
+        $lop_mon[$data["ID_LM"]]=$data["date_in"];
+        $mon[$data["ID_MON"]]=unicode_convert(get_mon_name($data["ID_MON"]));
+    }
+
 	$query="SELECT ID_HS,cmt,fullname,sdt_bo,sdt_me FROM hocsinh ORDER BY cmt ASC";
     $result=mysqli_query($db,$query);
     while ($data=mysqli_fetch_assoc($result)) {
@@ -44,13 +52,14 @@
 //        $nam=$temp[0];
 //        $thang=$temp[1];
         $content="KINH GUI PHU HUYNH EM ".mb_strtoupper(str_replace("-"," ",unicode_convert($data["fullname"])),"UTF-8").".\n+ De quan ly ket qua hoc tap, lich hoc,... cua con, phu huynh truy cap vao www.bgo.edu.vn voi ten dang nhap: \"$data[cmt]\" va mat khau: \"{sdt}\". Neu can tro giup, phu huynh co the an nut \"Ho tro\" tren website hoac goi 09.827.827.64\n";
-        $query2="SELECT m.date_in,m.ID_LM,l.ID_MON,n.ID_N FROM hocsinh_mon AS m 
-        INNER JOIN lop_mon AS l ON l.ID_LM=m.ID_LM 
+        $query2="SELECT m.date_in,m.ID_LM,l.ID_MON,n.ID_N,g.discount FROM hocsinh_mon AS m 
+        INNER JOIN lop_mon AS l ON l.ID_LM=m.ID_LM AND l.ID_LM IN ('2','5')
+        LEFT JOIN giam_gia AS g ON g.ID_HS='$data[ID_HS]' AND g.ID_MON=l.ID_MON 
         LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=m.ID_HS AND n.ID_LM=m.ID_LM 
         WHERE m.ID_HS='$data[ID_HS]' ORDER BY m.ID_LM ASC";
         $result2=mysqli_query($db,$query2);
         while ($data2=mysqli_fetch_assoc($result2)) {
-            $temp=split_month(get_lop_mon_in($data2["ID_LM"]));
+            $temp=split_month($lop_mon[$data2["ID_LM"]]);
             $nam=$temp[0];
             $thang=$temp[1];
             if(!isset($data2["ID_N"])) {
@@ -58,8 +67,15 @@
                 $temp2=split_month($data2["date_in"]);
                 $nam_in=$temp2[0];
                 $thang_in=$temp2[1];
-                $mon_name=unicode_convert(get_mon_name($data2["ID_MON"]));
-                $discount=get_discount_hs($data["ID_HS"],$data2["ID_MON"]);
+                $mon_name=$mon[$data2["ID_MON"]];
+                $discount=$data2["discount"];
+                $tien_hoc = check_dong_tien_hoc($data["ID_HS"], $data2["ID_LM"], "$nam_toi-".format_month_db($thang_toi));
+                if (count($tien_hoc) == 0) {
+
+                } else {
+                    $check = false;
+                    continue;
+                }
                 if($discount==0) {
                     $pre = " Hoc phi mon ".ucfirst($mon_name)." T$thang_toi la " . $tien_hoc3["tien_" . $mon_name . "_muon"] . ", neu dong truoc 1/$thang_toi thi se giam con " . $tien_hoc3["tien_" . $mon_name . "_du"] . ".\n";
                 } else {
@@ -76,28 +92,38 @@
 
                             } else {
                                 $temp3=$thang+1-1;
-                                $con.=",$temp3";
-                                if($discount==0) {
-                                    if (stripos($data2["date_in"], "$nam-$thang") === false) {
-                                        $tien_con += $tien_hoc2["tien_" . $mon_name . "_muon"];
-                                    } else {
-                                        if (get_day_from_date($data2["date_in"]) <= 7) {
+                                $query3="SELECT content FROM options WHERE type='edit-tien-hoc-$data2[ID_LM]' AND note='$nam-$thang' AND note2='$data[ID_HS]'";
+                                $result3=mysqli_query($db,$query3);
+                                if(mysqli_num_rows($result3)==0) {
+                                    $con.=",$temp3";
+                                    if ($discount == 0) {
+                                        if (stripos($data2["date_in"], "$nam-$thang") === false) {
                                             $tien_con += $tien_hoc2["tien_" . $mon_name . "_muon"];
                                         } else {
-                                            $temp = du_kien_tien_hoc_buoi2("$nam-$thang", get_day_from_date($data2["date_in"]), $data["ID_HS"], $data2["ID_LM"], $data2["ID_MON"]);
-                                            $tien_con += $temp[0];
+                                            if (get_day_from_date($data2["date_in"]) <= 7) {
+                                                $tien_con += $tien_hoc2["tien_" . $mon_name . "_muon"];
+                                            } else {
+                                                $temp = du_kien_tien_hoc_buoi2("$nam-$thang", get_day_from_date($data2["date_in"]), $data["ID_HS"], $data2["ID_LM"], $data2["ID_MON"]);
+                                                $tien_con += $temp[0];
+                                            }
+                                        }
+                                    } else {
+                                        if (stripos($data2["date_in"], "$nam-$thang") === false) {
+                                            $tien_con += $tien_hoc2["tien_" . $mon_name . "_du"] - ($tien_hoc2["tien_" . $mon_name . "_du"] * $discount / 100);
+                                        } else {
+                                            if (get_day_from_date($data2["date_in"]) <= 7) {
+                                                $tien_con += $tien_hoc2["tien_" . $mon_name . "_du"] - ($tien_hoc2["tien_" . $mon_name . "_du"] * $discount / 100);
+                                            } else {
+                                                $temp = du_kien_tien_hoc_buoi2("$nam-$thang", get_day_from_date($data2["date_in"]), $data["ID_HS"], $data2["ID_LM"], $data2["ID_MON"]);
+                                                $tien_con += $temp[0] - ($temp[0] * $discount / 100);
+                                            }
                                         }
                                     }
                                 } else {
-                                    if (stripos($data2["date_in"], "$nam-$thang") === false) {
-                                        $tien_con += $tien_hoc2["tien_" . $mon_name . "_du"] - ($tien_hoc2["tien_" . $mon_name . "_du"] * $discount / 100);
-                                    } else {
-                                        if (get_day_from_date($data2["date_in"]) <= 7) {
-                                            $tien_con += $tien_hoc2["tien_" . $mon_name . "_du"] - ($tien_hoc2["tien_" . $mon_name . "_du"] * $discount / 100);
-                                        } else {
-                                            $temp = du_kien_tien_hoc_buoi2("$nam-$thang", get_day_from_date($data2["date_in"]), $data["ID_HS"], $data2["ID_LM"], $data2["ID_MON"]);
-                                            $tien_con += $temp[0] - ($temp[0] * $discount / 100);
-                                        }
+                                    $data3=mysqli_fetch_assoc($result3);
+                                    if(strlen($data3["content"])>=2) {
+                                        $con.=",$temp3";
+                                        $tien_con += $data3["content"] * 1000;
                                     }
                                 }
                             }

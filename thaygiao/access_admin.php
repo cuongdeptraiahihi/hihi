@@ -1,33 +1,16 @@
 <?php
+
 	if(is_ddos($_SERVER['REMOTE_ADDR'],date("Y-m-d"))) {
 		header("location:https://localhost/www/TDUONG/ddos/");
 		exit();
 	}
-	
+
 	if (!isset($_SESSION["ID"]) || !isset($_SESSION["username"]) || !isset($_SESSION["mon"]) || !check_thaygiao_mon($_SESSION["ID"],$_SESSION["username"],$_SESSION["mon"])) {
 		header("location:http://localhost/www/TDUONG/thaygiao/");
 		exit();
 	}
-	
-	if(isset($_GET["mon"]) || isset($_GET["monID"])) {
-	    $monID=null;
-	    if(isset($_GET["mon"])){$monID=$_GET["mon"];}
-        if(isset($_GET["monID"])){$monID=$_GET["monID"];}
-		if(!check_thaygiao_mon($_SESSION["ID"],$_SESSION["username"],$monID)) {
-			header("location:http://localhost/www/TDUONG/thaygiao/home/");
-			exit();
-		}
-	}
-	
-	if(isset($_GET["tlID"])) {
-		if(!check_tailieu_mon2($_GET["tlID"],$_SESSION["mon"])) {
-			header("location:http://localhost/www/TDUONG/thaygiao/home/2");
-			exit();
-		}
-		
-	}
 
-    $url=$_SERVER['REQUEST_URI'];
+	$url=$_SERVER['REQUEST_URI'];
     if(stripos($url,"/diem-danh")===false &&
         stripos($url,"/hoc-sinh-thong-ke/")===false &&
         stripos($url,"/pre-hoc-sinh-thong-ke/")===false &&
@@ -48,4 +31,5 @@
             $_SESSION["lop"]=get_lop_main();
         }
     }
+
 ?>

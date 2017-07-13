@@ -312,149 +312,173 @@
 		$query="SELECT ID_STT,ID_CUM FROM diemdanh_buoi WHERE ID_CD='$cd' AND ID_CA='$ca' AND date='$ngay' AND ID_LM='$lmID' AND ID_MON='$mon'";
 		$result=mysqli_query($db,$query);
 		$data=mysqli_fetch_assoc($result);
+        $query2="SELECT ID_STT FROM diemdanh_buoi WHERE ID_CUM='$data[ID_CUM]' AND ID_CD='$cd' AND ID_LM='$lmID' AND ID_MON='$mon'";
+        $result2=mysqli_query($db,$query2);
+        $idstt=array();
+        while($data2=mysqli_fetch_assoc($result2)) {
+            $idstt[]="'$data2[ID_STT]'";
+        }
+        $query2=array();
         if($lmID!=0) {
-            $query2 = "SELECT c.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,d.ID_STT,d.ID_DD,d.ca_check,d.is_hoc,d.is_tinh,d.is_kt,n.ID_STT AS ID_N,n.is_phep FROM ca_hientai AS c 
+            $query2[] = "SELECT c.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,d.ID_STT,d.ID_DD,d.ca_check,d.is_hoc,d.is_tinh,d.is_kt,n.ID_STT AS ID_N,n.is_phep,m.ID_LM FROM ca_hientai AS c 
 		INNER JOIN hocsinh AS h ON h.ID_HS=c.ID_HS 
-		INNER JOIN hocsinh_mon AS m ON m.ID_HS=c.ID_HS AND m.ID_LM='$lmID' 
-		LEFT JOIN diemdanh AS d ON d.ID_HS=c.ID_HS AND d.ID_DD IN (SELECT ID_STT FROM diemdanh_buoi WHERE ID_CUM='$data[ID_CUM]' AND ID_CD='$cd' AND ID_LM='$lmID' AND ID_MON='$mon') 
+		INNER JOIN hocsinh_mon AS m ON m.ID_HS=c.ID_HS AND m.ID_LM='$lmID' AND m.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID')
+		LEFT JOIN diemdanh AS d ON d.ID_HS=c.ID_HS AND d.ID_DD IN (".implode(",", $idstt).") 
 		LEFT JOIN diemdanh_nghi AS n ON n.ID_HS=c.ID_HS AND n.ID_CUM='$data[ID_CUM]' AND n.ID_LM='$lmID' AND n.ID_MON='$mon' 
-		WHERE c.ID_CA='$ca' 
-		UNION SELECT d.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,d.ID_STT,d.ID_DD,d.ca_check,d.is_hoc,d.is_tinh,d.is_kt,n.ID_STT AS ID_N,n.is_phep FROM diemdanh AS d 
+		WHERE c.ID_CA='$ca' 		
+		UNION SELECT d.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,d.ID_STT,d.ID_DD,d.ca_check,d.is_hoc,d.is_tinh,d.is_kt,n.ID_STT AS ID_N,n.is_phep,m.ID_LM FROM diemdanh AS d 
 		INNER JOIN hocsinh AS h ON h.ID_HS=d.ID_HS 
-		INNER JOIN hocsinh_mon AS m ON m.ID_HS=d.ID_HS AND m.ID_LM='$lmID' 
+		INNER JOIN hocsinh_mon AS m ON m.ID_HS=d.ID_HS AND m.ID_LM='$lmID'
 		LEFT JOIN diemdanh_nghi AS n ON n.ID_HS=d.ID_HS AND n.ID_CUM='$data[ID_CUM]' AND n.ID_LM='$lmID' AND n.ID_MON='$mon' 
 		WHERE d.ID_DD='$data[ID_STT]' ORDER BY cmt ASC";
+            $query2[] = "SELECT d.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,d.ID_STT,d.ID_DD,d.ca_check,d.is_hoc,d.is_tinh,d.is_kt,m.ID_LM FROM diemdanh AS d 
+		INNER JOIN hocsinh AS h ON h.ID_HS=d.ID_HS 
+		INNER JOIN hocsinh_mon AS m ON m.ID_HS=d.ID_HS AND m.ID_LM IN (SELECT ID_LM FROM lop_mon WHERE ID_MON='$monID' AND ID_LM!='$lmID') AND m.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM=m.ID_LM)
+		WHERE d.ID_DD='$data[ID_STT]' ORDER BY cmt ASC";
         } else {
-            $query2 = "SELECT c.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,d.ID_STT,d.ID_DD,d.ca_check,d.is_hoc,d.is_tinh,d.is_kt,n.ID_STT AS ID_N,n.is_phep FROM ca_hientai AS c 
+            $query2[] = "SELECT c.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,d.ID_STT,d.ID_DD,d.ca_check,d.is_hoc,d.is_tinh,d.is_kt,n.ID_STT AS ID_N,n.is_phep FROM ca_hientai AS c 
 		INNER JOIN hocsinh AS h ON h.ID_HS=c.ID_HS 
-		INNER JOIN hocsinh_mon AS m ON m.ID_HS=c.ID_HS 
-		LEFT JOIN diemdanh AS d ON d.ID_HS=c.ID_HS AND d.ID_DD IN (SELECT ID_STT FROM diemdanh_buoi WHERE ID_CUM='$data[ID_CUM]' AND ID_CD='$cd' AND ID_LM='$lmID' AND ID_MON='$mon') 
+		LEFT JOIN diemdanh AS d ON d.ID_HS=c.ID_HS AND d.ID_DD IN (".implode(",", $idstt).") 
 		LEFT JOIN diemdanh_nghi AS n ON n.ID_HS=c.ID_HS AND n.ID_CUM='$data[ID_CUM]' AND n.ID_MON='$mon' 
 		WHERE c.ID_CA='$ca' 
 		UNION SELECT d.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,d.ID_STT,d.ID_DD,d.ca_check,d.is_hoc,d.is_tinh,d.is_kt,n.ID_STT AS ID_N,n.is_phep FROM diemdanh AS d 
 		INNER JOIN hocsinh AS h ON h.ID_HS=d.ID_HS 
-		INNER JOIN hocsinh_mon AS m ON m.ID_HS=d.ID_HS  
 		LEFT JOIN diemdanh_nghi AS n ON n.ID_HS=d.ID_HS AND n.ID_CUM='$data[ID_CUM]' AND n.ID_MON='$mon' 
 		WHERE d.ID_DD='$data[ID_STT]' ORDER BY cmt ASC";
         }
-		$result2=mysqli_query($db,$query2);
-		$stt=$stt2=0;
-        $now=explode("-",$ngay);
-		echo"<tr>
-			<tr><td colspan='7'><span>Để nhập lý do học sinh nghỉ, bạn cần phải điểm danh ít nhất 1 học sinh đi học</span></td></tr>
-		</tr>";
-		while($data2=mysqli_fetch_assoc($result2)) {
-            $style="";
-			if(isset($data2["ID_STT"])) {
-				if($data2["ca_check"]==1) {
-					echo"<tr class='tr-ok tr-dug' style='$style'>";
-				} else {
-					echo"<tr class='tr-ok' style='$style'>";
-				}
-				if($data2["ID_DD"]==$data["ID_STT"]) {
-					echo"<td class='hidden'><span>".($stt2+1)."</span></td>";
-				} else {
-					echo"<td class='hidden'><span></span></td>";
-				}
-				if(stripos($data2["birth"],"-$now[1]-")===false) {
-				    $cake="";
-                } else {
-                    $cake="(<i class='fa fa-birthday-cake' style='font-size:18px;'></i>)";
-                }
-					echo"<td class='hidden'><span>$data2[fullname] ($data2[vantay]) $cake</span></td>
-					<td><span>$data2[cmt]</span></td>";
-					if($data2["is_kt"]==1) {
-						echo"<td><span>";
-						if($data2["is_hoc"]==1) {
-							echo"Học bài";
-						} else {
-							echo"Ko học bài";
-						}
-						echo"</span></td>
+        $stt = $stt2 = 0;
+        for($i = 0; $i < count($query2); $i++) {
+            $result2 = mysqli_query($db, $query2[$i]);
+            $now = explode("-", $ngay);
+//            echo "<tr>
+//                <tr><td colspan='7'><span>Để nhập lý do học sinh nghỉ, bạn cần phải điểm danh ít nhất 1 học sinh đi học</span></td></tr>
+//            </tr>";
+            while ($data2 = mysqli_fetch_assoc($result2)) {
+                $style = "";
+                if (isset($data2["ID_STT"])) {
+                    if ($data2["ca_check"] == 1) {
+                        echo "<tr class='tr-ok tr-dug' style='$style'>";
+                    } else {
+                        echo "<tr class='tr-ok' style='$style'>";
+                    }
+                    if ($data2["ID_DD"] == $data["ID_STT"]) {
+                        echo "<td class='hidden'><span>" . ($stt2 + 1) . "</span></td>";
+                    } else {
+                        echo "<td class='hidden'><span></span></td>";
+                    }
+                    if (stripos($data2["birth"], "-$now[1]-") === false) {
+                        $cake = "";
+                    } else {
+                        $cake = "(<i class='fa fa-birthday-cake' style='font-size:18px;'></i>)";
+                    }
+                    if ($data2["ID_LM"] != $lmID) {
+                        $style2 = "background:cyan;";
+                    } else {
+                        $style2 = "";
+                    }
+                    echo "<td class='hidden'><span>$data2[fullname] ($data2[vantay]) $cake</span></td>
+					<td style='$style2'><span>$data2[cmt]</span></td>";
+                    if ($data2["is_kt"] == 1) {
+                        echo "<td><span>";
+                        if ($data2["is_hoc"] == 1) {
+                            echo "Học bài";
+                        } else {
+                            echo "Ko học bài";
+                        }
+                        echo "</span></td>
 						<td><span>";
-						if($data2["is_tinh"]==1) {
-							echo"Tính đúng";
-						} else {
-							echo"Tính sai";
-						}
-						echo"</span></td>";
-					} else {
-						if($lmID==0) {
-							$query3="SELECT * FROM info_buoikt WHERE ID_BUOI='$buoiID' AND ID_HS='$data2[ID_HS]' AND ID_MON='$mon'";
-							$result3=mysqli_query($db,$query3);
-							$data3=mysqli_fetch_assoc($result3);
-							$huy_msg="";
-							if($data3["is_du"]==0 && isset($data3["is_du"])) {
-								$huy_msg.=", Nộp thiếu";
-							}
-							if($data3["is_huy"]==1 && isset($data3["is_huy"])) {
-								$huy_msg.=", Trao đổi bài";
-							}
-							echo"<td><span>$data3[nhap] / $data3[giay] ($data3[made])</span></td>
-							<td><span>".substr($huy_msg,2)."</span></td>";
-						} else {
-							echo"<td colspan='2'></span>Không kiểm tra đầu giờ</span></td>";
-						}
-					}
-					echo"<td>";
-					if($data2["ID_DD"]==$data["ID_STT"]) {
-						if($data2["ca_check"]==1) {
-							echo"<p style='background:#3E606F;' class='ca-check'>Đúng ca</p>";
-						} else {
-							echo"<p style='background:red' class='ca-check'>Sai ca</p>";
-						}
-					} else {
-						echo"<p>Đã điểm danh ở ca khác</p>";
-						$stt--;
-						$stt2--;
-					}
-					echo"</td>
+                        if ($data2["is_tinh"] == 1) {
+                            echo "Tính đúng";
+                        } else {
+                            echo "Tính sai";
+                        }
+                        echo "</span></td>";
+                    } else {
+                        if ($lmID == 0) {
+                            $query3 = "SELECT * FROM info_buoikt WHERE ID_BUOI='$buoiID' AND ID_HS='$data2[ID_HS]' AND ID_MON='$mon'";
+                            $result3 = mysqli_query($db, $query3);
+                            $data3 = mysqli_fetch_assoc($result3);
+                            $huy_msg = "";
+                            if ($data3["is_du"] == 0 && isset($data3["is_du"])) {
+                                $huy_msg .= ", Nộp thiếu";
+                            }
+                            if ($data3["is_huy"] == 1 && isset($data3["is_huy"])) {
+                                $huy_msg .= ", Trao đổi bài";
+                            }
+                            echo "<td><span>$data3[nhap] / $data3[giay] ($data3[made])</span></td>
+							<td><span>" . substr($huy_msg, 2) . "</span></td>";
+                        } else {
+                            echo "<td colspan='2'></span>Không kiểm tra đầu giờ</span></td>";
+                        }
+                    }
+                    echo "<td>";
+                    if ($data2["ID_DD"] == $data["ID_STT"]) {
+                        if ($data2["ca_check"] == 1) {
+                            echo "<p style='background:#3E606F;' class='ca-check'>Đúng ca</p>";
+                        } else {
+                            echo "<p style='background:red' class='ca-check'>Sai ca</p>";
+                        }
+                    } else {
+                        echo "<p>Đã điểm danh ở ca khác</p>";
+                        $stt--;
+                        $stt2--;
+                    }
+                    echo "</td>
 					<td><input type='submit' class='delete submit' data-sttID='$data2[ID_STT]' value='Xóa' /></td>
 				</tr>";
-				$stt++;
-			} else {
-				if(isset($data2["ID_N"])) {
-					echo"<tr style='$style;' class='tr-dug'>";
-				} else {
-					echo"<tr style='background:#ffffa5;$style;' class='tr-dug'>";
-				}
-                if(stripos($data2["birth"],"-$now[1]-")===false) {
-                    $cake="";
+                    $stt++;
                 } else {
-                    $cake="(<i class='fa fa-birthday-cake' style='font-size:18px;'></i>)";
-                }
-					echo"<td class='hidden'><span>".($stt2+1)."</span></td>
+                    if (isset($data2["ID_N"])) {
+                        echo "<tr style='$style;' class='tr-dug'>";
+                    } else {
+                        echo "<tr style='background:#ffffa5;$style;' class='tr-dug'>";
+                    }
+                    if (stripos($data2["birth"], "-$now[1]-") === false) {
+                        $cake = "";
+                    } else {
+                        $cake = "(<i class='fa fa-birthday-cake' style='font-size:18px;'></i>)";
+                    }
+                    echo "<td class='hidden'><span>" . ($stt2 + 1) . "</span></td>
 					<td class='hidden'><span>$data2[fullname] ($data2[vantay]) $cake</span></td>
 					<td><span>$data2[cmt]</span></td>";
-					if(isset($data2["ID_N"])) {
-						echo"<td colspan='3'>
+                    if (isset($data2["ID_N"]) && isset($data2["is_phep"])) {
+                        echo "<td colspan='3'>
 							<select class='input' style='height:auto;'>
-								<option value='0' ";if($data2["is_phep"]==0){echo"selected='selected'";}echo">Không phép</option>
-								<option value='1' ";if($data2["is_phep"]==1){echo"selected='selected'";}echo">Có phép</option>
+								<option value='0' ";
+                        if ($data2["is_phep"] == 0) {
+                            echo "selected='selected'";
+                        }
+                        echo ">Không phép</option>
+								<option value='1' ";
+                        if ($data2["is_phep"] == 1) {
+                            echo "selected='selected'";
+                        }
+                        echo ">Có phép</option>
 							</select>
 						</td>
 						<td>";
-						if(isset($data["ID_STT"])) {
-							echo"<input type='submit' class='submit del_only_nghi' data-hsID='$data2[ID_HS]' data-cumID='$data[ID_CUM]' value='Xóa' />
+                        if (isset($data["ID_STT"])) {
+                            echo "<input type='submit' class='submit del_only_nghi' data-hsID='$data2[ID_HS]' data-cumID='$data[ID_CUM]' value='Xóa' />
 							<input type='submit' class='submit add_only_nghi' data-hsID='$data2[ID_HS]' data-cumID='$data[ID_CUM]' value='Sửa' />";
-						}
-						echo"</td>";
-					} else {
-						echo"<td colspan='3'>
+                        }
+                        echo "</td>";
+                    } else {
+                        echo "<td colspan='3'>
 							<select class='input' style='height:auto;'>
 								<option value='0' selected='selected'>Không phép</option>
 								<option value='1'>Có phép</option>
 							</select>
 						</td><td>";
-						if(isset($data["ID_STT"])) {
-							echo"<input type='submit' class='submit add_only_nghi' data-hsID='$data2[ID_HS]' data-cumID='$data[ID_CUM]' value='Nhập' />";
-						}
-						echo"</td>";
-					}
-				echo"</tr>";
-			}
-			$stt2++;
-		}
+                        if (isset($data["ID_STT"])) {
+                            echo "<input type='submit' class='submit add_only_nghi' data-hsID='$data2[ID_HS]' data-cumID='$data[ID_CUM]' value='Nhập' />";
+                        }
+                        echo "</td>";
+                    }
+                    echo "</tr>";
+                }
+                $stt2++;
+            }
+        }
 		if($stt==0) {
 			echo"<tr><td colspan='7'><span>Chưa em nào được điểm danh</span></td></tr>";
 		} else {
@@ -503,7 +527,7 @@
 		$check_quyen=true;
 		$has_hientai=0;
 		$ca_in=$cathu_in=$cagio_in=NULL;
-		if(check_unlock_ca_hs($hsID,$ca) || $is_quyen==0) {
+//		if(check_unlock_ca_hs($hsID,$ca) || $is_quyen==0) {
 			$query="SELECT h.ID_CA,c.thu,g.gio FROM ca_hientai AS h 
 			INNER JOIN cahoc AS c ON c.ID_CA=h.ID_CA 
 			INNER JOIN cagio AS g ON g.ID_GIO=c.ID_GIO AND g.ID_LM='$lmID' AND g.ID_MON='$monID'
@@ -516,9 +540,9 @@
 				$cagio_in=$data["gio"];
 				$has_hientai=1;
 			}
-		} else {
-			$check_quyen=false;
-		}
+//		} else {
+//			$check_quyen=false;
+//		}
 		if($check_quyen) {
 			if($ca_in && $cathu_in && $cagio_in && $has_hientai==1) {
 			    if($lmID!=0) {

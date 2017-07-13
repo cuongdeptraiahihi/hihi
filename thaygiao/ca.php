@@ -154,6 +154,12 @@
                     	<div class="status">
                             <table class="table">
                                 <tr>
+                                    <td class="hidden"><span>Liên quan</span></td>
+                                    <td style="border: none;"><input type="submit" class="submit" value="Khung giờ" onclick="location.href='http://localhost/www/TDUONG/thaygiao/gio/<?php echo $lmID."/".$monID; ?>/'" /></td>
+                                    <td style="border: none;"></td>
+                                    <td style="border: none;"></td>
+                                </tr>
+                                <tr>
                                     <td class="hidden"><span>Dạng hiển thị</span></td>
                                     <th><input type="submit" class="submit" value="Liệt kê" onclick="location.href='http://localhost/www/TDUONG/thaygiao/ca/<?php echo $lmID."/".$monID; ?>/'" /></th>
                                     <th><input type="submit" class="submit" value="Bảng chọn" onclick="location.href='http://localhost/www/TDUONG/thaygiao/cai-dat-ca/<?php echo $lmID."/".$monID; ?>/'" /></th>
@@ -167,6 +173,9 @@
                                 </tr>
                             </table>
                             <table class="table" style="margin-top:25px;">
+                                <tr>
+                                    <td colspan="6"><input type="submit" class="submit" id="add-ca" value="Thêm ca học" /></td>
+                                </tr>
                                 <tr style="background:#3E606F;">
                                     <th style="width:10%;"><span>Thứ</span></th>
                                     <th style="width:15%;"><span>Giờ</span></th>
@@ -229,6 +238,12 @@
                                     <td class='hidden'>
                                         <input type="submit" class="submit" onclick="location.href='http://localhost/www/TDUONG/thaygiao/ca-hien-tai/<?php echo $data["ID_CA"];?>/'" value="Hiện tại" />
                                         <input type="submit" class="submit" onclick="location.href='http://localhost/www/TDUONG/thaygiao/ca-co-dinh/<?php echo $data["ID_CA"];?>/'" value="Cố định" />
+                                        <input type="submit" class="submit edit" data-caID="<?php echo $data["ID_CA"];?>" value="Sửa" />
+                                        <?php
+                                            if($num==0) {
+                                                echo"<input type='submit' class='submit delete' data-caID='$data[ID_CA]' value='Xóa' />";
+                                            }
+                                        ?>
                                     </td>
                                 </tr>
                                 <?php 

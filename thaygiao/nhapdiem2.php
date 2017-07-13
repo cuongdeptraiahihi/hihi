@@ -32,7 +32,7 @@
             #MAIN > #main-mid > div .status table tr td .td-p {display:inline-block;font-size:14px;color:#3E606F;font-weight:600;}#MAIN > #main-mid > div .status .table-2 tr td #ca-result {color:#FFF;padding:5px 10px 5px 10px;margin-left:20px;}#MAIN > #main-mid > div .status .table tr td .ca-check {color:#FFF;padding:5px 10px 5px 10px;font-weight:600;}#MAIN > #main-mid > div .status .table-2 tr td > div p {display:inline-block;font-size:14px;color:#3E606F;background:#ffffa5;padding:7px 10px 7px 10px;border:1px solid #dfe0e4;border-bottom:2px solid #3E606F;}
             /*table#diem-chuyende tr td p {display: block;float:left;text-align: center;width: 16%;opacity: 0.3;position: relative;margin-top: -10px;}*/
             /*table#diem-chuyende tr td p > span {position: absolute;z-index: 9;top:100%;width: 30%;left: 35%;font-size: 17px !important;}*/
-            table.diem-form {width:32% !important;float:left;}
+            table.diem-form {width:23.5% !important;float:left;}
             table.diem-form tr td {text-align: center !important;}
             table.diem-form tr td p {display: block;float:left;text-align: center;width: 16%;opacity: 0.3;position: relative;margin-bottom: 20px;}
             table.diem-form tr td p > span {position: absolute;z-index: 9;top:100%;width: 30%;left: 35%;font-size: 15px !important;}
@@ -97,14 +97,14 @@
                                 url: "http://localhost/www/TDUONG/thaygiao/xuly-nhapdiem/",
                                 success: function (result) {
                                     clean_chuyende();
-//                                        alert(result);
+                                        console.log(result);
                                     obj = jQuery.parseJSON(result);
                                     $("#ma-de").val(obj[0].made).removeAttr("disabled");
                                     $("#diem").html("Tổng: ... điểm");
                                     $("#note").val(0);
                                     $("#on-lop").prop("checked",true);
-                                    var num_cau = 50;
-                                    var num_each = 17;
+                                    var num_cau = 60;
+                                    var num_each = 15;
                                     var curr_table = 1;
                                     var curr_cau = 0;
                                     for(i=1;i<obj.length;i++) {
@@ -112,7 +112,7 @@
                                         $("table.diem-form-" + curr_table).append("<tr class='cau-big cau-big"+obj[i].cau+"' data-cau='"+obj[i].cau+"' data-cd='"+obj[i].idCD+"' data-sttID='0'><td><span>"+obj[i].cau+" - <strong></strong></span></td><td class='dap-an-td'><p><input type='radio' value='1' class='check point' name='radio-point-"+i+"' /><span>A</span></p><p><input type='radio' value='2' class='check point' name='radio-point-"+i+"' /><span>B</span></p><p><input type='radio' value='3' class='check point' name='radio-point-"+i+"' /><span>C</span></p><p><input type='radio' value='4' class='check point' name='radio-point-"+i+"' /><span>D</span></p><p style='float: right;'><input type='radio' value='0' class='check point' name='radio-point-"+i+"' /><span>E</span></p></td></tr>");
 //                                    $("<tr class='cau-big cau-big"+obj[i].cau+"' data-cau='"+obj[i].cau+"' data-cd='"+obj[i].idCD+"' data-sttID='0'><td><span>"+obj[i].cau+"</span></td><td><select class='input select-cd' style='height:auto;width:100%;'><option value='"+obj[i].idCD+"'>"+obj[i].nameCD+"</option></select></td><td class='dap-an-td'><p><input type='radio' value='1' class='check point' name='radio-point-"+i+"' /><span>A</span></p><p><input type='radio' value='2' class='check point' name='radio-point-"+i+"' /><span>B</span></p><p><input type='radio' value='3' class='check point' name='radio-point-"+i+"' /><span>C</span></p><p><input type='radio' value='4' class='check point' name='radio-point-"+i+"' /><span>D</span></p><p><input type='radio' value='5' class='check point' name='radio-point-"+i+"' /><span>E</span></p><p><input type='radio' value='6' class='check point' name='radio-point-"+i+"' /><span>F</span></p></td><td><input type='text' style='display:none;' class='input note-dapan' /></td></tr>").insertBefore("#diem-chuyende tr#tr-last");
                                         curr_cau++;
-                                        if(curr_table < 3 && curr_cau == num_each) {
+                                        if(curr_table < 4 && curr_cau == num_each) {
                                             curr_cau=0;
                                             curr_table++;
                                         }
@@ -166,8 +166,8 @@
                                 $("#diem").html("Tổng: ... điểm");
                                 $("#note").val(0);
                                 $("#on-lop").prop("checked",true);
-                                var num_cau = 50;
-                                var num_each = 17;
+                                var num_cau = 60;
+                                var num_each = 15;
                                 var curr_table = 1;
                                 var curr_cau = 0;
                                 for(i=1;i<obj.length;i++) {
@@ -175,7 +175,7 @@
                                     $("table.diem-form-" + curr_table).append("<tr class='cau-big cau-big"+obj[i].cau+"' data-cau='"+obj[i].cau+"' data-cd='"+obj[i].idCD+"' data-sttID='0'><td><span>"+obj[i].cau+" - <strong></strong></span></td><td class='dap-an-td'><p><input type='radio' value='1' class='check point' name='radio-point-"+i+"' /><span>A</span></p><p><input type='radio' value='2' class='check point' name='radio-point-"+i+"' /><span>B</span></p><p><input type='radio' value='3' class='check point' name='radio-point-"+i+"' /><span>C</span></p><p><input type='radio' value='4' class='check point' name='radio-point-"+i+"' /><span>D</span></p><p style='float: right;'><input type='radio' value='0' class='check point' name='radio-point-"+i+"' /><span>E</span></p></td></tr>");
 //                                    $("<tr class='cau-big cau-big"+obj[i].cau+"' data-cau='"+obj[i].cau+"' data-cd='"+obj[i].idCD+"' data-sttID='0'><td><span>"+obj[i].cau+"</span></td><td><select class='input select-cd' style='height:auto;width:100%;'><option value='"+obj[i].idCD+"'>"+obj[i].nameCD+"</option></select></td><td class='dap-an-td'><p><input type='radio' value='1' class='check point' name='radio-point-"+i+"' /><span>A</span></p><p><input type='radio' value='2' class='check point' name='radio-point-"+i+"' /><span>B</span></p><p><input type='radio' value='3' class='check point' name='radio-point-"+i+"' /><span>C</span></p><p><input type='radio' value='4' class='check point' name='radio-point-"+i+"' /><span>D</span></p><p><input type='radio' value='5' class='check point' name='radio-point-"+i+"' /><span>E</span></p><p><input type='radio' value='6' class='check point' name='radio-point-"+i+"' /><span>F</span></p></td><td><input type='text' style='display:none;' class='input note-dapan' /></td></tr>").insertBefore("#diem-chuyende tr#tr-last");
                                     curr_cau++;
-                                    if(curr_table < 3 && curr_cau == num_each) {
+                                    if(curr_table < 4 && curr_cau == num_each) {
                                         curr_cau=0;
                                         curr_table++;
                                     }
@@ -221,8 +221,8 @@
                                     $("#diem").html("Tổng: ... điểm");
                                 }
                                 $("#de-hin").val(obj[0].dekt);
-                                var num_cau = 50;
-                                var num_each = 17;
+                                var num_cau = 60;
+                                var num_each = 15;
                                 var curr_table = 1;
                                 var curr_cau = 0;
                                 for(i=1;i<obj.length;i++) {
@@ -243,7 +243,7 @@
                                         $("table.diem-form-" + curr_table + " tr.cau-big"+obj[i].cau).find("td.dap-an-td input.note-dapan").show().val(obj[i].note);
                                     }
                                     curr_cau++;
-                                    if(curr_table < 3 && curr_cau == num_each) {
+                                    if(curr_table < 4 && curr_cau == num_each) {
                                         curr_cau=0;
                                         curr_table++;
                                     }
@@ -313,7 +313,7 @@
 					$("#kq-thachdau").attr("onclick","location.href='http://localhost/www/TDUONG/thaygiao/ket-qua-thach-dau/"+buoiID+"/"+lmID+"/'");
 					$("#kq-ngoisao").attr("onclick","location.href='http://localhost/www/TDUONG/thaygiao/ket-qua-ngoi-sao/"+buoiID+"/"+"/"+lmID+"/'");
 					clean_hsinfo();
-					get_danhsach(buoiID);
+//					get_danhsach(buoiID);
                     $("#popup-loading").fadeIn("fast"), $("#BODY").css("opacity", "0.3"), ngay = $("#select-buoi").find("option:selected").attr("data-ngay"), "" != ngay && $.ajax({
                         async: true,
                         data: "monID2=" + <?php echo $monID; ?> + "&lmID2=" + 0 + "&ngay=" + ngay,
@@ -344,7 +344,7 @@
 			}
 			
 			function clean_chuyende() {
-			    $("#diem-form-big").html('<table class="table table-3 diem-form diem-form-1"><tr style="background:#3E606F;"><th style="width:20%;"><span>Câu</span></th><th><span>Đáp án</span></th></tr></table><table class="table table-3 diem-form diem-form-2" style="margin: 0 2% 0 2%;"><tr style="background:#3E606F;"><th style="width:20%;"><span>Câu</span></th><th><span>Đáp án</span></th></tr></table><table class="table table-3 diem-form diem-form-3"><tr style="background:#3E606F;"><th style="width:20%;"><span>Câu</span></th><th><span>Đáp án</span></th></tr></table>');
+			    $("#diem-form-big").html('<table class="table table-3 diem-form diem-form-1" style="margin-right: 2%;"><tr style="background:#3E606F;"><th style="width:20%;"><span>Câu</span></th><th><span>Đáp án</span></th></tr></table><table class="table table-3 diem-form diem-form-2" style="margin-right: 2%;"><tr style="background:#3E606F;"><th style="width:20%;"><span>Câu</span></th><th><span>Đáp án</span></th></tr></table><table class="table table-3 diem-form diem-form-3" style="margin-right: 2%;"><tr style="background:#3E606F;"><th style="width:20%;"><span>Câu</span></th><th><span>Đáp án</span></th></tr></table><table class="table table-3 diem-form diem-form-4"><tr style="background:#3E606F;"><th style="width:20%;"><span>Câu</span></th><th><span>Đáp án</span></th></tr></table>');
 //				$("#diem-chuyende").html("<tr style='background:#3E606F;'><th colspan='2'><span>Danh sách các câu</span></th><th colspan='2'><span>Điểm thành phần</span></th></tr><tr><td style='width:5%;'><span>Câu</span></td><td style='text-align:center;width:20%;'><span>Chuyên đề</span></td><td><span>Đáp án</span></td><td style='width:15%;'><span>Đáp án khác</span></td></tr><tr id='tr-last'><td colspan='2' style='text-align:center;'></td><td colspan='2' style='width:35%;'><span id='diem' style='font-weight:600;font-size:22px;'>Tổng: ... điểm</span></td></tr>");
 			};
 			

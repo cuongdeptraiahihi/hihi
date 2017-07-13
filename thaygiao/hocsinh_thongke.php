@@ -75,7 +75,7 @@
 	$to_home=$to_none=$to_huy=$buoi=array();
 	while($data3=mysqli_fetch_assoc($result3)) {
 		if($buoiID!=$data3["ID_BUOI"]) {
-			if (isset($_SESSION["bieudo"]) && $_SESSION["bieudo"] == 0) {
+			if (isset($_SESSION["bieudo"]) && $_SESSION["bieudo"] == 0 && $_GET["loai"]!=2) {
 				$query4 = "SELECT diem,loai,de FROM diemkt WHERE ID_BUOI='$data3[ID_BUOI]' AND (loai='0' OR loai='1' OR loai='5') AND ID_LM='$lmID'";
 				$result4 = mysqli_query($db, $query4);
 				$home = 0;
@@ -169,12 +169,14 @@
 		<?php if(isset($_SESSION["bieudo"]) && $_SESSION["bieudo"]==0) {
 		    $i = 0; ?>
 		window.onload = function () {
+			var me = ($(window).width() - 6880) / (-96.2);
+			console.log(me);
 			<?php if($_GET["loai"]==2) { ?>
-			var myScroll = new IScroll('#main-wapper', { scrollX: true, scrollY: false, mouseWheel: false, startX: -<?php if($dem_buoi*57>945){echo ($dem_buoi*57);}else{echo 0;} ?> });
-			var myScroll2 = new IScroll('#main-wapper2', { scrollX: true, scrollY: false, mouseWheel: false, startX: -<?php if($dem_buoi*55>945){echo ($dem_buoi*55);}else{echo 0;} ?> });
+//			var myScroll = new IScroll('#main-wapper', { scrollX: true, scrollY: false, mouseWheel: false, startX: -<?php //echo $dem_buoi; ?>//*me });
+//			var myScroll2 = new IScroll('#main-wapper2', { scrollX: true, scrollY: false, mouseWheel: false, startX: -<?php //echo $dem_buoi; ?>//*(me-2) });
 			<?php } else { ?>
-			var myScroll = new IScroll('#main-wapper', { scrollX: true, scrollY: false, mouseWheel: false, startX: -<?php if($dem_buoi*57>945){echo ($dem_buoi*57);}else{echo 0;} ?> });
-            var myScroll2 = new IScroll('#main-wapper2', { scrollX: true, scrollY: false, mouseWheel: false});
+//			var myScroll = new IScroll('#main-wapper', { scrollX: true, scrollY: false, mouseWheel: false, startX: -<?php //echo $dem_buoi; ?>//*me });
+//            var myScroll2 = new IScroll('#main-wapper2', { scrollX: true, scrollY: false, mouseWheel: false});
 			<?php } ?>
             var chart2 = new CanvasJS.Chart("chartContainer2",
             {
@@ -355,32 +357,35 @@
             if($_GET["loai"]==2) {
                 $ma=$_GET["ma"];
                 $idhs=get_hs_id($ma);
-                echo"{        
+				$de_arr=array("Y","B","G");
+				for($i=0;$i<count($de_arr);$i++) {
+					echo "{        
                     type: 'line',
-                    showInLegend: true,
+                    showInLegend: false,
                     indexLabelFontFamily:'Arial' ,
                     indexLabelFontColor: 'red',
                     indexLabelFontWeight: 'bold',
                     indexLabelFontSize: 16,
                     gridThickness: 1,
                     lineThickness: 2,
-                    name: 'ĐIỂM CỦA $ma',
+                    name: 'ĐIỂM CỦA $ma (".$de_arr[$i].")',
                     markerType: 'circle',
                     color: 'red',
                     dataPoints: [";
-						$buoi=array();
-                        $query2="SELECT d.*,b.ngay FROM buoikt AS b LEFT JOIN diemkt AS d ON d.ID_BUOI=b.ID_BUOI AND d.ID_HS='$idhs' AND d.ID_LM='$lmID' WHERE b.ID_MON='$monID' ORDER BY b.ID_BUOI ASC";
-                        $result2=mysqli_query($db,$query2);
-                        while($data2=mysqli_fetch_assoc($result2)) {
-                            if(isset($data2["diem"]) && is_numeric($data2["diem"])) {
-                                echo "{ label: '" . format_date($data2["ngay"]) . "', y: " . $data2["diem"] . ", indexLabel: '{y}'},";
-                            } else {
-                                echo "{ label: '" . format_date($data2["ngay"]) . "', y: 'X', indexLabel: '{y}'},";
-                            }
-                            $buoi[]=format_date($data2["ngay"]);
-                        }
-                    echo"]
+					$buoi = array();
+					$query2 = "SELECT d.diem,d.de,b.ngay FROM buoikt AS b LEFT JOIN diemkt AS d ON d.ID_BUOI=b.ID_BUOI AND d.ID_HS='$idhs' AND d.de='".$de_arr[$i]."' AND d.ID_LM='$lmID' WHERE b.ID_MON='$monID' ORDER BY b.ID_BUOI ASC";
+					$result2 = mysqli_query($db, $query2);
+					while ($data2 = mysqli_fetch_assoc($result2)) {
+						if (isset($data2["diem"]) && is_numeric($data2["diem"])) {
+							echo "{ label: '" . format_date($data2["ngay"]) . "', y: " . $data2["diem"] . ", indexLabel: '{y} ($data2[de])'},";
+						} else {
+							echo "{ label: '" . format_date($data2["ngay"]) . "', y: 'X', indexLabel: '{y} ($data2[de])'},";
+						}
+						$buoi[] = format_date($data2["ngay"]);
+					}
+					echo "]
                   },";
+				}
             }
           ?>
               <?php
@@ -407,9 +412,9 @@
 				  while($i>=0) {
 					  $content="http://localhost/www/TDUONG/thaygiao/pho-diem/".$diemtbY[$i]["ngay"]."/Y/$lmID/";
 					  if(is_numeric($diemtbY[$i]["diemtb"])) {
-						  echo "{ label: '" . format_date($diemtbY[$i]["ngay"]) . "', y: " . $diemtbY[$i]["diemtb"] . ", indexLabel: '{y}', content: '$content'},";
+						  echo "{ label: '" . format_date($diemtbY[$i]["ngay"]) . "', y: " . $diemtbY[$i]["diemtb"] . ", indexLabel: '{y} (Y)', content: '$content'},";
 					  } else {
-						  echo "{ label: '" . format_date($diemtbY[$i]["ngay"]) . "', y: '" . $diemtbY[$i]["diemtb"] . "', indexLabel: '{y}', content: '$content'},";
+						  echo "{ label: '" . format_date($diemtbY[$i]["ngay"]) . "', y: '" . $diemtbY[$i]["diemtb"] . "', indexLabel: '{y} (Y)', content: '$content'},";
 					  }
 					  $i--;
 				  }
@@ -438,9 +443,9 @@
 				while($i>=0) {
 				    $content="http://localhost/www/TDUONG/thaygiao/pho-diem/".$diemtbB[$i]["ngay"]."/B/$lmID/";
 					if(is_numeric($diemtbB[$i]["diemtb"])) {
-						echo "{ label: '" . format_date($diemtbB[$i]["ngay"]) . "', y: " . $diemtbB[$i]["diemtb"] . ", indexLabel: '{y}', content: '$content'},";
+						echo "{ label: '" . format_date($diemtbB[$i]["ngay"]) . "', y: " . $diemtbB[$i]["diemtb"] . ", indexLabel: '{y} (B)', content: '$content'},";
 					} else {
-						echo "{ label: '" . format_date($diemtbB[$i]["ngay"]) . "', y: '" . $diemtbB[$i]["diemtb"] . "', indexLabel: '{y}', content: '$content'},";
+						echo "{ label: '" . format_date($diemtbB[$i]["ngay"]) . "', y: '" . $diemtbB[$i]["diemtb"] . "', indexLabel: '{y} (B)', content: '$content'},";
 					}
 					$i--;
 				}
@@ -469,9 +474,9 @@
 				while($i>=0) {
                     $content="http://localhost/www/TDUONG/thaygiao/pho-diem/".$diemtbG[$i]["ngay"]."/G/$lmID/";
 					if(is_numeric($diemtbG[$i]["diemtb"])) {
-						echo "{ label: '" . format_date($diemtbG[$i]["ngay"]) . "', y: " . $diemtbG[$i]["diemtb"] . ", indexLabel: '{y}', content: '$content'},";
+						echo "{ label: '" . format_date($diemtbG[$i]["ngay"]) . "', y: " . $diemtbG[$i]["diemtb"] . ", indexLabel: '{y} (G)', content: '$content'},";
 					} else {
-						echo "{ label: '" . format_date($diemtbG[$i]["ngay"]) . "', y: '" . $diemtbG[$i]["diemtb"] . "', indexLabel: '{y}', content: '$content'},";
+						echo "{ label: '" . format_date($diemtbG[$i]["ngay"]) . "', y: '" . $diemtbG[$i]["diemtb"] . "', indexLabel: '{y} (G)', content: '$content'},";
 					}
 					$i--;
 				}
@@ -488,6 +493,8 @@
 		</script>
         <script>
 			$(document).ready(function() {
+			    $("#main-wapper").scrollLeft(10000);
+
 				$("#select-loai").change(function() {
 					if($(this).val()==1) {
 						$(".only-ma").fadeOut("fast");
@@ -739,6 +746,7 @@
 								} ?>
                                 <div class="clear" id="main-wapper2" style="width:100%;">
                                 <div></div>
+								<?php if($loai != 2) { ?>
                                 <table class="table" id="list-danhsach" style="margin-top:25px;">
                                 	<tr style="background:#3E606F;">
 										<?php if($loai!=2) { ?>
@@ -937,10 +945,14 @@
 										}
 									?>
                                 </table>
+								<?php } ?>
+								<div></div>
                                 </div>
 								<div>
 									<table class="table" id="list-name">
-										<?php if($loai==2) {echo $name_arr;} ?>
+										<tr>
+											<td><span><?php echo $ma; ?></span></td>
+										</tr>
 									</table>
 								</div>
                             </div>

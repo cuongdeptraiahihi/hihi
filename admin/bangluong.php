@@ -146,6 +146,13 @@
                                         <td><span class='span-boi' id='tong-luong-show-$data[ID_LM]'></span></td>
                                     </tr>";
                                 }
+                                $result=get_lop_mon_old($monID);
+                                while($data=mysqli_fetch_assoc($result)) {
+                                    echo"<tr>
+                                        <td><span class='span-boi'>$data[content]</span></td>
+                                        <td><span class='span-boi' id='tong-luong-show-$data[note]'></span></td>
+                                    </tr>";
+                                }
                             ?>
                         </table>
                         <table class="table" style="margin-top:25px;float:left;width: 47.5%;margin-right: 5%;" id="thanh-toan">
@@ -425,6 +432,44 @@
                             }
                             echo"<input type='hidden' value='".format_price($total_con)."' class='tong-luong' data-lmID='$data5[ID_LM]' />";
 						}
+						$result5=get_lop_mon_old($monID);
+                        while($data5=mysqli_fetch_assoc($result5)) {
+                            echo"<div style='padding: 20px 0 20px 0;margin-top: 25px;text-align: center;background: #3E606F;'><h2 style='color:#FFF;text-transform: uppercase;font-size:22px;'>Lớp $data5[content]</h2></div>";
+                            ?>
+                            <table class="table main-table" style="margin-top:25px;">
+                                <tr>
+                                    <td class="td-boi" style="border-bottom:1px solid #FFF;width:16%;"><span class='span-boi2'></span></td>
+                                    <td style="width:17%;"><span style="text-transform:uppercase">Học sinh đóng học bình thường</span>
+                                    </td>
+                                    <td style="width:16%;"><span style="text-transform:uppercase">Học sinh được giảm học phí</span>
+                                    </td>
+                                    <td style="width:16%;"><span style="text-transform:uppercase">Học sinh học không đóng đủ</span>
+                                    </td>
+                                    <td style="width:16%;"><span style="text-transform:uppercase">Học sinh chưa đóng học</span>
+                                    </td>
+                                    <!--                                        <td style="width:14%;"><span style="text-transform:uppercase">Số học sinh nghỉ hẳn</span></td>-->
+                                    <!--                                        <td style="width:12%;"><span style="text-transform:uppercase">Tiền thưởng</span>-->
+                                    </td>
+                                    <td><span class="span-boi">Tổng</span></td>
+                                </tr>
+                                <?php
+                                $total = 0;
+                                $query="SELECT SUM(money) AS price,date_dong FROM tien_hoc2 WHERE ID_LM='$data5[note]' GROUP BY date_dong ORDER BY date_dong ASC";
+                                $result=mysqli_query($db, $query);
+                                while($data=mysqli_fetch_assoc($result)) {
+                                    echo"<tr>
+                                        <td class='td-boi' style='border-bottom:1px solid #FFF'><span>".format_month($data["date_dong"])."</span></td>
+                                        <td colspan='4'><span></span></td>
+                                        <td><span>".format_price($data["price"]*(2/3))."</span></td>
+                                    </tr>";
+                                    $total+=$data["price"]*(2/3);
+                                }
+                                $total_all += $total;
+                                ?>
+                            </table>
+                            <?php
+                            echo"<input type='hidden' value='".format_price($total)."' class='tong-luong' data-lmID='$data5[note]' />";
+                        }
 						echo"<input type='hidden' value='".format_price($total_all-$paid-$luong)."' id='tong-pay' />
 						<input type='hidden' value='".format_price($paid)."' id='paid' />
 						<input type='hidden' value='".format_price($luong)."' id='luong' />";

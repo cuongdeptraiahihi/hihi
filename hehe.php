@@ -1764,39 +1764,59 @@ if($string != "") {
 //		delete_phat_thuong($data["ID_HS"],"kiemtra_2",160);
 //	}
 
-    $query="SELECT ID_BUOI FROM buoikt WHERE ID_MON='1'";
-    $result=mysqli_query($db,$query);
-	while($data=mysqli_fetch_assoc($result)) {
-        $query2="SELECT ID_HS,string,COUNT(ID_RA) AS dem FROM tien_ra WHERE string IN ('kiemtra_1','kiemtra_2') AND object='$data[ID_BUOI]' GROUP BY ID_HS";
+//    $query="SELECT ID_BUOI FROM buoikt WHERE ID_MON='1'";
+//    $result=mysqli_query($db,$query);
+//	while($data=mysqli_fetch_assoc($result)) {
+//        $query2="SELECT ID_HS,string,COUNT(ID_RA) AS dem FROM tien_ra WHERE string IN ('kiemtra_1','kiemtra_2') AND object='$data[ID_BUOI]' GROUP BY ID_HS";
+//        $result2=mysqli_query($db,$query2);
+//        while($data2=mysqli_fetch_assoc($result2)) {
+//            if($data2["dem"] != 1) {
+//                echo $data2["ID_HS"] . " - " . $data2["dem"] . " - " . $data["ID_BUOI"]."<br />";
+//                $query3="DELETE FROM tien_ra WHERE ID_HS='$data2[ID_HS]' AND string='$data2[string]' AND object='$data[ID_BUOI]' LIMIT ".($data2["dem"]-1);
+//                mysqli_query($db,$query3);
+//            }
+//        }
+//	}
+//
+//    $dem=0;
+//    $query="SELECT ID_HS,cmt,taikhoan FROM hocsinh WHERE ID_HS IN (SELECT ID_HS FROM hocsinh_mon WHERE ID_LM='1' OR ID_LM='2')";
+//    $result=mysqli_query($db,$query);
+//    while($data=mysqli_fetch_assoc($result)) {
+//        $query2="SELECT SUM(price) AS tien FROM tien_ra WHERE ID_HS='$data[ID_HS]'";
+//        $result2=mysqli_query($db,$query2);
+//        $data2=mysqli_fetch_assoc($result2);
+//        $cong=$data2["tien"];
+//
+//        $query2="SELECT SUM(price) AS tien FROM tien_vao WHERE ID_HS='$data[ID_HS]'";
+//        $result2=mysqli_query($db,$query2);
+//        $data2=mysqli_fetch_assoc($result2);
+//        $tru=$data2["tien"];
+//
+//        if($data["taikhoan"] != $cong-$tru) {
+//            echo"$dem - $data[ID_HS] - $data[cmt] - $data[taikhoan] - ". ($cong-$tru)."<br />";
+//            update_tien_hs($data["ID_HS"], $cong-$tru);
+//        }
+//        $dem++;
+//    }
+//    for($i = 155; $i <= 172; $i++) {
+//        $maso = "01-0".$i;
+//        $query="UPDATE hocsinh SET password='".md5($maso)."' WHERE cmt='$maso'";
+//        mysqli_query($db,$query);
+//    }
+    $result=get_all_lop_mon();
+    while($data=mysqli_fetch_assoc($result)) {
+        $total = $dem = 0;
+        $query2="SELECT ID_HS FROM hocsinh_mon WHERE ID_LM='$data[ID_LM]' AND ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$data[ID_LM]')";
         $result2=mysqli_query($db,$query2);
         while($data2=mysqli_fetch_assoc($result2)) {
-            if($data2["dem"] != 1) {
-                echo $data2["ID_HS"] . " - " . $data2["dem"] . " - " . $data["ID_BUOI"]."<br />";
-                $query3="DELETE FROM tien_ra WHERE ID_HS='$data2[ID_HS]' AND string='$data2[string]' AND object='$data[ID_BUOI]' LIMIT ".($data2["dem"]-1);
-                mysqli_query($db,$query3);
+            $query3="SELECT ID_STT FROM hocsinh_mon WHERE ID_HS='$data2[ID_HS]' AND ID_LM IN ('2','14')";
+            $result3=mysqli_query($db,$query3);
+            if(mysqli_num_rows($result3) != 0) {
+                $dem++;
             }
+            $total++;
         }
-	}
-
-    $dem=0;
-    $query="SELECT ID_HS,cmt,taikhoan FROM hocsinh WHERE ID_HS IN (SELECT ID_HS FROM hocsinh_mon WHERE ID_LM='1' OR ID_LM='2')";
-    $result=mysqli_query($db,$query);
-    while($data=mysqli_fetch_assoc($result)) {
-        $query2="SELECT SUM(price) AS tien FROM tien_ra WHERE ID_HS='$data[ID_HS]'";
-        $result2=mysqli_query($db,$query2);
-        $data2=mysqli_fetch_assoc($result2);
-        $cong=$data2["tien"];
-
-        $query2="SELECT SUM(price) AS tien FROM tien_vao WHERE ID_HS='$data[ID_HS]'";
-        $result2=mysqli_query($db,$query2);
-        $data2=mysqli_fetch_assoc($result2);
-        $tru=$data2["tien"];
-
-        if($data["taikhoan"] != $cong-$tru) {
-            echo"$dem - $data[ID_HS] - $data[cmt] - $data[taikhoan] - ". ($cong-$tru)."<br />";
-            update_tien_hs($data["ID_HS"], $cong-$tru);
-        }
-        $dem++;
+        echo $data["name"]. ": $dem/$total (".format_phantram($dem*100/$total).")<br />";
     }
 
     ob_end_flush();

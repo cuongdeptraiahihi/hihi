@@ -117,22 +117,50 @@
                                     <td><input class='submit' type='submit' value='Cài đặt' onclick="location.href='http://localhost/www/TDUONG/thaygiao/chuyen-de/<?php echo $_SESSION["lmID"]; ?>/'" /></td>
                                     <td class="hidden"><span>Cấu hình, thêm sửa xóa các chuyên đề của các môn</span></td>
                                 </tr>
+<!--                                <tr>-->
+<!--                                    <td class="hidden"><span>11</span></td>-->
+<!--                                    <td><span class="fa fa-cog"></span></td>-->
+<!--                                    <td><span>Sửa chữa</span></td>-->
+<!--                                    <td><input class='submit' type='submit' value='Cài đặt' onclick="location.href='http://localhost/www/TDUONG/thaygiao/sua-chua/'" /></td>-->
+<!--                                    <td class="hidden"><span>Sửa chữa và cài đặt CSDL</span></td>-->
+<!--                                </tr>-->
                                 <tr>
                                     <td class="hidden"><span>2</span></td>
+                                    <td><span class="fa fa-table"></span></td>
+                                    <td><span>Mở tháng đóng tiền học</span></td>
+                                    <td><input class='submit' type='submit' value='Cài đặt' onclick="location.href='http://localhost/www/TDUONG/thaygiao/kiem-tra-tien-hoc-mon/<?php echo $_SESSION["lmID"]; ?>/0/'" /></td>
+                                    <td class="hidden"><span>Mở tháng để dự kiến tiền học</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="hidden"><span>3</span></td>
                                     <td><span class="fa fa-file"></span></td>
                                     <td><span>Tài liệu</span></td>
                                     <td><input class='submit' type='submit' value='Cài đặt' onclick="location.href='http://localhost/www/TDUONG/thaygiao/pre-tai-lieu/'" /></td>
                                     <td class="hidden"><span>Tài liệu của môn học</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="hidden"><span>3</span></td>
+                                    <td class="hidden"><span>4</span></td>
+                                    <td><span class="fa fa-level-up"></span></td>
+                                    <td><span>Quản lý level</span></td>
+                                    <td><input class='submit' type='submit' value='Xem' onclick="location.href='http://localhost/www/TDUONG/thaygiao/level/'" /></td>
+                                    <td class="hidden"><span>Quản lý dữ liệu về level</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="hidden"><span>5</span></td>
                                     <td><span class="fa fa-facebook-official"></span></td>
                                     <td><span>Đăng ký group facebook</span></td>
                                     <td><input class='submit' type='submit' value='Xem' onclick="location.href='http://localhost/www/TDUONG/thaygiao/dang-ky-face/'" /></td>
                                     <td class="hidden"><span>Xét duyệt và accept các e học sinh vào group facebook</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="hidden"><span>4</span></td>
+                                    <td class="hidden"><span>6</span></td>
+                                    <td><span class="fa fa-exclamation"></span></td>
+                                    <td><span>Thông báo</span></td>
+                                    <td><input class='submit' type='submit' value='Xem' onclick="location.href='http://localhost/www/TDUONG/thaygiao/thong-bao/'" /></td>
+                                    <td class="hidden"><span>Thông báo tới học sinh và quản lý thông báo</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="hidden"><span>7</span></td>
                                     <td><span class="fa fa-sign-out"></span></td>
                                     <td><span>Học sinh nghỉ</span></td>
                                     <td><input class='submit' type='submit' value='Xem' onclick="location.href='http://localhost/www/TDUONG/thaygiao/nghi-hoc/<?php echo $_SESSION["lmID"]."/".$_SESSION["mon"]; ?>/'" /></td>
@@ -142,6 +170,19 @@
                         </div>
                     </div>
                	</div>
+
+                <div id="main-mid">
+                    <h2>CÁC CA HỌC</h2>
+                    <div>
+                        <div class="status">
+                            <table class="table">
+                                <tr>
+                                    <th style="width:33%;"><input type="submit" class="submit" style="width:50%;font-size:1.375em;" onclick="location.href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-khoa-ca/<?php echo $_SESSION["lmID"]; ?>/'" value="Mở khóa ca" /></th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             
             </div>
         

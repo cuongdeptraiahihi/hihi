@@ -74,16 +74,21 @@
         $buoiID=$_POST["buoiID8"];
         $made=$_POST["made8"];
 //        add_info_buoikt2($buoiID,$hsID,$made,$monID);
+        $deID=get_de_id($made,$hsID,$buoiID,$lmID);
         $diem_cd=array();
         $diem_cd[]=array(
             "made" => $made,
+            "deID" => $deID,
+            "hsID" => $hsID,
+            "buoiID" => $buoiID,
+            "lmID" => $lmID,
             "action" => "new"
         );
         $query2="SELECT u.ID_CD,u.title,n.sort FROM de_noi_dung AS n 
                 INNER JOIN cau_hoi AS c ON c.ID_C=n.ID_C
                 INNER JOIN chuyen_de_con AS d ON d.ID_CD=c.ID_CD
                 INNER JOIN chuyende AS u ON u.maso=d.maso AND u.ID_LM='$lmID'
-                WHERE n.ID_DE='".get_de_id($made,$hsID,$buoiID,$lmID)."'
+                WHERE n.ID_DE='$deID'
                 ORDER BY n.sort ASC";
         $result2=mysqli_query($db,$query2);
         while($data2=mysqli_fetch_assoc($result2)) {
@@ -216,10 +221,13 @@
 		$idDiem = $_POST["idDiem"];
 		$buoiID = $_POST["buoiID3"];
 		$hsID = $_POST["hsID3"];
-		delete_diem($idDiem, $buoiID, $hsID, $lmID);
+		$data_arr = get_diem_hs3($hsID, $buoiID, $lmID);
         delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID",$buoiID);
-        delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+        if($data_arr[1] != 3) {
+            delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+        }
         delete_thongbao($hsID,$buoiID,"diem-thi",$lmID);
+        delete_diem($idDiem, $buoiID, $hsID, $lmID);
 	}
 
 	// Đã check
@@ -378,8 +386,10 @@
             $buoi=get_ngay_buoikt($buoiID);
             $is_phat = get_is_phat($monID);
             if($is_phat) {
-                delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID",$buoiID);
-                delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+//                delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID",$buoiID);
+//                if($loai!=3) {
+//
+//                }
                 if (!check_binh_voi($hsID, $buoiID, $lmID)) {
                     if ($diem < 5.25 && check_exited_thachdau4($hsID, $buoi, $lmID) && $loai!=3) {
 
@@ -389,8 +399,8 @@
                 }
             }
             if($loai==1 && $is_phat) {
-                $tien=get_muctien("mang_bai_ve_nha");
                 if(!check_tru_tien($hsID,"mang_bai_ve_nha_$lmID",$buoiID)) {
+                    $tien=get_muctien("mang_bai_ve_nha");
                     tru_tien_hs($hsID, $tien, "Mang bài kiểm tra về nhà ngày " . format_dateup($buoi), "mang_bai_ve_nha_$lmID", $buoiID);
                 }
             }
@@ -444,44 +454,46 @@
                         if (isset($diem_cd[$i]["cau"])) {
                             if ((int) $diem_cd[$i]["cau"] == $data["csort"]) {
                                 $noteda = base64_decode($diem_cd[$i]["noteda"]);
-								if($data["ID_C"] == 870 || $data["ID_C"] == 647 || $data["ID_C"] == 1020 || $data["done"]==0) {
+								if($data["done"]==0) {
 									if($how==0 || $how==2) {
 									    $content1.=",('$buoiID','".$diem_cd[$i]["idCD"]."','$hsID','$diem_each/$diem_each','".$diem_cd[$i]["cau"]."','".$diem_cd[$i]["diemCD"]."','$noteda','$lmID')";
 //										insert_chuyende_diem2($buoiID, $hsID, $diem_cd[$i]["idCD"], $diem_each . "/" . $diem_each, $diem_cd[$i]["cau"], $diem_cd[$i]["diemCD"], $noteda, $lmID);
 									}
-									if($how==1 || $how==2) {
-									    $content2.=",('$hsID','$data[ID_C]','0','0','$data[ID_DE]')";
+//									if($how==1 || $how==2) {
+//                                        $content2.=",('$hsID','$data[ID_C]','".get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"])."','0','0','$noteda','$data[ID_DE]',now())";
+//									    $content2.=",('$hsID','$data[ID_C]','','0','0','$data[ID_DE]')";
 //										insert_hoc_sinh_cau($hsID, $data["ID_C"], $data["ID_DE"], true);
-									}
+//									}
 									$diem += $diem_each;
-									if($how==1 || $how==2) {
-										insert_chon_dap_an($hsID, get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"]), $noteda, $data["ID_C"], false, $data["ID_DE"]);
-									}
+//									if($how==1 || $how==2) {
+//										insert_chon_dap_an($hsID, get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"]), $noteda, $data["ID_C"], false, $data["ID_DE"]);
+//									}
 								} else {
 									if ((int) $diem_cd[$i]["diemCD"] == $data["dsort"]) {
 										if($how==0 || $how==2) {
                                             $content1.=",('$buoiID','".$diem_cd[$i]["idCD"]."','$hsID','$diem_each/$diem_each','".$diem_cd[$i]["cau"]."','".$diem_cd[$i]["diemCD"]."','$noteda','$lmID')";
 //                                            insert_chuyende_diem2($buoiID, $hsID, $diem_cd[$i]["idCD"], $diem_each . "/" . $diem_each, $diem_cd[$i]["cau"], $diem_cd[$i]["diemCD"], $noteda, $lmID);
 										}
-										if($how==1 || $how==2) {
-                                            $content2.=",('$hsID','$data[ID_C]','0','0','$data[ID_DE]')";
+//										if($how==1 || $how==2) {
+//                                            $content2.=",('$hsID','$data[ID_C]','".get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"])."','0','0','$noteda','$data[ID_DE]',now())";
 //											insert_hoc_sinh_cau($hsID, $data["ID_C"], $data["ID_DE"], true);
-										}
+//										}
 										$diem += $diem_each;
 									} else {
 										if($how==0 || $how==2) {
                                             $content1.=",('$buoiID','".$diem_cd[$i]["idCD"]."','$hsID','0/$diem_each','".$diem_cd[$i]["cau"]."','".$diem_cd[$i]["diemCD"]."','$noteda','$lmID')";
 //                                            insert_chuyende_diem2($buoiID, $hsID, $diem_cd[$i]["idCD"], "0/" . $diem_each, $diem_cd[$i]["cau"], $diem_cd[$i]["diemCD"], $noteda, $lmID);
 										}
-										if($how==1 || $how==2) {
-                                            $content2.=",('$hsID','$data[ID_C]','0','0','$data[ID_DE]')";
+//										if($how==1 || $how==2) {
+//                                            $content2.=",('$hsID','$data[ID_C]','0','0','$data[ID_DE]')";
 //											insert_hoc_sinh_cau($hsID, $data["ID_C"], $data["ID_DE"], false);
-										}
-									}
-									if($how==1 || $how==2) {
-										insert_chon_dap_an($hsID, get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"]), $noteda, $data["ID_C"], false, $data["ID_DE"]);
+//										}
 									}
 								}
+                                if($how==1 || $how==2) {
+                                    $content2.=",('$hsID','$data[ID_C]','".get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"])."','0','0','$noteda','$data[ID_DE]',now())";
+//										insert_chon_dap_an($hsID, get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"]), $noteda, $data["ID_C"], false, $data["ID_DE"]);
+                                }
                             }
                         }
                         $i++;
@@ -493,7 +505,7 @@
                     }
                     $content2=substr($content2,1);
                     if($how==1 || $how==2) {
-                        $query="INSERT INTO hoc_sinh_cau(ID_HS,ID_C,num,time,ID_DE) VALUES $content2";
+                        $query="INSERT INTO hoc_sinh_cau(ID_HS,ID_C,ID_DA,num,time,note,ID_DE,datetime) VALUES $content2";
                         mysqli_query($db,$query);
                         insert_luyen_de($deID, $hsID, "lam-cuoi-tuan", $diem, 0, $lmID);
                     }
@@ -511,23 +523,28 @@
                     $data = mysqli_fetch_assoc($result);
                     $tb = $data["name"];
                 }
-                $tb.=". Mã lấy bài là $count";
+//                $tb.=". Mã lấy bài là $count";
                 $buoi = get_ngay_buoikt($buoiID);
                 $is_phat = get_is_phat($monID);
                 if ($is_phat) {
-                    delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID", $buoiID);
-                    delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+//                    delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID", $buoiID);
+                    if($loai!=3) {
+                        delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+                    }
                     if (!check_binh_voi($hsID, $buoiID, $lmID)) {
                         if ($diem < 5.25 && check_exited_thachdau4($hsID, $buoi, $lmID) && $loai != 3) {
 
                         } else {
+                            if(get_last_loai($buoiID,$hsID,$lmID)!=3) {
+                                delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+                            }
                             get_phat_diemkt($hsID, $diem, $de, $loai, $note, $lmID, get_lop_mon_name($lmID), $buoiID, $buoi, true);
                         }
                     }
                 }
                 if ($loai == 1 && $is_phat) {
-                    $tien = get_muctien("mang_bai_ve_nha");
                     if (!check_tru_tien($hsID, "mang_bai_ve_nha_$lmID", $buoiID)) {
+                        $tien = get_muctien("mang_bai_ve_nha");
                         tru_tien_hs($hsID, $tien, "Mang bài kiểm tra về nhà ngày " . format_dateup($buoi), "mang_bai_ve_nha_$lmID", $buoiID);
                     }
                 }
@@ -577,8 +594,10 @@
             $buoi=get_ngay_buoikt($buoiID);
             $is_phat = get_is_phat($monID);
             if($is_phat) {
-                delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID",$buoiID);
-                delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+//                delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID",$buoiID);
+//                if($loai!=3) {
+//                    delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+//                }
                 if (!check_binh_voi($hsID, $buoiID, $lmID)) {
                     if ($diem < 5.25 && check_exited_thachdau4($hsID, $buoi, $lmID) && $loai!=3) {
 
@@ -588,8 +607,8 @@
                 }
             }
             if($loai==1 && $is_phat) {
-                $tien=get_muctien("mang_bai_ve_nha");
                 if(!check_tru_tien($hsID,"mang_bai_ve_nha_$lmID",$buoiID)) {
+                    $tien=get_muctien("mang_bai_ve_nha");
                     tru_tien_hs($hsID, $tien, "Mang bài kiểm tra về nhà ngày " . format_dateup($buoi), "mang_bai_ve_nha_$lmID", $buoiID);
                 }
             }
@@ -636,12 +655,13 @@
                     $diem_each = format_diem(10 / $num);
                     $diem_dow = format_diem($diem_each / 2);
                     $i = 0;
+                    $content2="";
                     while ($data = mysqli_fetch_assoc($result)) {
                         $deID = $data["ID_DE"];
                         if (isset($diem_cd[$i]["cau"])) {
                             if ((int)$diem_cd[$i]["cau"] == $data["csort"]) {
                                 $noteda = base64_decode($diem_cd[$i]["noteda"]);
-                                if($data["ID_C"] == 870 || $data["ID_C"] == 647 || $data["ID_C"] == 1020 || $data["done"]==0) {
+                                if($data["done"]==0) {
 									if ($how == 0 || $how==2) {
 										update_chuyende_diem2($buoiID, $hsID, $diem_cd[$i]["idCD"], $diem_each . "/" . $diem_each, $diem_cd[$i]["cau"], $diem_cd[$i]["diemCD"], $noteda, $diem_cd[$i]["sttID"], $lmID);
 									}
@@ -659,13 +679,19 @@
 									}
 								}
                                 if ($how==2) {
-                                    insert_chon_dap_an($hsID, get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"]), $noteda, $data["ID_C"], true, $data["ID_DE"]);
+                                    $content2.=",('$hsID','$data[ID_C]','".get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"])."','0','0','$noteda','$data[ID_DE]',now())";
+//                                    insert_chon_dap_an($hsID, get_dap_an_by_sort($data["ID_DE"], $data["ID_C"], $diem_cd[$i]["diemCD"]), $noteda, $data["ID_C"], true, $data["ID_DE"]);
                                 }
                             }
                         }
                         $i++;
                     }
                     if ($how==2) {
+                        $query="DELETE FROM hoc_sinh_cau WHERE ID_HS='$hsID' AND ID_DE='$deID'";
+                        mysqli_query($db,$query);
+                        $content2=substr($content2,1);
+                        $query="INSERT INTO hoc_sinh_cau(ID_HS,ID_C,ID_DA,num,time,note,ID_DE,datetime) VALUES $content2";
+                        mysqli_query($db,$query);
                         update_luyen_de($deID, $hsID, "lam-cuoi-tuan", $diem, 0, $lmID);
                     }
                 } else {
@@ -684,19 +710,24 @@
                 $buoi = get_ngay_buoikt($buoiID);
                 $is_phat = get_is_phat($monID);
                 if ($is_phat) {
-                    delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID", $buoiID);
-                    delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+//                    delete_phat_thuong($hsID, "mang_bai_ve_nha_$lmID", $buoiID);
+//                    if($loai!=3) {
+//                        delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+//                    }
                     if (!check_binh_voi($hsID, $buoiID, $lmID)) {
                         if ($diem < 5.25 && check_exited_thachdau4($hsID, $buoi, $lmID) && $loai != 3) {
 
                         } else {
+                            if(get_last_loai($buoiID,$hsID,$lmID)!=3) {
+                                delete_phat_thuong($hsID, "kiemtra_" . $lmID, $buoiID);
+                            }
                             get_phat_diemkt($hsID, $diem, $de, $loai, $note, $lmID, get_lop_mon_name($lmID), $buoiID, $buoi, true);
                         }
                     }
                 }
                 if ($loai == 1 && $is_phat) {
-                    $tien = get_muctien("mang_bai_ve_nha");
                     if (!check_tru_tien($hsID, "mang_bai_ve_nha_$lmID", $buoiID)) {
+                        $tien = get_muctien("mang_bai_ve_nha");
                         tru_tien_hs($hsID, $tien, "Mang bài kiểm tra về nhà ngày " . format_dateup($buoi), "mang_bai_ve_nha_$lmID", $buoiID);
                     }
                 }

@@ -4,6 +4,7 @@
 	require("../../model/open_db.php");
 	require("../../model/model.php");
 	require("../access_admin.php");
+    $monID=$_SESSION["mon"];
 	$thu_string=array("Chủ Nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy");
 	
 	if(isset($_POST["cmt"])) {
@@ -83,6 +84,12 @@
             echo "<tr class='tien-hoc'>
                 <td style='text-align:center'><a href='http://localhost/www/TDUONG/thaygiao/nghi-dai/$hsID/' target='_blank'>Nghỉ dài hạn</a></td>
                 <td style='text-align:center'><a href='http://localhost/www/TDUONG/thaygiao/sua-de/$hsID/' target='_blank'>Đề kiểm tra</a></td>
+                <td style='text-align:center'><a href='javascript:void(0)' id='lich-su-login' data-hsID='$hsID'>Lịch sử đăng nhập</a><br /><a href='javascript:void(0)' id='lich-su-mk' data-hsID='$hsID'>Lịch sử đổi mật khẩu</a></td>
+            </tr>";
+        } else {
+            echo "<tr class='tien-hoc'>
+                <td colspan='2' style='text-align:center'><a href='javascript:void(0)' id='lich-su-mk' data-hsID='$hsID'>Lịch sử đổi mật khẩu</a></td>
+                <td style='text-align:center'><a href='javascript:void(0)' id='lich-su-login' data-hsID='$hsID'>Lịch sử đăng nhập</a></td>
             </tr>";
         }
 //		echo"<tr class='tien-hoc'>
@@ -91,7 +98,7 @@
         echo"<tr style='background: #3E606F;'>   
             <th colspan='3'><a style='text-transform: uppercase;color:#FFF;text-decoration: underline;' href='http://localhost/www/TDUONG/thaygiao/level-thuong/$hsID/' target='_blank'>Thẻ miễn phạt</a></th>
         </tr>";
-        $query="SELECT l.ID_LM,l.name,l.ID_MON,m.de,m.date_in,n.date FROM lop_mon AS l INNER JOIN hocsinh_mon AS m ON m.ID_HS='$hsID' AND m.ID_LM=l.ID_LM LEFT JOIN hocsinh_nghi AS n ON n.ID_HS='$hsID' AND n.ID_LM=l.ID_LM ORDER BY l.ID_LM ASC";
+        $query="SELECT l.ID_LM,l.name,l.ID_MON,m.de,m.date_in,n.date FROM lop_mon AS l LEFT JOIN hocsinh_mon AS m ON m.ID_HS='$hsID' AND m.ID_LM=l.ID_LM LEFT JOIN hocsinh_nghi AS n ON n.ID_HS='$hsID' AND n.ID_LM=l.ID_LM WHERE l.ID_MON='$monID' ORDER BY l.ID_LM ASC";
 		$result=mysqli_query($db,$query);
 		while($data=mysqli_fetch_assoc($result)) {
 			$data_array=array();
@@ -137,7 +144,8 @@
                         echo"<a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-thong-ke-hs/$data[ID_LM]/2/$cmt/' style='margin-top:5px;display:block;' target='_blank' class='lich-su-doi-ca'>Lịch sử điểm</a>
                         <a href='javascript:void(0)' style='margin-top:5px;display:block;' class='lich-su-doi-ca' data-monID='$data[ID_LM]' data-hsID='$hsID'>Lịch sử đổi ca</a>
                         <a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-diem-danh/$data[ID_LM]/$data[ID_MON]/3/$hsID/' style='margin-top:5px;display:block;' target='_blank' class='lich-su-doi-ca'>Điểm danh</a>
-                        <a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-lich-hoc/$hsID/$data[ID_LM]/' style='margin-top:5px;display:block;' target='_blank'>Đổi ca</a></td>
+                        <a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-lich-hoc/$hsID/$data[ID_LM]/' style='margin-top:5px;display:block;' target='_blank'>Đổi ca</a>
+                        <a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-video/$hsID/$data[ID_LM]/' style='margin-top:5px;display:block;' target='_blank'>Hỗ trợ video</a></td>
                     </div>
                 </td>
 			</tr>";
@@ -208,6 +216,19 @@
                     $nam_in--;
                 }
                 $first=true;
+                $query1="SELECT ID_O,content FROM options WHERE type='edit-tien-hoc-$data[ID_LM]' AND note='$nam_in-$thang_in' AND note2='$hsID'";
+                $result1=mysqli_query($db,$query1);
+                if(mysqli_num_rows($result1)!=0) {
+                    $data1 = mysqli_fetch_assoc($result1);
+                    $string = "<span>Hỗ trợ tháng $thang_in/$nam_in? <strong style='color:red;'>" . format_price_sms($data1["content"] * 1000) . " (bắt buộc)</strong>";
+//                                $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='$data1[content]' /> <i class='del-edit-price fa fa-times' data-oID='$data1[ID_O]' style='cursor: pointer;'></i></span><br />";
+                    $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam_in-$thang_in' data-lmID='$data[ID_LM]' value='$data1[content]' /> <i class='del-edit-price fa fa-times' data-oID='$data1[ID_O]' style='cursor: pointer;'></i></span><br />";
+                    $first=false;
+                } else {
+                    $string = "<span>Hỗ trợ tháng $thang_in/$nam_in? <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam_in-$thang_in' data-lmID='$data[ID_LM]' value='' /></span><br />";
+                }
+                $thang_in=$temp2[1];
+                $nam_in=$temp2[0];
                 $price0=get_muctien("dau_thang_sau_".unicode_convert($mon_name));
                 for($i=1;$i<=24;$i++) {
                     $tien_hoc=check_dong_tien_hoc($hsID,$data["ID_LM"],"$nam-$thang");
@@ -222,24 +243,25 @@
                                     $string = "<span style='color:green;'>T " . format_month2("$nam-$thang") . " miễn 100% học phí ";
                                     $tinh=false;
                                 } else {
-                                    $string .= "<span style='color:red;'>T " . format_month2("$nam-$thang") . " CẦN đóng ";
+                                    $string .= "<span>T " . format_month2("$nam-$thang") . " ";
                                 }
                             }
                             $query1="SELECT ID_O,content FROM options WHERE type='edit-tien-hoc-$data[ID_LM]' AND note='$nam-$thang' AND note2='$hsID'";
                             $result1=mysqli_query($db,$query1);
                             if(mysqli_num_rows($result1)!=0) {
                                 $data1 = mysqli_fetch_assoc($result1);
-                                $string .= "<strong>" . format_price_sms($data1["content"] * 1000) . " (bắt buộc)</strong>";
+                                if($data1["content"]!=0) {
+                                    $string .= "<strong style='color:red;'>CẦN đóng " . format_price_sms($data1["content"] * 1000) . " (bắt buộc)</strong>";
+                                } else {
+                                    $string .= "miễn đóng học";
+                                }
 //                                $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='$data1[content]' /> <i class='del-edit-price fa fa-times' data-oID='$data1[ID_O]' style='cursor: pointer;'></i></span><br />";
                                 $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='$data1[content]' /></span><br />";
-                                $first=false;
-                            } else if($first) {
-                                $string = "<span>Hỗ trợ tháng $thang/$nam? <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='' /></span><br />";
                                 $first=false;
                             } else if($tinh){
                                 if (stripos($data["date_in"], "$nam-$thang") === false) {
                                     $price = du_kien_tien_hoc("$nam-$thang", date("Y-m-d"), $hsID, $mon_name);
-                                    $string .= "<strong>".format_price_sms($price)."</strong>";
+                                    $string .= "<strong style='color:red;'>CẦN đóng ".format_price_sms($price)."</strong>";
                                 } else {
                                     $lich = "";
                                     if (get_day_from_date($data["date_in"]) < 7) {
@@ -254,7 +276,7 @@
                                         $price = $price0;
                                         $price = $price - ($price * $discount / 100);
                                     }
-                                    $string .= "<strong>".format_price_sms($price) . "</strong> (giữa chừng <i class='xem_lich fa fa-eye' data-lich='$lich'></i>)";
+                                    $string .= "<strong style='color:red;'>CẦN đóng ".format_price_sms($price) . " (giữa chừng <i class='xem_lich fa fa-eye' data-lich='$lich'></i>)</strong>";
                                 }
                                 $string .= " <i class='btn-edit-price fa fa-pencil' style='cursor: pointer;'></i><input style='width: 60px;margin-left: 5px;padding: 5px;display: none;' class='input edit-price' data-thang='$nam-$thang' data-lmID='$data[ID_LM]' value='".($price/1000)."' /></span><br />";
                             } else {
@@ -279,7 +301,7 @@
                         $first=false;
                         //}
                     }
-                    if("$nam-$thang"==get_next_time(date("Y"),date("m"))) {
+                    if("$nam-$thang"==date("Y-m", strtotime("+2 month"))) {
                         break;
                     }
                     $thang++;
@@ -348,20 +370,20 @@
 			}
 			if($hsID!=0) {
 				edit_hs($hsID, $cmt, $van, $pass, $name, $birth, $gender, $face, $truong, $sdt, $sdt_bo, $sdt_me);
-//				if($name_bo!="" || $job_bo!="" || $mail_bo!="" || $face_bo!="") {
-//					if(check_phuhuynh($hsID,1)) {
-//						edit_phuhuynh2($hsID,$name_bo,$job_bo,$face_bo,$mail_bo,1);
-//					} else {
-//						add_phuhuynh2($hsID,$name_bo,$job_bo,$face_bo,$mail_bo,1);
-//					}
-//				}
-//				if($name_me!="" || $job_me!="" || $mail_me!="" || $face_me!="") {
-//					if(check_phuhuynh($hsID,0)) {
-//						edit_phuhuynh2($hsID,$name_me,$job_me,$face_me,$mail_me,0);
-//					} else {
-//						add_phuhuynh2($hsID,$name_me,$job_me,$face_me,$mail_me,0);
-//					}
-//				}
+				if($name_bo!="" || $job_bo!="" || $mail_bo!="" || $face_bo!="") {
+					if(check_phuhuynh($hsID,1)) {
+						edit_phuhuynh2($hsID,$name_bo,$job_bo,$face_bo,$mail_bo,1);
+					} else {
+						add_phuhuynh2($hsID,$name_bo,$job_bo,$face_bo,$mail_bo,1);
+					}
+				}
+				if($name_me!="" || $job_me!="" || $mail_me!="" || $face_me!="") {
+					if(check_phuhuynh($hsID,0)) {
+						edit_phuhuynh2($hsID,$name_me,$job_me,$face_me,$mail_me,0);
+					} else {
+						add_phuhuynh2($hsID,$name_me,$job_me,$face_me,$mail_me,0);
+					}
+				}
 				if($check_sdt==1 && $sdt!= "" && is_numeric($sdt)) {
 					check_phone($hsID, $sdt);
 				} else {
@@ -423,18 +445,21 @@
 						add_hs_to_ca_codinh($data[$i]["caID"], $hsID, $data[$i]["cum"]);
 					}
 				}
-				echo"Sửa thành công!";
+				echo json_encode(array(
+                    "msg" => "Sửa thành công!",
+                    "cmt" => $cmt
+                ));
 			} else {
                 $pre_id = get_next_hs_lop($lop);
                 $cmt=format_maso($pre_id, get_lop_name($lop));
                 $pass = md5($cmt);
                 $hsID = add_new_hs($cmt, $van, $pass, $name, $birth, $gender, $face, $truong, $sdt, $sdt_bo, $sdt_me, $lop);
-//                if ($name_bo != "" || $job_bo != "" || $mail_bo != "" || $face_bo != "") {
-//                    add_phuhuynh2($hsID, $name_bo, $job_bo, $face_bo, $mail_bo, 1);
-//                }
-//                if ($name_me != "" || $job_me != "" || $mail_me != "" || $face_me != "") {
-//                    add_phuhuynh2($hsID, $name_me, $job_me, $face_me, $mail_me, 0);
-//                }
+                if ($name_bo != "" || $job_bo != "" || $mail_bo != "" || $face_bo != "") {
+                    add_phuhuynh2($hsID, $name_bo, $job_bo, $face_bo, $mail_bo, 1);
+                }
+                if ($name_me != "" || $job_me != "" || $mail_me != "" || $face_me != "") {
+                    add_phuhuynh2($hsID, $name_me, $job_me, $face_me, $mail_me, 0);
+                }
                 if ($check_sdt == 1 && $sdt != "" && is_numeric($sdt)) {
                     check_phone($hsID, $sdt);
                 }
@@ -461,13 +486,19 @@
                         add_hs_to_ca_codinh($data[$i]["caID"], $hsID, $data[$i]["cum"]);
                     }
                 }
-                echo "Thêm thành công, mã số: $cmt";
+                echo json_encode(array(
+                    "msg" => "Thêm thành công! Mã số ".$cmt,
+                    "cmt" => $cmt
+                ));
 			}
 			if(!in_array($hsID,$_SESSION["hs_in"])) {
 				$_SESSION["hs_in"][]=$hsID;
 			}
 		} else {
-			echo"Lỗi dữ liệu";
+            echo json_encode(array(
+                "msg" => "Lỗi dữ liệu",
+                "cmt" => ""
+            ));
 		}
 	}
 

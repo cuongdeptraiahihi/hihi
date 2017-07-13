@@ -502,61 +502,61 @@
                         chart_$i.render();";
                     }
                 ?>
-                var chartGame = new CanvasJS.Chart("chartGame",
-                    {
-                        animationEnabled: true,
-                        interactivityEnabled: true,
-                        theme: "theme2",
-                        toolTip: {
-                            shared: false
-                        },
-                        backgroundColor: "",
-                        axisX: {
-                            labelFontFamily:"Arial" ,
-                            gridColor: "Silver",
-                            tickColor: "silver",
-                            labelFontColor: "#3E606F",
-                            labelFontSize: 12,
-                            labelText: "{name}",
-                        },
-                        axisY: {
-                            gridThickness: 1,
-                            indexLabelFontFamily:"Arial" ,
-                            gridColor: "Silver",
-                            tickColor: "silver",
-                            labelFontColor: "#3E606F",
-                            labelFontSize: 14,
-                            labelFontWeight: "normal",
-                        },
-                        dataPointMaxWidth: 43,
-                        data: [
-                        <?php
-                            for($i=0;$i<count($lmID_arr);$i++) {
-                                $mau=$mau_arr[$i];
-                                $hsin=count_hs_in_group($lmID_arr[$i]["ID_LM"]);
-                                $name=mb_strtoupper($lmID_arr[$i]["name"],"UTF-8");
-                        ?>
-                            {
-                                type: "column",
-                                showInLegend: false,
-                                indexLabelPlacement: "outside",
-                                indexLabelFontSize: 14,
-                                yValueFormatString: "#",
-                                indexLabelFontWeight: "bold",
-                                indexLabelFontFamily:"Arial" ,
-                                indexLabel: "{y}",
-                                labelFontSize: 14,
-                                toolTipContent: "<?php echo $name; ?>: {y}",
-                                dataPoints: [
-                                    { y: <?php echo count_hs_mon_lop($lmID_arr[$i]["ID_LM"])-$hsin; ?>, indexLabelFontColor: "<?php echo $mau; ?>", color: "<?php echo $mau; ?>", label: "KHÔNG THAM GIA"},
-                                    { y: <?php echo $hsin; ?>, indexLabelFontColor: "<?php echo $mau; ?>", color: "<?php echo $mau; ?>", label: "ĐÃ THAM GIA"},
-                                    { y: <?php echo count_game_group($lmID_arr[$i]["ID_LM"]); ?>, indexLabelFontColor: "<?php echo $mau; ?>", color: "<?php echo $mau; ?>", label: "SỐ NHÓM"}
-                                ]
-                            },
-                        <?php } ?>
-                        ]
-                    });
-                chartGame.render();
+//                var chartGame = new CanvasJS.Chart("chartGame",
+//                    {
+//                        animationEnabled: true,
+//                        interactivityEnabled: true,
+//                        theme: "theme2",
+//                        toolTip: {
+//                            shared: false
+//                        },
+//                        backgroundColor: "",
+//                        axisX: {
+//                            labelFontFamily:"Arial" ,
+//                            gridColor: "Silver",
+//                            tickColor: "silver",
+//                            labelFontColor: "#3E606F",
+//                            labelFontSize: 12,
+//                            labelText: "{name}",
+//                        },
+//                        axisY: {
+//                            gridThickness: 1,
+//                            indexLabelFontFamily:"Arial" ,
+//                            gridColor: "Silver",
+//                            tickColor: "silver",
+//                            labelFontColor: "#3E606F",
+//                            labelFontSize: 14,
+//                            labelFontWeight: "normal",
+//                        },
+//                        dataPointMaxWidth: 43,
+//                        data: [
+//                        <?php
+//                            for($i=0;$i<count($lmID_arr);$i++) {
+//                                $mau=$mau_arr[$i];
+//                                $hsin=count_hs_in_group($lmID_arr[$i]["ID_LM"]);
+//                                $name=mb_strtoupper($lmID_arr[$i]["name"],"UTF-8");
+//                        ?>
+//                            {
+//                                type: "column",
+//                                showInLegend: false,
+//                                indexLabelPlacement: "outside",
+//                                indexLabelFontSize: 14,
+//                                yValueFormatString: "#",
+//                                indexLabelFontWeight: "bold",
+//                                indexLabelFontFamily:"Arial" ,
+//                                indexLabel: "{y}",
+//                                labelFontSize: 14,
+//                                toolTipContent: "<?php //echo $name; ?>//: {y}",
+//                                dataPoints: [
+//                                    { y: <?php //echo count_hs_mon_lop($lmID_arr[$i]["ID_LM"])-$hsin; ?>//, indexLabelFontColor: "<?php //echo $mau; ?>//", color: "<?php //echo $mau; ?>//", label: "KHÔNG THAM GIA"},
+//                                    { y: <?php //echo $hsin; ?>//, indexLabelFontColor: "<?php //echo $mau; ?>//", color: "<?php //echo $mau; ?>//", label: "ĐÃ THAM GIA"},
+//                                    { y: <?php //echo count_game_group($lmID_arr[$i]["ID_LM"]); ?>//, indexLabelFontColor: "<?php //echo $mau; ?>//", color: "<?php //echo $mau; ?>//", label: "SỐ NHÓM"}
+//                                ]
+//                            },
+//                        <?php //} ?>
+//                        ]
+//                    });
+//                chartGame.render();
             }
         </script>
         <script type="text/javascript" src="http://localhost/www/TDUONG/thaygiao/js/canvasjs.min.js"></script>
@@ -620,47 +620,245 @@
                             ?>
                         </div>
                     </div>
-                    <h2>GHI CHÚ HỌC SINH</h2>
+<!--                    <h2>GHI CHÚ HỌC SINH</h2>-->
+<!--                    <div>-->
+<!--                        <div class="status" style="position: relative;">-->
+<!--                            <div id="main-note" style="display: none;">-->
+<!---->
+<!--                            </div>-->
+<!--                            <table class="table table3" id="list-note" cellspacing="3">-->
+<!--                                --><?php
+//                                $dem=0;
+//                                $result=get_list_note(0,10);
+//                                while($data=mysqli_fetch_assoc($result)) {
+//                                    if($data["has"]!="") {
+//                                        $day="<b>(".format_date($data["has"]).")</b>";
+//                                    } else {
+//                                        $day="";
+//                                    }
+//                                    echo "<tr>
+//                                        <th style='background: #3E606F;width:5%;' class='hidden'><span>" . ($dem + 1) . "</span></th>
+//                                        <th style='background: #EF5350;width:10%;min-width:70px;'><span><a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-chi-tiet/ma/$data[maso]/' target='_blank'>$data[maso]</a></span></td>
+//                                        <th style='background: #EF5350;width:15%;min-width:150px;'><span><a href='" . formatFacebook($data["facebook"]) . "' target='_blank' class='link-face'>$data[fullname]</a></span></td>
+//                                        <td style='text-align:left;padding-left:15px;position:relative;cursor:pointer;' class='view-all' data-hsID='$data[ID_HS]'>
+//                                            <span>$day " . nl2br($data["note"]) . "</span>";
+//                                        if ($data["hot"] == 1) {
+//                                            if($data["has"]!="") {
+//                                                echo "<span class='note-count check-chuy is_chuy' data-nID='$data[ID]'>NEW</span>";
+//                                            } else {
+//                                                echo "<span class='note-count check-hot is_chuy' data-hsID='$data[ID]'>NEW</span>";
+//                                            }
+//                                        }
+//                                        echo"</td>";
+//                                    echo"</tr>";
+//                                    $dem++;
+//                                }
+//                                ?>
+<!--                                <tr>-->
+<!--                                    <th colspan="4" style="text-align: right;"><input type='submit' data-dem="--><?php //echo $dem; ?><!--" id="load-more" class='submit' value='Load tiếp' /></th>-->
+<!--                                </tr>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <h2>DANH SÁCH HỌC SINH MỚI NGHỈ</h2>
                     <div>
                         <div class="status" style="position: relative;">
-                            <div id="main-note" style="display: none;">
-
-                            </div>
                             <table class="table table3" id="list-note" cellspacing="3">
+                                <tr>
+                                    <th style='background: #3E606F;width:5%;' class='hidden'><span>STT</span></th>
+                                    <th style='background: #3E606F;width:10%;min-width:70px;'><span>Mã số</span></th>
+                                    <th style='background: #3E606F;width:20%;min-width:150px;'><span>Họ và tên</span></th>
+                                    <th style="background: #3E606F;"><span>Ngày vào học</span></th>
+                                    <th style="background: #3E606F;"><span>Ngày nghỉ</span></th>
+                                    <th style="background: #3E606F;width: 40%;"><span>Ghi chú cuối</span></th>
+                                </tr>
                                 <?php
                                 $dem=0;
-                                $result=get_list_note(0,10);
+                                $query="SELECT h.ID_HS,h.cmt AS maso,h.fullname,h.facebook,m.date_in,n.date FROM hocsinh AS h
+                                INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_LM='$lmID'
+                                INNER JOIN hocsinh_nghi AS n ON n.ID_HS=h.ID_HS AND n.ID_LM='$lmID'
+                                ORDER BY n.ID_N DESC,n.date DESC
+                                LIMIT 10";
+                                $result=mysqli_query($db,$query);
                                 while($data=mysqli_fetch_assoc($result)) {
-                                    if($data["has"]!="") {
-                                        $day="<b>(".format_date($data["has"]).")</b>";
-                                    } else {
-                                        $day="";
-                                    }
+                                    $query2="SELECT note FROM hocsinh_note WHERE ID_HS='$data[ID_HS]' ORDER BY ngay DESC LIMIT 1";
+                                    $result2=mysqli_query($db,$query2);
+                                    $data2=mysqli_fetch_assoc($result2);
                                     echo "<tr>
-                                        <th style='background: #3E606F;width:5%;' class='hidden'><span>" . ($dem + 1) . "</span></th>
-                                        <th style='background: #EF5350;width:10%;min-width:70px;'><span><a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-chi-tiet/ma/$data[maso]/' target='_blank'>$data[maso]</a></span></td>
-                                        <th style='background: #EF5350;width:15%;min-width:150px;'><span><a href='" . formatFacebook($data["facebook"]) . "' target='_blank' class='link-face'>$data[fullname]</a></span></td>
-                                        <td style='text-align:left;padding-left:15px;position:relative;cursor:pointer;' class='view-all' data-hsID='$data[ID_HS]'>
-                                            <span>$day " . nl2br($data["note"]) . "</span>";
-                                        if ($data["hot"] == 1) {
-                                            if($data["has"]!="") {
-                                                echo "<span class='note-count check-chuy is_chuy' data-nID='$data[ID]'>NEW</span>";
-                                            } else {
-                                                echo "<span class='note-count check-hot is_chuy' data-hsID='$data[ID]'>NEW</span>";
-                                            }
-                                        }
-                                        echo"</td>";
-                                    echo"</tr>";
+                                        <th style='background: #3E606F;' class='hidden'><span>" . ($dem + 1) . "</span></th>
+                                        <th style='background: #EF5350;'><span><a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-chi-tiet/ma/$data[maso]/' target='_blank'>$data[maso]</a></span></td>
+                                        <th style='background: #EF5350;'><span><a href='" . formatFacebook($data["facebook"]) . "' target='_blank' class='link-face'>$data[fullname]</a></span></td>
+                                        <td><span>".format_dateup($data["date_in"])."</span></td>
+                                        <td><span>".format_dateup($data["date"])."</span></td>
+                                        <td><span>$data2[note]</span></td>
+                                    </tr>";
                                     $dem++;
                                 }
                                 ?>
-                                <tr>
-                                    <th colspan="4" style="text-align: right;"><input type='submit' data-dem="<?php echo $dem; ?>" id="load-more" class='submit' value='Load tiếp' /></th>
-                                </tr>
+<!--                                <tr>-->
+<!--                                    <th colspan="4" style="text-align: right;"><input type='submit' data-dem="--><?php //echo $dem; ?><!--" id="load-more" class='submit' value='Load tiếp' /></th>-->
+<!--                                </tr>-->
                             </table>
                         </div>
                     </div>
+                    <h2>NHẮC NHỞ</h2>
+                    <div>
+                        <div class="status">
+                            <table class="table">
+                                <?php
+                                $stt=0;
+                                $result=get_all_lop_mon();
+                                while($data=mysqli_fetch_assoc($result)) {
+                                    $buoiID=get_new_buoikt($data["ID_MON"],1,1);
+                                    $ngay=format_dateup(get_ngay_buoikt($buoiID));
+                                    if(!check_done_options($buoiID, "phu-diem", $data["ID_LM"], $data["ID_MON"])) {
+                                        echo"<tr>
+                                            <th style='background: #3E606F;width:5%;min-width:70px;'><span>".($stt+1)."</span></th>
+                                            <td style='text-align:left;padding-left:15px;'><span>Bạn chưa phủ điểm 0 lớp <strong>$data[name]</strong> ngày <strong>$ngay</strong></span></td>
+                                        </tr>";
+                                        $stt++;
+                                    }
+                                    if(!check_done_options($buoiID, "kq-thach-dau",$data["ID_LM"],$data["ID_MON"]) && !check_khoa($data["ID_LM"])) {
+                                        echo"<tr>
+                                            <th style='background: #3E606F;width:5%;min-width:70px;'><span>".($stt+1)."</span></th>
+                                            <td style='text-align:left;padding-left:15px;'><span>Bạn chưa xét kết quả thách đấu lớp <strong>$data[name]</strong> ngày <strong>$ngay</strong></span></td>
+                                        </tr>";
+                                        $stt++;
+                                    }
+                                    if($data["ID_MON"]==1) {
+                                        if (!check_done_options($buoiID, "cap-nhat-diem-1", $data["ID_LM"], $data["ID_MON"])) {
+                                            echo "<tr>
+                                                <th style='background: #3E606F;width:5%;min-width:70px;'><span>" . ($stt + 1) . "</span></th>
+                                                <td style='text-align:left;padding-left:15px;'><span>Bạn chưa cập nhật điểm từ Bgo lên Luyện thi <strong>$data[name]</strong> ngày <strong>$ngay</strong></span></td>
+                                            </tr>";
+                                            $stt++;
+                                        }
+                                        if (!check_done_options($buoiID, "cap-nhat-diem-2", $data["ID_LM"], $data["ID_MON"])) {
+                                            echo "<tr>
+                                                <th style='background: #3E606F;width:5%;min-width:70px;'><span>" . ($stt + 1) . "</span></th>
+                                                <td style='text-align:left;padding-left:15px;'><span>Bạn chưa cập nhật điểm từ Luyện thi về Bgo <strong>$data[name]</strong> ngày <strong>$ngay</strong></span></td>
+                                            </tr>";
+                                            $stt++;
+                                        }
+                                    }
+//                                    if(!check_done_options($buoiID, "kq-ngoi-sao",$data["ID_LM"],$monID) && !check_khoa($data["ID_LM"])) {
+//                                        echo"<li><a href='#' style='color:red;font-weight: 600;'>Bạn chưa xét kết quả ngôi sao hy vọng lớp $data[name] ngày $ngay</a></li>";
+//                                    }
+                                }
+                                ?>
+                                <tr></tr>
+                            </table>
+                        </div>
+                    </div>
+<!--                    <h2>Nhóm trò chơi</h2>-->
+<!--                    <div>-->
+<!--                        <div class="status">-->
+<!--                            <table class="table">-->
+<!--                                <tr>-->
+<!--                                    <th style="background: #3E606F;"><span>Tiền thưởng</span></th>-->
+<!--                                    <td><span>--><?php //echo format_price($price); ?><!--</span></td>-->
+<!--                                    <td rowspan="2" colspan="5" style="width:15%;"><input type="button" onclick="location.href='http://localhost/www/TDUONG/thaygiao/game/'" class="submit" value="Chi tiết" /></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th style="background: #3E606F;"><span>Số tiền trừ</span></td>-->
+<!--                                    <td><span>60.000đ</span></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th colspan="7" style="width: 100%;">-->
+<!--                                        <div id='chartGame' style='width:100%;height: 300px;margin: 25px auto 0 auto;'></div>-->
+<!--                                    </th>-->
+<!--                                </tr>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <h2>HỌC SINH HAY MANG BÀI VỀ NHÀ <strong>(5 TUẦN)</strong></h2>-->
+<!--                    <div>-->
+<!--                        <div class="status">-->
+<!--                            <table class="table">-->
+<!--                            --><?php
+//                                $dem=0;
+//                                $buoi_string="";
+//                                $result2=get_all_buoikt($monID,5);
+//                                while($data2=mysqli_fetch_assoc($result2)) {
+//                                    $buoi_string.=",'$data2[ID_BUOI]'";
+//                                }
+//                                $result2=get_all_lop_mon2($monID);
+//                                while($data2=mysqli_fetch_assoc($result2)) {
+//                                    echo"<tr style='background:#3E606F;'>
+//                                        <th colspan='5'><span>$data2[name]</span></th>
+//                                    </tr>";
+//                                    $query = "SELECT d.ID_HS,h.cmt,h.fullname,h.facebook,COUNT(*) AS dem,l.name,AVG(d.diem) AS diemtb FROM diemkt AS d
+//                                    INNER JOIN hocsinh AS h ON h.ID_HS=d.ID_HS
+//                                    INNER JOIN hocsinh_mon AS m ON m.ID_HS=d.ID_HS AND m.ID_LM=d.ID_LM
+//                                    INNER JOIN lop_mon AS l ON l.ID_LM=d.ID_LM AND l.ID_MON='$monID'
+//                                    WHERE d.ID_BUOI IN (".substr($buoi_string,1).") AND d.loai='1' AND d.diem!='0' AND d.ID_LM='$data2[ID_LM]'
+//                                    GROUP BY d.ID_HS
+//                                    ORDER BY dem DESC LIMIT 5";
+//                                    $result = mysqli_query($db, $query);
+//                                    //echo mysqli_error($db);
+//                                    while ($data = mysqli_fetch_assoc($result)) {
+//                                        echo "<tr>
+//                                            <th style='background: #3E606F;width:5%;' class='hidden'><span>" . ($dem + 1) . "</span></th>
+//                                            <th style='background: #EF5350;width:10%;min-width:70px;'><span><a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-chi-tiet/ma/$data[cmt]/' target='_blank'>$data[cmt]</a></span></td>
+//                                            <th style='background: #EF5350;width:15%;min-width:150px;'><span><a href='" . formatFacebook($data["facebook"]) . "' target='_blank' class='link-face'>$data[fullname]</a></span></td>
+//                                            <td><span>$data[dem] bài</span></td>
+//                                            <td style='width:30%;' class='hidden'><span>".format_diem($data["diemtb"])."</span></td>
+//                                        </tr>";
+//                                        $dem++;
+//                                    }
+//                                }
+//                            ?>
+<!--                                <tr></tr>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <h2>HỌC SINH HỌC KÉM</h2>-->
+<!--                    <div>-->
+<!--                        <div class="status">-->
+<!--                            <table class="table" id="table-main">-->
+<!--                                <tr id="show">-->
+<!--                                    <th colspan="4" style="text-align: right;"><input type="submit" class="submit" value="Tải dữ liệu" /></th>-->
+<!--                                </tr>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
+<!--                <div id="main-right">-->
+<!--                	<div>-->
+<!--                        <h3>Biểu đồ nhanh</h3>-->
+<!--                        <ul>-->
+<!--                            <li><a href="http://localhost/www/TDUONG/thaygiao/tra-cuu/"># Tra cứu</a></li>-->
+<!--                            <li><a href="http://localhost/www/TDUONG/thaygiao/dong-bo/" target="_blank"># Đồng bộ</a></li>-->
+<!--                            <li><a href="http://localhost/www/TDUONG/thaygiao/hoc-sinh-thong-tin/--><?php //echo $lmID; ?><!--/--><?php //echo $monID; ?><!--/" target="_blank"># Biểu đồ thông tin học sinh</a></li>-->
+<!--                            <li><a href="http://localhost/www/TDUONG/thaygiao/hoc-sinh-thong-ke/--><?php //echo $lmID; ?><!--/--><?php //echo $monID; ?><!--/" target="_blank"># Biểu đồ điểm kiểm tra</a></li>-->
+<!--                            <li><a href="http://localhost/www/TDUONG/thaygiao/cai-dat-ca/--><?php //echo $lmID; ?><!--/--><?php //echo $monID; ?><!--/" target="_blank"># Biểu đồ ca học - ca thi</a></li>-->
+<!--                            <li><a href="http://localhost/www/TDUONG/thaygiao/thach-dau/" target="_blank"># Biểu đồ thách đấu</a></li>-->
+<!--                            <li><a href="http://localhost/www/TDUONG/thaygiao/ngoi-sao/" target="_blank"># Biểu đồ ngôi sao hy vọng</a></li>-->
+<!--                            <li><a href="http://localhost/www/TDUONG/thaygiao/hoc-sinh-nghi-nhieu/--><?php //echo $lmID; ?><!--/--><?php //echo $monID; ?><!--/" target="_blank"># Biểu đồ học sinh nghỉ nhiều</a></li>-->
+<!--                        </ul>-->
+<!--                  	</div>-->
+<!--                    <div>-->
+<!--                        <h3>Nhắc nhở</h3>-->
+<!--                        <ul>-->
+<!--                            --><?php
+//                                $result=get_all_lop_mon();
+//                                while($data=mysqli_fetch_assoc($result)) {
+//                                    $buoiID=get_new_buoikt($data["ID_MON"],1,1);
+//                                    $ngay=format_dateup(get_ngay_buoikt($buoiID));
+//                                    if(!check_done_options($buoiID, "phu-diem", $data["ID_LM"], $data["ID_MON"])) {
+//                                        echo"<li><a href='#' style='color:red;font-weight: 600;'>Bạn chưa phủ điểm 0 lớp $data[name] ngày $ngay</a></li>";
+//                                    }
+//                                    if(!check_done_options($buoiID, "kq-thach-dau",$data["ID_LM"],$data["ID_MON"]) && !check_khoa($data["ID_LM"])) {
+//                                        echo"<li><a href='#' style='color:red;font-weight: 600;'>Bạn chưa xét kết quả thách đấu lớp $data[name] ngày $ngay</a></li>";
+//                                    }
+////                                    if(!check_done_options($buoiID, "kq-ngoi-sao",$data["ID_LM"],$monID) && !check_khoa($data["ID_LM"])) {
+////                                        echo"<li><a href='#' style='color:red;font-weight: 600;'>Bạn chưa xét kết quả ngôi sao hy vọng lớp $data[name] ngày $ngay</a></li>";
+////                                    }
+//                                }
+//                            ?>
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
 
         </div>

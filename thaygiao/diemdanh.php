@@ -54,6 +54,15 @@
 					$("#hs-info, #hs-nghi, #ca-regis, #ca-result").html(""), $("#hs-info").closest("td").find("input").remove(), $("#ca-result").css("background", "none");
 //                    $("#check_fixed").is(":checked") ? $("#is_kt").prop("checked", !0) : $("#co-dung").prop("checked", !0)
 				}
+
+                $("i.refresh-list").click(function() {
+                    ngay = $("#select-date").val();
+                    caID = $("#select-ca").val();
+                    cdID = 0;
+                    if(ngay!="" && $.isNumeric(caID) && caID!=0) {
+                        t(ngay, caID, cdID);
+                    }
+                });
 			
 				function t(a, c, e) {
 					$("#popup-loading").fadeIn("fast"), $("#BODY").css("opacity", "0.3"), $.ajax({
@@ -111,7 +120,7 @@
 						type: "post",
 						url: "http://localhost/www/TDUONG/thaygiao/xuly-diemdanh/",
 						success: function(a) {
-							"ok" != a ? alert(a) : t(ngay, caID, cdID), $("#BODY").css("opacity", "1"), $("#popup-loading").fadeOut("fast"), $("#nhap").addClass("submit-done")
+							"ok" != a ? alert(a) : $("#BODY").css("opacity", "1"), $("#popup-loading").fadeOut("fast"), $("#nhap").addClass("submit-done")
 						}
 					})
 				}), $("#search-box ul").delegate("li a", "click", function() {
@@ -470,7 +479,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                	<td class='hidden'><span>Trạng thái</span></td>
+                                	<td class='hidden'><span>Trạng thái<i class="fa fa-refresh refresh-list" style="margin-left: 10px;font-size:18px;"></i></span></td>
                                     <td><span id="status-dd" style="display:block;color:#FFF;padding:5px 0 5px 0;text-align:center;"></span></td>
                                 </tr>
 <!--                                <tr>-->

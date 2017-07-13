@@ -158,6 +158,19 @@
             if($dem==0) {
                 echo"<tr><td colspan='2'><span>Bạn không có ý tưởng gì cả!</span></td></tr>";
             }
+        } else if($action=="tien-chi-list") {
+            $result=get_options_all("da-chi",5);
+            $dem=0;
+            while($data=mysqli_fetch_assoc($result)) {
+                echo"<tr>
+                    <td style='text-align:left;width: 80%;'><strong>".format_price($data["note"])."</strong><br /><span>".nl2br($data["content"])."</span></td>
+                    <td><span><i class='fa fa-close' data-oID='$data[ID_O]'></i></span></td>
+                </tr>";
+                $dem++;
+            }
+            if($dem==0) {
+                echo"<tr><td colspan='2'><span>Bạn chưa chi gì cả!</span></td></tr>";
+            }
         }
 	}
 
@@ -331,6 +344,22 @@
             $query="UPDATE game_level SET level='".$ajax[$i]["stt"]."' WHERE ID_STT='".$ajax[$i]["id"]."'";
             mysqli_query($db, $query);
         }
+    }
+
+    if(isset($_POST["money"]) && isset($_POST["content"])) {
+        $money=$_POST["money"];
+        $money=str_replace(array(".","đ","d"), "",$money);
+        $content=$_POST["content"];
+        if(valid_id($money)) {
+            add_options3($content,"da-chi",$money,date("Y-m-d H:i:s"));
+        }
+    }
+
+    if(isset($_POST["email"]) && isset($_POST["hsID_email"])) {
+        $email=addslashes(trim($_POST["email"]));
+        $hsID=$_POST["hsID_email"];
+        $query="UPDATE hocsinh SET email='$email' WHERE ID_HS='$hsID'";
+        mysqli_query($db, $query);
     }
 	
 	require("../../model/close_db.php");

@@ -120,7 +120,9 @@
 						type: "post",
 						url: "http://localhost/www/TDUONG/admin/xuly-diemdanh/",
 						success: function(a) {
-							"ok" != a ? alert(a) : $("#BODY").css("opacity", "1"), $("#popup-loading").fadeOut("fast"), $("#nhap").addClass("submit-done")
+                            $("#BODY").css("opacity", "1"), $("#popup-loading").fadeOut("fast");
+
+							"ok" != a ? alert(a) : $("#nhap").addClass("submit-done");
 						}
 					})
 				}), $("#search-box ul").delegate("li a", "click", function() {

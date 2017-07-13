@@ -106,133 +106,204 @@
 						}
                     });
 				});
-				
-				$("table#list-danhsach tr td.hs-ko").click(function() {
-					me = $(this);
-					hsID = $(this).attr("data-hsID");
-					index = $(this).index();
-					cumID = $("table#list-danhsach tr:first-child th:eq("+index+")").attr("data-cum");
-					if($(this).hasClass("active")) {
-						is_phep = 0;
-					} else {
-						is_phep = 1;
-					}
-					if($.isNumeric(hsID) && $.isNumeric(cumID) && hsID!=0 && cumID!=0 && (is_phep==0 || is_phep==1)) {
-						me.css("opacity","0.3");
-						$.ajax({
-							async: true,
-                            data: "cumID=" + cumID + "&hsID=" + hsID + "&is_phep=" + is_phep + "&lmID=" + <?php echo $lmID; ?> + "&monID=" + <?php echo $monID; ?> + "&is_bao=0",
-							type: "post",
-							url: "http://localhost/www/TDUONG/thaygiao/xuly-diemdanh/",
-							success: function(result) {
-								if(result=="ok") {
-									if(is_phep==0) {
-                                        me.css("background","green");
-									    me.html("<span style='color:#FFF'>Ko phép</span>");
-										me.removeClass("active");
-									}
-									if(is_phep==1) {
-									    me.css("background","orange");
-										me.html("<span style='color:#FFF'>Phép</span><input type='checkbox' style='display: none;' class='check' checked='checked' />");
-										me.addClass("active");
-									}
-								} else {
-									alert("Lỗi dữ liệu!");
-								}
-								me.css("opacity","1");
-							}
-						});
-					} 
-				});
-				
-				$("table#list-danhsach tr th").click(function() {
-					cumID = $(this).attr("data-cum");
-					dai = $("table#list-danhsach tr").length;
-					del_td = $(this).index();
-					if($(this).hasClass("active")) {
-						$("table#list-danhsach tr").each(function(index, element) {
-							$(element).show();
+
+				$("#popup-ok").click(function() {
+				    var hsID = $(this).attr("data-hsID");
+				    var ddID = $(this).attr("data-ddID");
+				    var cumID = $(this).attr("data-cum");
+				    var loai = $("#select-diemdanh").find("option:selected").val();
+                    if($.isNumeric(hsID) && $.isNumeric(cumID) && hsID!=0 && cumID!=0 && $.isNumeric(ddID) && ddID!=0) {
+                        $.ajax({
+                            async: true,
+                            data: "loai_dd=" + loai + "&ddID_dd=" + ddID + "&hsID_dd=" + hsID + "&cumID_dd=" + cumID + "&lmID_dd=" + <?php echo $lmID; ?> + "&monID_dd=" + <?php echo $monID; ?>,
+                            type: "post",
+                            url: "http://localhost/www/TDUONG/thaygiao/xuly-diemdanh/",
+                            success: function(result) {
+                                if(result == "ok-1") {
+                                    $("#popup-confirm").fadeOut("fast");
+                                    $(".hs-diemdanh.cum-" + cumID).find("span").html("OK");
+                                } else if(result == "ok-2") {
+                                    $("#popup-confirm").fadeOut("fast");
+                                    $(".hs-diemdanh.cum-" + cumID).find("span").html("Nghỉ");
+                                } else {
+                                    alert("Lỗi: " + result);
+                                }
+                                console.log(result);
+                            }
                         });
-						$(this).removeClass("active");
-					} else {
-						$("table#list-danhsach tr").each(function(index, element) {
-                        	if(index>0 && index<dai-2) {
-								if($(element).find("td:eq("+del_td+")").hasClass("hs-ko")) {
-									$(element).show();
-								} else {
-									$(element).hide();
-								}
-							}
-                        });
-						$(this).addClass("active");
-					}
+                    } else {
+                        alert("Dữ liệu không chính xác!");
+                    }
+                });
+
+                $("table#list-danhsach tr td.hs-diemdanh").click(function() {
+                    var me = $(this);
+                    var hsID = $(this).attr("data-hsID");
+                    var ddID = $(this).attr("data-ddID");
+                    var index = $(this).index();
+                    var cumID = $("table#list-danhsach tr:first-child th:eq(" + index + ")").attr("data-cum");
+                    if($.isNumeric(hsID) && $.isNumeric(cumID) && hsID!=0 && cumID!=0 && $.isNumeric(ddID) && ddID!=0) {
+                        $("#popup-ok").attr("data-hsID", hsID).attr("data-ddID", ddID).attr("data-cum", cumID);
+                        $("#popup-confirm").fadeIn("fast");
+                    } else {
+                        alert("Dữ liệu không chính xác!");
+                    }
 				});
 				
-				$("table#list-danhsach tr:last-child td input.nhap_nghi").click(function() {
-					if(confirm("Bạn có chắc chắn thực hiện hành động này?")) {
-						$("#popup-loading").fadeIn("fast");
-						$("#BODY").css("opacity","0.3");
-						cumID = $(this).attr("data-cum");
-						me = $(this);
-						ajax_data="[";
-						$("table#list-danhsach tr td.cum-"+cumID).each(function(index, element) {
-							is_phep = 0;
-                            if($(element).has("input.check")) {
-								if($(element).find("input.check").is(":checked")) {
-									is_phep = 1;
-								} 
-							}
-							hsID = $(element).attr("data-hsID");
-							ajax_data+='{"hsID":"'+hsID+'","is_phep":"'+is_phep+'"},';
-                        });
-						ajax_data+='{"cumID":"'+cumID+'","lmID":"<?php echo $lmID; ?>","monID":"<?php echo $monID; ?>"}';
-						ajax_data+="]";
-                        is_bao = 0;
-                        if(confirm("Bạn có muốn thông báo cho học sinh?")) {
-                            is_bao = 1;
-                        } else {
-                            is_bao = 0;
-                        }
-						if($.isNumeric(cumID) && cumID!=0 && ajax_data!="" && (is_bao==1 || is_bao==0)) {
-							$.ajax({
-								async: true,
-								data: "data=" + ajax_data + "&is_bao=" + is_bao,
-								type: "post",
-								url: "http://localhost/www/TDUONG/thaygiao/xuly-diemdanh/",
-								success: function(result) {
-									if(result=="ok") {
-										alert("Thành công");
-										me.val("Xong").css("background","blue");
-									} else {
-										alert(result);
-										me.val("Lỗi").css("background","red");
-									}
-									$("#BODY").css("opacity","1");
-									$("#popup-loading").fadeOut("fast");
-								}
-							});
-						}
-					}
-				});
-				
-				$("table#list-danhsach").delegate("tr td:first-child > span.check-nghi > i.fa-square-o","click", function() {
-				//$("#list-danhsach tr td > span.check-nghi > i.fa-square-o").click(function() {
-					del_tr = $(this).closest("tr");
-					hsID = $(this).attr("data-hsID");
-					me_i = $(this);
-					if(confirm("Bạn có chắc chắn cho học sinh này nghỉ học?") && $.isNumeric(hsID) && hsID!=0) {
-						del_tr.css("opacity","0.3");
-						$.ajax({
-							async: true,
-							data: "hsID2=" + hsID + "&lmID2=" + <?php echo $lmID; ?>,
-							type: "post",
-							url: "http://localhost/www/TDUONG/thaygiao/xuly-thongtin/",
-							success: function(result) {
-								del_tr.fadeOut("fast");
-							}
-						});
-					} 
-				});
+//				$("table#list-danhsach tr td.hs-ko").click(function() {
+//					me = $(this);
+//					hsID = $(this).attr("data-hsID");
+//					index = $(this).index();
+//					cumID = $("table#list-danhsach tr:first-child th:eq("+index+")").attr("data-cum");
+//					if($(this).hasClass("active")) {
+//						is_phep = 0;
+//					} else {
+//						is_phep = 1;
+//					}
+//					if($.isNumeric(hsID) && $.isNumeric(cumID) && hsID!=0 && cumID!=0 && (is_phep==0 || is_phep==1)) {
+//						me.css("opacity","0.3");
+//						$.ajax({
+//							async: true,
+//                            data: "cumID=" + cumID + "&hsID=" + hsID + "&is_phep=" + is_phep + "&lmID=" + <?php //echo $lmID; ?>// + "&monID=" + <?php //echo $monID; ?>// + "&is_bao=0",
+//							type: "post",
+//							url: "http://localhost/www/TDUONG/thaygiao/xuly-diemdanh/",
+//							success: function(result) {
+//								if(result=="ok") {
+//									if(is_phep==0) {
+//                                        me.css("background","green");
+//									    me.html("<span style='color:#FFF'>Ko phép</span>");
+//										me.removeClass("active");
+//									}
+//									if(is_phep==1) {
+//									    me.css("background","orange");
+//										me.html("<span style='color:#FFF'>Phép</span><input type='checkbox' style='display: none;' class='check' checked='checked' />");
+//										me.addClass("active");
+//									}
+//								} else {
+//									alert("Lỗi dữ liệu!");
+//								}
+//								me.css("opacity","1");
+//							}
+//						});
+//					}
+//				});
+//
+//                $("table#list-danhsach tr td span.hs-diem-danh").click(function() {
+//                    me = $(this);
+//                    hsID = $(this).attr("data-hsID");
+//                    ddID = $(this).attr("data-ddID");
+//                    index = $(this).index();
+//                    cumID = $("table#list-danhsach tr:first-child th:eq("+index+")").attr("data-cum");
+//                    if(confirm("Bạn có chắc chắn không?")) {
+//                        if ($.isNumeric(hsID) && $.isNumeric(ddID) && hsID != 0 && ddID != 0) {
+//                            me.css("opacity", "0.3");
+//                            $.ajax({
+//                                async: true,
+//                                data: "ddID_dd=" + ddID + "&hsID_dd=" + hsID + "&cumID_dd=" + cumID + "&lmID_dd=<?php //echo $lmID; ?>//&monID_dd=<?php //echo $monID; ?>//",
+//                                type: "post",
+//                                url: "http://localhost/www/TDUONG/thaygiao/xuly-diemdanh/",
+//                                success: function (result) {
+//                                    if (result == "ok") {
+//                                        $("table#list-danhsach tr td.hs-ko:eq("+index+")").html("<span>3</span>").css("background","#FFF");
+//                                        me.html("");
+//                                    } else {
+//                                        alert("Lỗi dữ liệu!");
+//                                    }
+//                                    me.css("opacity", "1");
+//                                }
+//                            });
+//                        }
+//                    }
+//                });
+//
+//				$("table#list-danhsach tr th").click(function() {
+//					cumID = $(this).attr("data-cum");
+//					dai = $("table#list-danhsach tr").length;
+//					del_td = $(this).index();
+//					if($(this).hasClass("active")) {
+//						$("table#list-danhsach tr").each(function(index, element) {
+//							$(element).show();
+//                        });
+//						$(this).removeClass("active");
+//					} else {
+//						$("table#list-danhsach tr").each(function(index, element) {
+//                        	if(index>0 && index<dai-2) {
+//								if($(element).find("td:eq("+del_td+")").hasClass("hs-ko")) {
+//									$(element).show();
+//								} else {
+//									$(element).hide();
+//								}
+//							}
+//                        });
+//						$(this).addClass("active");
+//					}
+//				});
+//
+//				$("table#list-danhsach tr:last-child td input.nhap_nghi").click(function() {
+//					if(confirm("Bạn có chắc chắn thực hiện hành động này?")) {
+//						$("#popup-loading").fadeIn("fast");
+//						$("#BODY").css("opacity","0.3");
+//						cumID = $(this).attr("data-cum");
+//						me = $(this);
+//						ajax_data="[";
+//						$("table#list-danhsach tr td.cum-"+cumID).each(function(index, element) {
+//							is_phep = 0;
+//                            if($(element).has("input.check")) {
+//								if($(element).find("input.check").is(":checked")) {
+//									is_phep = 1;
+//								}
+//							}
+//							hsID = $(element).attr("data-hsID");
+//							ajax_data+='{"hsID":"'+hsID+'","is_phep":"'+is_phep+'"},';
+//                        });
+//						ajax_data+='{"cumID":"'+cumID+'","lmID":"<?php //echo $lmID; ?>//","monID":"<?php //echo $monID; ?>//"}';
+//						ajax_data+="]";
+//                        is_bao = 0;
+//                        if(confirm("Bạn có muốn thông báo cho học sinh?")) {
+//                            is_bao = 1;
+//                        } else {
+//                            is_bao = 0;
+//                        }
+//						if($.isNumeric(cumID) && cumID!=0 && ajax_data!="" && (is_bao==1 || is_bao==0)) {
+//							$.ajax({
+//								async: true,
+//								data: "data=" + ajax_data + "&is_bao=" + is_bao,
+//								type: "post",
+//								url: "http://localhost/www/TDUONG/thaygiao/xuly-diemdanh/",
+//								success: function(result) {
+//									if(result=="ok") {
+//										alert("Thành công");
+//										me.val("Xong").css("background","blue");
+//									} else {
+//										alert(result);
+//										me.val("Lỗi").css("background","red");
+//									}
+//									$("#BODY").css("opacity","1");
+//									$("#popup-loading").fadeOut("fast");
+//								}
+//							});
+//						}
+//					}
+//				});
+//
+//				$("table#list-danhsach").delegate("tr td:first-child > span.check-nghi > i.fa-square-o","click", function() {
+//				//$("#list-danhsach tr td > span.check-nghi > i.fa-square-o").click(function() {
+//					del_tr = $(this).closest("tr");
+//					hsID = $(this).attr("data-hsID");
+//					me_i = $(this);
+//					if(confirm("Bạn có chắc chắn cho học sinh này nghỉ học?") && $.isNumeric(hsID) && hsID!=0) {
+//						del_tr.css("opacity","0.3");
+//						$.ajax({
+//							async: true,
+//							data: "hsID2=" + hsID + "&lmID2=" + <?php //echo $lmID; ?>//,
+//							type: "post",
+//							url: "http://localhost/www/TDUONG/thaygiao/xuly-thongtin/",
+//							success: function(result) {
+//								del_tr.fadeOut("fast");
+//							}
+//						});
+//					}
+//				});
 			});
 		</script>
        
@@ -243,6 +314,23 @@
     	<div class="popup" id="popup-loading">
       		<p><img src="http://localhost/www/TDUONG/thaygiao/images/ajax-loader.gif" /></p>
       	</div>
+
+        <div class="popup" id="popup-confirm" style="width:30%;left:35%;">
+            <div class="popup-close"><i class="fa fa-close"></i></div>
+            <p style="text-transform:uppercase;">Điểm danh</p>
+            <div style="width:90%;margin:15px auto 15px auto;">
+                <select class="input" id="select-diemdanh">
+                    <option value="dihoc-tinhdung">Đi học - Tính đúng</option>
+                    <option value="dihoc-tinhsai">Đi học - Tính sai</option>
+                    <option value="dimuon-kokt">Đi muộn hoặc không kiểm tra</option>
+                    <option value="nghicophep">Nghỉ có phép</option>
+                    <option value="nghikophep">Nghỉ không phép</option>
+                </select>
+            </div>
+            <div>
+                <button class="submit" id="popup-ok">OK</button>
+            </div>
+        </div>
                              
       	<div id="BODY">
         
@@ -304,13 +392,13 @@
 											    //echo"$data1[ID_CUM] - $data1[date]<br />";
                                                 $thu = date("w",strtotime($data1["date"])) + 1;
 												if(($cumID!=$data1["ID_CUM"] && $dem!=0) || ($dem==$all-1)) {
-													echo"<th style='min-width:60px;cursor:pointer' data-cum='$cumID'><span>".substr($con,6)."</span></th>";
+													echo"<th style='min-width:60px;' data-cum='$cumID'><span>".substr($con,6)."</span></th>";
 													$con="";
 													if($dem==$all-1 && $cumID!=$data1["ID_CUM"]) {
 														if(stripos($con,format_date($data1["date"]))===false) {
 															$con.="<br />".format_date($data1["date"])." (T$thu)";
 														}
-														echo"<th style='min-width:60px;cursor:pointer' data-cum='$cumID'><span>".substr($con,6)."</span></th>";
+														echo"<th style='min-width:60px;' data-cum='$cumID'><span>".substr($con,6)."</span></th>";
 													}
 												}
 												$dem++;
@@ -346,6 +434,7 @@
 												$query2="SELECT h.ID_HS,h.cmt,h.fullname,m.date_in,n.ID_N FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=h.ID_HS ORDER BY h.cmt ASC LIMIT $position,$display";
 											}
 										}
+										$diemdanh_str="";
 										$result2=mysqli_query($db,$query2);
 										while($data2=mysqli_fetch_assoc($result2)) {
 											$date_in=date_create($data2["date_in"]);
@@ -363,9 +452,9 @@
 												<td><span>$data2[cmt]<span></td>
 												<td><span>$data2[fullname]</span></td>";
 												if($loai==1) {
-													$query3="SELECT ID_CUM,date FROM diemdanh_buoi WHERE ID_CUM IN (".substr($string,1).") AND (date LIKE '$now-%' OR date LIKE '$last-%') AND ID_LM='$lmID' AND ID_MON='$monID' GROUP BY ID_CUM ORDER BY ID_CUM DESC,date DESC";
+													$query3="SELECT ID_STT,ID_CUM,date FROM diemdanh_buoi WHERE ID_CUM IN (".substr($string,1).") AND (date LIKE '$now-%' OR date LIKE '$last-%') AND ID_LM='$lmID' AND ID_MON='$monID' GROUP BY ID_CUM ORDER BY ID_CUM DESC,date DESC";
 												} else {
-													$query3="SELECT ID_CUM,date FROM diemdanh_buoi WHERE ID_LM='$lmID' AND ID_MON='$monID' GROUP BY ID_CUM ORDER BY ID_CUM DESC,date DESC";
+													$query3="SELECT ID_STT,ID_CUM,date FROM diemdanh_buoi WHERE ID_LM='$lmID' AND ID_MON='$monID' GROUP BY ID_CUM ORDER BY ID_CUM DESC,date DESC";
 												}
 												$result3=mysqli_query($db,$query3);
 												$me=0;
@@ -373,20 +462,21 @@
 													$date=date_create($data3["date"]);
 													if($date<$date_in) {
 														echo"<td><span>C</span></td>";
+//                                                        $diemdanh_str.="<td><span></span></td>";
 													} else {
 														$result4=check_di_hoc($data2["ID_HS"],$data3["ID_CUM"],$lmID,$monID);
 														if($result4!=false) {
 														    if($hsID != 0) {
                                                                 $data4 = mysqli_fetch_assoc($result4);
                                                                 if ($data4["is_kt"] == 0) {
-                                                                    echo "<td><span>3</span></td>";
+                                                                    echo "<td class='hs-diemdanh cum-$data3[ID_CUM]' data-hsID='$data2[ID_HS]' data-ddID='$data3[ID_STT]'><span>3</span></td>";
                                                                 } else {
                                                                     if ($data4["is_hoc"] == 1 && $data4["is_tinh"] == 1) {
-                                                                        echo "<td><span>2</span></td>";
+                                                                        echo "<td class='hs-diemdanh cum-$data3[ID_CUM]' data-hsID='$data2[ID_HS]' data-ddID='$data3[ID_STT]'><span>2</span></td>";
                                                                     } else if ($data4["is_hoc"] == 1 && $data4["is_tinh"] == 0) {
-                                                                        echo "<td><span>1</span></td>";
+                                                                        echo "<td class='hs-diemdanh cum-$data3[ID_CUM]' data-hsID='$data2[ID_HS]' data-ddID='$data3[ID_STT]'><span>1</span></td>";
                                                                     } else if ($data4["is_hoc"] == 0 && $data4["is_tinh"] == 0) {
-                                                                        echo "<td><span>0</span></td>";
+                                                                        echo "<td class='hs-diemdanh cum-$data3[ID_CUM]' data-hsID='$data2[ID_HS]' data-ddID='$data3[ID_STT]'><span>0</span></td>";
                                                                     } else {
                                                                         echo "<td style='background:red;'><span>Lỗi</span></td>";
                                                                     }
@@ -394,12 +484,14 @@
                                                             } else {
                                                                 echo "<td><span class='fa fa-check'></span></td>";
                                                             }
+//                                                            $diemdanh_str.="<td><span></span></td>";
 														} else {
 															if(get_lydo_nghi($data3["ID_CUM"],$data2["ID_HS"],$lmID,$monID)) {
-                                                                echo"<td class='hs-ko cum-$data3[ID_CUM] active' data-hsID='$data2[ID_HS]' style='background:orange;'><span style='color:#FFF'>Phép</span><input type='checkbox' class='check' style='display: none;' checked='checked' /></td>";
+                                                                echo"<td class='hs-diemdanh cum-$data3[ID_CUM] active' data-hsID='$data2[ID_HS]' data-ddID='$data3[ID_STT]' style='background:orange;'><span style='color:#FFF'>Phép</span><input type='checkbox' class='check' style='display: none;' checked='checked' /></td>";
 															} else {
-																echo"<td class='hs-ko cum-$data3[ID_CUM]' data-hsID='$data2[ID_HS]' style='background:green;'><span style='color:#FFF'>Ko phép</span></td>";
+																echo"<td class='hs-diemdanh cum-$data3[ID_CUM]' data-hsID='$data2[ID_HS]' data-ddID='$data3[ID_STT]' style='background:green;'><span style='color:#FFF'>Ko phép</span></td>";
 															}
+//															$diemdanh_str.="<td><span style='font-size: 15px;' class='hs-diem-danh' data-ddID='$data3[ID_STT]' data-hsID='$data2[ID_HS]'><i class='fa fa-check-square-o'></i></button></span></td>";
 															$dem_arr[$me]++;
 														}
 													}
@@ -437,8 +529,9 @@
 												$me2++;
 											}
 											echo"<tr>
-												<td colspan='4'><span>Nghỉ $me buổi học / Tổng $me2 buổi</span></td>
-											</tr>";
+												<td colspan='4'><span>Nghỉ $me buổi học / Tổng $me2 buổi</span></td>";
+//												echo $diemdanh_str;
+											echo"</tr>";
 										}
 									?>
                                 </table>

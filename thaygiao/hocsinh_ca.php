@@ -16,17 +16,6 @@
 	$mau="#FFF";
 	$result0=get_hs_short_detail($hsID, $lmID);
 	$data0=mysqli_fetch_assoc($result0);
-
-    $cagio=array();
-    $query1="SELECT ID_GIO,gio FROM cagio WHERE ID_LM='$lmID' AND ID_MON='$monID' ORDER BY ID_GIO ASC";
-    $result1=mysqli_query($db,$query1);
-    while($data1=mysqli_fetch_assoc($result1)) {
-        $cagio[]=array(
-            "gioID" => $data1["ID_GIO"],
-            "gio" => $data1["gio"]
-        );
-    }
-    $n=count($cagio);
 	
 	$ontime=true;
 	
@@ -237,7 +226,7 @@
 								$max_dem=0;
 								$tkb=array();
 								$dia_diem="";$first=false;
-								$result=get_all_cum($lmID,$monID);
+								$result=get_all_cum_link($lmID,$monID);
 								while($data=mysqli_fetch_assoc($result)) {
                             		echo"<tr style='text-transform:uppercase;' class='big-ca'>
 										<th colspan=''><span>$data[name]</span></th>
@@ -245,6 +234,9 @@
 									<tr style='text-transform:uppercase;'>";
 									$thu_array=array();
 									$dem=0;
+                                    if($data["link"]!=0) {
+                                        $data["ID_CUM"] = $data["link"];
+                                    }
 									$query5="SELECT DISTINCT thu FROM cahoc WHERE cum='$data[ID_CUM]' ORDER BY thu ASC";
 									$result5=mysqli_query($db,$query5);
 									while($data5=mysqli_fetch_assoc($result5)) {
@@ -254,14 +246,13 @@
 									}	
 									echo"</tr>";
 									for($i=0;$i<count($ca_gio);$i++) {
-										if($lmID!=$ca_gio[$i]["lmID"]) {
-											continue;
-										}
+//										if($lmID!=$ca_gio[$i]["lmID"]) {
+//											continue;
+//										}
 										echo"
 										<tr class='con-ca'>";
 											for($j=0;$j<count($thu_array);$j++) {
                                                 $query3="SELECT c.ID_CA,c.thu,d.name FROM cahoc AS c 
-												INNER JOIN ca_quyen AS q ON q.ID_HS='$hsID' AND q.ID_CA=c.ID_CA 
 												INNER JOIN dia_diem AS d ON d.ID_DD=c.ID_DD 
 												WHERE c.thu='".$thu_array[$j]."' AND c.ID_GIO='".$ca_gio[$i]["gioID"]."' AND c.cum='$data[ID_CUM]'";												$result3=mysqli_query($db,$query3);
 												if(mysqli_num_rows($result3)!=0) {
@@ -382,99 +373,99 @@
                 
                 <div class="clear"></div>
                 
-                <div class="main-div animated bounceInUp" style="margin-top:15px;">
-                	<div id="main-info">
-                    	<div class="main-1-left back" style="margin-right:2%;max-height:none;">
-                        	<div>
-                            	<p class="main-title">Lịch học tăng cường</p>
-                                <p id="tkb-show2">Thứ 2 - Thứ 4 - Thứ 6</p>
-                            </div>
-                            <table class="table-tkb" style="border-spacing:0 3px;">
-                            <?php
-                            	$tkb=array();
-								$dia_diem="";$first=false;
-                                $result=get_all_cum_link($lmID,$monID);
-								while($data=mysqli_fetch_assoc($result)) {
-                            		echo"<tr style='text-transform:uppercase;' class='big-ca'>
-										<th colspan=''><span>$data[name]</span></th>
-									</tr>
-									<tr style='text-transform:uppercase;'>";
-									$thu_array=array();
-									$dem=0;
-									$query5="SELECT DISTINCT thu FROM cahoc WHERE cum='$data[link]' ORDER BY thu ASC";
-									$result5=mysqli_query($db,$query5);
-									while($data5=mysqli_fetch_assoc($result5)) {
-										echo"<th><span>Thứ $data5[thu]</span></th>";
-										$thu_array[$dem]=$data5["thu"];
-										$dem++;
-									}	
-									echo"</tr>";
-									for($i=0;$i<count($ca_gio);$i++) {
-										if($lmID==$ca_gio[$i]["lmID"]) {
-											continue;
-										}
-										echo"
-										<tr class='con-ca'>";
-											for($j=0;$j<count($thu_array);$j++) {
-                                                $query3="SELECT c.ID_CA,c.thu,d.name FROM cahoc AS c 
-												INNER JOIN ca_quyen AS q ON q.ID_HS='$hsID' AND q.ID_CA=c.ID_CA
-												INNER JOIN dia_diem AS d ON d.ID_DD=c.ID_DD 
-												WHERE c.thu='".$thu_array[$j]."' AND c.ID_GIO='".$ca_gio[$i]["gioID"]."' AND c.cum='$data[link]'";												$result3=mysqli_query($db,$query3);
-												if(mysqli_num_rows($result3)!=0) {
-													$data3=mysqli_fetch_assoc($result3);
-													$show=false;
-													if($data3["name"]!=$dia_diem) {
-														if(!$first) {
-															$dia_diem=$data3["name"];
-															$first=true;
-														} else {
-															$show=true;
-														}
-													}
-                                                    $num=get_num_hs_ca_hientai($data3["ID_CA"]);
-                                                    $has=check_hs_in_ca_hientai($data3["ID_CA"], $hsID);
-                                                    $has_codinh=check_hs_in_ca_codinh($data3["ID_CA"], $hsID);
-													if($has_codinh) {
-														$tkb[]="Thứ ".$data3["thu"];
-													}
-													if($has) {
-														if($has_codinh) {
-															echo"<td class='has-ca' style='background:rgba(255,255,255,0.15);'>";
-														} else {
-															echo"<td class='has-ca' style='background:rgba(255,250,3,0.2);'>";
-														}
-													} else {
-														echo"<td class='has-ca'>";
-													}
-													echo"<div class='tab-num'><span>$num</span></div>
-													<nav>
-														<div class='tab-left'><span class='tab-gio'>".$ca_gio[$i]["gio"]."</span></div>";
-                                                        echo"<div class='tab-right'><i class='";if($has_codinh){echo"codinh";}echo" fa ";if($has){echo"fa-check-square-o";}else{echo"fa-square-o";}echo"' data-caID='".encode_data($data3["ID_CA"],$code)."'></i></div>";
-														if($show) {
-															echo"<div class='clear'></div>
-															<div class='siso' style='display:block;margin-top:10px;float:none;'>
-																<span style='font-size:10px;display:inline-block;margin-top:5px;'>$data3[name]</span>
-															</div>";
-														}
-														echo"</nav>
-													</td>";
-												} else {
-													echo"<td></td>";
-												}
-											}
-										echo"</tr>";
-									}
-									$max_dem=$max_dem>$dem?$max_dem:$dem;
-									echo"<tr><td colspan='$max_dem' style='background:none'></td></tr>";
-								}
-								echo"<tr><td colspan='$max_dem'><span>Địa điểm học: $dia_diem</span></td></tr>";
-                            ?>
-                            </table>
-                            <input type="hidden" value="<?php echo implode(" - ",$tkb);?>" id="tkb-hin2" />
+<!--                <div class="main-div animated bounceInUp" style="margin-top:15px;">-->
+<!--                	<div id="main-info">-->
+<!--                    	<div class="main-1-left back" style="margin-right:2%;max-height:none;">-->
+<!--                        	<div>-->
+<!--                            	<p class="main-title">Lịch học tăng cường</p>-->
+<!--                                <p id="tkb-show2">Thứ 2 - Thứ 4 - Thứ 6</p>-->
+<!--                            </div>-->
+<!--                            <table class="table-tkb" style="border-spacing:0 3px;">-->
+<!--                            --><?php
+//                            	$tkb=array();
+//								$dia_diem="";$first=false;
+//                                $result=get_all_cum_link($lmID,$monID);
+//								while($data=mysqli_fetch_assoc($result)) {
+//                            		echo"<tr style='text-transform:uppercase;' class='big-ca'>
+//										<th colspan=''><span>$data[name]</span></th>
+//									</tr>
+//									<tr style='text-transform:uppercase;'>";
+//									$thu_array=array();
+//									$dem=0;
+//									$query5="SELECT DISTINCT thu FROM cahoc WHERE cum='$data[link]' ORDER BY thu ASC";
+//									$result5=mysqli_query($db,$query5);
+//									while($data5=mysqli_fetch_assoc($result5)) {
+//										echo"<th><span>Thứ $data5[thu]</span></th>";
+//										$thu_array[$dem]=$data5["thu"];
+//										$dem++;
+//									}
+//									echo"</tr>";
+//									for($i=0;$i<count($ca_gio);$i++) {
+//										if($lmID==$ca_gio[$i]["lmID"]) {
+//											continue;
+//										}
+//										echo"
+//										<tr class='con-ca'>";
+//											for($j=0;$j<count($thu_array);$j++) {
+//                                                $query3="SELECT c.ID_CA,c.thu,d.name FROM cahoc AS c
+//												INNER JOIN ca_quyen AS q ON q.ID_HS='$hsID' AND q.ID_CA=c.ID_CA
+//												INNER JOIN dia_diem AS d ON d.ID_DD=c.ID_DD
+//												WHERE c.thu='".$thu_array[$j]."' AND c.ID_GIO='".$ca_gio[$i]["gioID"]."' AND c.cum='$data[link]'";												$result3=mysqli_query($db,$query3);
+//												if(mysqli_num_rows($result3)!=0) {
+//													$data3=mysqli_fetch_assoc($result3);
+//													$show=false;
+//													if($data3["name"]!=$dia_diem) {
+//														if(!$first) {
+//															$dia_diem=$data3["name"];
+//															$first=true;
+//														} else {
+//															$show=true;
+//														}
+//													}
+//                                                    $num=get_num_hs_ca_hientai($data3["ID_CA"]);
+//                                                    $has=check_hs_in_ca_hientai($data3["ID_CA"], $hsID);
+//                                                    $has_codinh=check_hs_in_ca_codinh($data3["ID_CA"], $hsID);
+//													if($has_codinh) {
+//														$tkb[]="Thứ ".$data3["thu"];
+//													}
+//													if($has) {
+//														if($has_codinh) {
+//															echo"<td class='has-ca' style='background:rgba(255,255,255,0.15);'>";
+//														} else {
+//															echo"<td class='has-ca' style='background:rgba(255,250,3,0.2);'>";
+//														}
+//													} else {
+//														echo"<td class='has-ca'>";
+//													}
+//													echo"<div class='tab-num'><span>$num</span></div>
+//													<nav>
+//														<div class='tab-left'><span class='tab-gio'>".$ca_gio[$i]["gio"]."</span></div>";
+//                                                        echo"<div class='tab-right'><i class='";if($has_codinh){echo"codinh";}echo" fa ";if($has){echo"fa-check-square-o";}else{echo"fa-square-o";}echo"' data-caID='".encode_data($data3["ID_CA"],$code)."'></i></div>";
+//														if($show) {
+//															echo"<div class='clear'></div>
+//															<div class='siso' style='display:block;margin-top:10px;float:none;'>
+//																<span style='font-size:10px;display:inline-block;margin-top:5px;'>$data3[name]</span>
+//															</div>";
+//														}
+//														echo"</nav>
+//													</td>";
+//												} else {
+//													echo"<td></td>";
+//												}
+//											}
+//										echo"</tr>";
+//									}
+//									$max_dem=$max_dem>$dem?$max_dem:$dem;
+//									echo"<tr><td colspan='$max_dem' style='background:none'></td></tr>";
+//								}
+//								echo"<tr><td colspan='$max_dem'><span>Địa điểm học: $dia_diem</span></td></tr>";
+//                            ?>
+<!--                            </table>-->
+<!--                            <input type="hidden" value="--><?php //echo implode(" - ",$tkb);?><!--" id="tkb-hin2" />-->
                             <input type="hidden" value="<?php echo $max_dem; ?>" id="max-dem" />
-                       	</div>
-                  	</div>
-                </div>
+<!--                       	</div>-->
+<!--                  	</div>-->
+<!--                </div>-->
             </div>
         	<div class="clear"></div>
         </div>

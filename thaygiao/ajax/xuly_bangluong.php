@@ -2,8 +2,8 @@
 	ob_start();
 	session_start();
 	require("../../model/open_db.php");
-require("../../model/model.php");
-require("../access_admin.php");
+    require("../../model/model.php");
+    require("../access_admin.php");
 	$monID=$_SESSION["mon"];
 	
 	if(isset($_POST["data"]) && isset($_POST["note"])) {
@@ -38,6 +38,31 @@ require("../access_admin.php");
 			}
 		}
 	}
+
+	if(isset($_POST["ajax_data"])) {
+	    $ajax=json_decode($_POST["ajax_data"],true);
+        $n = count($ajax) - 1;
+        $lmID = $ajax[$n]["lmID"];
+        $monID = $ajax[$n]["monID"];
+        $date = $ajax[$n]["date"];
+        $result_arr = array();
+        for($i = 0; $i < $n; $i++) {
+            $me = check_chua_dong_hoc($ajax[$i]["hsID"], $ajax[$i]["date_in"], $lmID, $monID, $date, $ajax[$i]["old"]);
+            if (!is_numeric($me)) {
+                $string = $me;
+            } else {
+                $string = format_price($me);
+            }
+            $result_arr[$ajax[$i]["index"]] = array(
+                "tien" => $string
+            );
+        }
+        if(count($result_arr) != 0) {
+            echo json_encode($result_arr);
+        } else {
+            echo "none";
+        }
+    }
 	
 	require("../../model/close_db.php");
 	ob_end_flush();

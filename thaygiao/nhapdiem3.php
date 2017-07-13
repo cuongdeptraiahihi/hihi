@@ -147,6 +147,9 @@
                                         $data0 = mysqli_fetch_assoc($result0);
                                         $query="UPDATE diemkt SET anh='$anh' WHERE ID_DIEM='$data0[ID_DIEM]'";
                                         mysqli_query($db, $query);
+                                        $html .= "<td><span>Đã up</span></td>";
+                                    } else {
+                                        $html .= "<td><span>-</span></td>";
                                     }
                                     $html .= "</tr>";
                                 }
@@ -163,7 +166,7 @@
                             $objPHPExcel = PHPExcel_IOFactory::load("../import/". $file);
 
                             $nhom_string="";
-                            $nhom_arr=array();
+                            $nhom_arr=$num_cau=array();
                             $query="SELECT n.ID_N,n.ID_LM,d.loai FROM nhom_de AS n 
                             INNER JOIN de_thi AS d ON d.nhom=n.ID_N AND d.main='1'
                             WHERE n.object='$buoiID'";
@@ -171,19 +174,21 @@
                             while($data=mysqli_fetch_assoc($result)) {
                                 $nhom_arr[$data["ID_LM"]][$data["loai"]]=$data["ID_N"];
                                 $nhom_string.=",'$data[ID_N]'";
+                                $num_cau[$data["ID_N"]]=0;
                             }
                             $nhom_string=substr($nhom_string,1);
 
                             $cd_arr=array();
-                            $query = "SELECT n.ID_C,e.ID_CD,e.ID_LM FROM de_noi_dung AS n
+                            $query = "SELECT n.ID_C,e.ID_CD,e.ID_LM,t.nhom FROM de_noi_dung AS n
                             INNER JOIN cau_hoi AS c ON c.ID_C=n.ID_C
                             INNER JOIN chuyen_de_con AS o ON o.ID_CD=c.ID_CD
                             INNER JOIN chuyende AS e ON e.maso=o.maso
-                            INNER JOIN de_thi AS t ON t.ID_DE=n.ID_DE AND t.main='1' AND t.nhom IN ($nhom_string)
+                            INNER JOIN de_thi AS t ON t.ID_DE=n.ID_DE AND t.ID_LM=e.ID_LM AND t.main='1' AND t.nhom IN ($nhom_string)
                             ORDER BY n.ID_C ASC,e.ID_LM ASC";
                             $result = mysqli_query($db, $query);
                             while($data=mysqli_fetch_assoc($result)) {
                                 $cd_arr[$data["ID_C"]][$data["ID_LM"]]=$data["ID_CD"];
+                                $num_cau[$data["nhom"]]++;
                             }
 
                             $loaide_arr=array();
@@ -219,14 +224,17 @@
                             $ddID=$temp[0];
                             $cumID=$temp[1];
 
-                            $html = "<table class='table' style='margin-top:25px;overflow-x: auto;width:2500px;'>
+                            $html = "<table class='table' style='margin-top:25px;overflow-x: auto;'>
                                 <tr style='background: #3E606F;'>
-                                    <th><span>Mã số</span></th>
-                                    <th><span>Mã đề</span></th>
-                                    <th><span>Đề</span></th>";
-                                for($i=1;$i<=50;$i++) {
-                                    $html.="<th><span>$i</span></th>";
-                                }
+                                    <th style='min-width: 100px;'><span>Mã số</span></th>
+                                    <th style='min-width: 70px;'><span>Mã đề</span></th>
+                                    <th style='min-width: 100px;'><span>Điểm danh</span></th>
+                                    <th style='min-width: 100px;'><span>Đề</span></th>
+                                    <th style='min-width: 150px;'><span>Trạng thái</span></th>";
+                                    for($i=1;$i<=50;$i++) {
+                                        $html.="<th style='min-width: 50px;'><span>$i</span></th>";
+                                    }
+                                    $html.="<th style='min-width: 50px;'><span>Điểm</span></th>";
                             $html.="</tr>";
                             $result_arr=array();
                             $content1=$content2=$content3=$content4="";
@@ -256,9 +264,9 @@
                                         }
 
                                         $html .= "<td><span>$made</span></td>";
-                                        $query0 = "SELECT h.ID_HS,m.ID_LM,m.de,k.ID_DIEM,c.ID_CA FROM hocsinh AS h
+                                        $query0 = "SELECT h.ID_HS,m.ID_LM,m.de,k.ID_DIEM,k.loai,c.ID_CA FROM hocsinh AS h
                                         INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_LM IN ($mon_arr)
-                                        INNER JOIN ca_hientai AS c ON c.ID_HS=h.ID_HS AND c.cum='$cum'
+                                        LEFT JOIN ca_hientai AS c ON c.ID_HS=h.ID_HS AND c.cum='$cum'
                                         LEFT JOIN diemkt AS k ON k.ID_BUOI='$buoiID' AND k.ID_HS=h.ID_HS AND k.ID_LM=m.ID_LM
                                         WHERE h.cmt='$maso'
                                         ORDER BY m.ID_STT ASC
@@ -267,68 +275,36 @@
                                         if (mysqli_num_rows($result0) != 0) {
                                             $data0 = mysqli_fetch_assoc($result0);
 
+                                            if($data0["ID_CA"]!=$caID) {
+                                                $caCheck = 0;
+                                                $html .= "<td><span>Sai ca</span></td>";
+                                            } else {
+                                                $caCheck=1;
+                                                $html .= "<td><span>Đúng ca</span></td>";
+                                            }
+
                                             if (isset($data0["ID_DIEM"]) && is_numeric($data0["ID_DIEM"])) {
-                                                $html .= "<td><span>Đã có điểm</span></td>";
+                                                if($data0["loai"] == 3) {
+                                                    $html .= "<td><span>Bị hủy bài</span></td>";
+                                                } else {
+                                                    $html .= "<td><span>Đã có điểm trước đó</span></td>";
+                                                }
                                                 $html .= "</tr>";
                                                 continue;
                                             }
+//                                            if (isset($data0["ID_DIEM"]) && is_numeric($data0["ID_DIEM"])) {
+//                                                if($data0["loai"] == 3) {
+//                                                    $html .= "<td><span>Bị hủy bài</span></td>";
+//                                                    $html .= "</tr>";
+//                                                    continue;
+//                                                }
+//                                            }
 
                                             $html .= "<td><span>$data0[de]</span></td>";
 
-//                                            $string=$made."-".$data0["de"]."-".$data0["ID_LM"];
-//                                            $diem = 0;
-//                                            if (isset($de_arr[$string])) {
-//                                                $num=count($de_arr[$string]);
-//                                                $diem_each = format_diem(10 / $num);
-//                                                for($i=1;$i<=$num;$i++) {
-//                                                    if(isset($de_arr[$string][$i])) {
-//                                                        $dapan = $worksheet->getCellByColumnAndRow(5 + $de_arr[$string][$i]["csort"], $row)->getValue();
-//                                                        if ($dapan == "A")
-//                                                            $da_sort = 1;
-//                                                        else if ($dapan == "B")
-//                                                            $da_sort = 2;
-//                                                        else if ($dapan == "C")
-//                                                            $da_sort = 3;
-//                                                        else if ($dapan == "D")
-//                                                            $da_sort = 4;
-//                                                        else if ($dapan == "-")
-//                                                            $da_sort = 5;
-//                                                        else $da_sort = NULL;
-//
-//                                                        if ($da_sort == $de_arr[$string][$i]["dsort"]) {
-//                                                            if (isset($data0["ID_DIEM"]) && is_numeric($data0["ID_DIEM"])) {
-////                                                            update_chuyende_diem3($buoiID, $data0["ID_HS"], $cd_arr[$data["ID_C"]][$data0["ID_LM"]], $diem_each . "/" . $diem_each, $data["csort"], $da_sort, "", $data0["ID_LM"]);
-//                                                            } else {
-//                                                                $content1 .= ",('$buoiID','" . $cd_arr[$de_arr[$string][$i]["ID_C"]][$data0["ID_LM"]] . "','$data0[ID_HS]','$diem_each/$diem_each','".$de_arr[$string][$i]["csort"]."','$da_sort','','$data0[ID_LM]')";
-//                                                            }
-//                                                            $diem += $diem_each;
-//                                                            $html .= "<td style='background:#29B6F6;'><span style='color:#FFF;'>$dapan</span></td>";
-//                                                        } else {
-//                                                            if (isset($data0["ID_DIEM"]) && is_numeric($data0["ID_DIEM"])) {
-////                                                            update_chuyende_diem3($buoiID, $data0["ID_HS"], $cd_arr[$data["ID_C"]][$data0["ID_LM"]], "0/" . $diem_each, $data["csort"], $da_sort, "", $data0["ID_LM"]);
-//                                                            } else {
-//                                                                $content1 .= ",('$buoiID','" . $cd_arr[$de_arr[$string][$i]["ID_C"]][$data0["ID_LM"]] . "','$data0[ID_HS]','0/$diem_each','".$de_arr[$string][$i]["csort"]."','$da_sort','','$data0[ID_LM]')";
-//                                                            }
-//                                                            $html .= "<td><span>$dapan</span></td>";
-//                                                        }
-//                                                    }
-//                                                }
-//
-//                                                if (isset($data0["ID_DIEM"]) && is_numeric($data0["ID_DIEM"])) {
-////                                                    update_diem_hs($data0["ID_HS"], $buoiID, $diem, $data0["de"], 0, 0, $made, $data0["ID_LM"]);
-//                                                } else {
-//                                                    $content2 .= ",('$buoiID','$data0[ID_HS]','$diem','0','$data0[de]','0','$made','$data0[ID_LM]','$stt')";
-//                                                }
-//                                                $html .= "<td><span>$diem</span></td>";
-//
-//                                                $content3 .= ",('$data0[ID_HS]','$buoiID','Điểm thi ngày " . format_dateup($buoi) . " của bạn là $diem điểm. $tb. Mã lấy bài là $stt','diem-thi','$data0[ID_LM]',now(),'small','new')";
-//
-//                                                $stt++;
-//                                            } else {
-//                                                $html .= "<td><span>Sai mã đề</span></td>";
-//                                            }
+                                            $nhom=$nhom_arr[$data0["ID_LM"]][$loaide_arr[$data0["de"]]];
 
-                                            $query="SELECT ID_DE FROM de_thi WHERE maso='$made' AND nhom='".$nhom_arr[$data0["ID_LM"]][$loaide_arr[$data0["de"]]]."' AND loai='".$loaide_arr[$data0["de"]]."'";
+                                            $query="SELECT ID_DE FROM de_thi WHERE maso='$made' AND nhom='$nhom' AND loai='".$loaide_arr[$data0["de"]]."' LIMIT 1";
                                             $result = mysqli_query($db, $query);
                                             $data=mysqli_fetch_assoc($result);
                                             $deID=$data["ID_DE"];
@@ -342,61 +318,70 @@
                                             $result = mysqli_query($db, $query);
                                             $num = mysqli_num_rows($result);
                                             $diem = 0;
-                                            if ($num != 0) {
-                                                $diem_each = format_diem(10 / $num);
-                                                while ($data = mysqli_fetch_assoc($result)) {
-                                                    $dapan = $worksheet->getCellByColumnAndRow(5 + $data["csort"], $row)->getValue();
-                                                    if ($dapan == "A")
-                                                        $da_sort = 1;
-                                                    else if ($dapan == "B")
-                                                        $da_sort = 2;
-                                                    else if ($dapan == "C")
-                                                        $da_sort = 3;
-                                                    else if ($dapan == "D")
-                                                        $da_sort = 4;
-                                                    else if ($dapan == "-")
-                                                        $da_sort = 5;
-                                                    else $da_sort = NULL;
+                                            if($num != 0) {
+                                                if($num_cau[$nhom] % $num != 0) {
+                                                    $html .= "<td><span>Đếm/Gốc = ".$num."/".$num_cau[$nhom]."</span></td>";
+                                                } else {
+                                                    $content4 .= ",('$ddID','$data0[ID_HS]','$caCheck','0','0','0')";
+                                                    $html .= "<td><span></span></td>";
+                                                    $diem_each = 10 / $num;
+                                                    while ($data = mysqli_fetch_assoc($result)) {
+                                                        $dapan = $worksheet->getCellByColumnAndRow(5 + $data["csort"], $row)->getValue();
+                                                        if ($dapan == "A")
+                                                            $da_sort = 1;
+                                                        else if ($dapan == "B")
+                                                            $da_sort = 2;
+                                                        else if ($dapan == "C")
+                                                            $da_sort = 3;
+                                                        else if ($dapan == "D")
+                                                            $da_sort = 4;
+                                                        else if ($dapan == "-")
+                                                            $da_sort = 5;
+                                                        else $da_sort = NULL;
 
-                                                    if ($da_sort == $data["dsort"] || $data["done"] == 0) {
+                                                        if ($da_sort == $data["dsort"] || $data["done"] == 0) {
 //                                                        if (isset($data0["ID_DIEM"]) && is_numeric($data0["ID_DIEM"])) {
 //                                                            update_chuyende_diem3($buoiID, $data0["ID_HS"], $cd_arr[$data["ID_C"]][$data0["ID_LM"]], $diem_each . "/" . $diem_each, $data["csort"], $da_sort, "", $data0["ID_LM"]);
 //                                                        } else {
-                                                            $content1 .= ",('$buoiID','" . $cd_arr[$data["ID_C"]][$data0["ID_LM"]] . "','$data0[ID_HS]','$diem_each/$diem_each','$data[csort]','$da_sort','','$data0[ID_LM]')";
+                                                            if($cd_arr[$data["ID_C"]][$data0["ID_LM"]]) {
+                                                                $content1 .= ",('$buoiID','" . $cd_arr[$data["ID_C"]][$data0["ID_LM"]] . "','$data0[ID_HS]','$diem_each/$diem_each','$data[csort]','$da_sort','','$data0[ID_LM]')";
+                                                            } else {
+                                                                $content1 .= ",('$buoiID','0','$data0[ID_HS]','$diem_each/$diem_each','$data[csort]','$da_sort','','$data0[ID_LM]')";
+                                                            }
 //                                                        }
-                                                        $diem += $diem_each;
-                                                        $html .= "<td style='background:#29B6F6;'><span style='color:#FFF;'>$dapan</span></td>";
-                                                    } else {
+                                                            $diem += $diem_each;
+                                                            $html .= "<td style='background:#29B6F6;'><span style='color:#FFF;'>$dapan</span></td>";
+                                                        } else {
 //                                                        if (isset($data0["ID_DIEM"]) && is_numeric($data0["ID_DIEM"])) {
 //                                                            update_chuyende_diem3($buoiID, $data0["ID_HS"], $cd_arr[$data["ID_C"]][$data0["ID_LM"]], "0/" . $diem_each, $data["csort"], $da_sort, "", $data0["ID_LM"]);
 //                                                        } else {
-                                                            $content1 .= ",('$buoiID','" . $cd_arr[$data["ID_C"]][$data0["ID_LM"]] . "','$data0[ID_HS]','0/$diem_each','$data[csort]','$da_sort','','$data0[ID_LM]')";
+                                                            if($cd_arr[$data["ID_C"]][$data0["ID_LM"]]) {
+                                                                $content1 .= ",('$buoiID','" . $cd_arr[$data["ID_C"]][$data0["ID_LM"]] . "','$data0[ID_HS]','0/$diem_each','$data[csort]','$da_sort','','$data0[ID_LM]')";
+                                                            } else {
+                                                                $content1 .= ",('$buoiID','0','$data0[ID_HS]','0/$diem_each','$data[csort]','$da_sort','','$data0[ID_LM]')";
+                                                            }
 //                                                        }
-                                                        $html .= "<td><span>$dapan</span></td>";
+                                                            $html .= "<td><span>$dapan</span></td>";
+                                                        }
                                                     }
-                                                }
-                                                $diem=format_diem($diem);
+                                                    $diem=format_diem($diem);
 
 //                                                if (isset($data0["ID_DIEM"]) && is_numeric($data0["ID_DIEM"])) {
 //                                                    update_diem_hs($data0["ID_HS"], $buoiID, $diem, $data0["de"], 0, 0, $made, $data0["ID_LM"]);
 //                                                } else {
                                                     $content2 .= ",('$buoiID','$data0[ID_HS]','$diem','0','$data0[de]','0','$made','$data0[ID_LM]','0')";
 //                                                }
-                                                $html .= "<td><span>$diem</span></td>";
+                                                    $html .= "<td><span><strong>$diem</strong></span></td>";
 
-                                                $content3 .= ",('$data0[ID_HS]','$buoiID','Điểm thi ngày " . format_dateup($buoi) . " của bạn là $diem điểm. $tb.','diem-thi','$data0[ID_LM]',now(),'small','new')";
-
-                                                if($data0["ID_CA"]!=$caID) {
-                                                    $caCheck = 0;
-                                                    $html .= "<td><span>Sai ca</span></td>";
-                                                } else {
-                                                    $caCheck=1;
-                                                    $html .= "<td><span>Đúng ca</span></td>";
+                                                    $content3 .= ",('$data0[ID_HS]','$buoiID','Điểm thi ngày " . format_dateup($buoi) . " của bạn là $diem điểm. $tb.','diem-thi','$data0[ID_LM]',now(),'small','new')";
+//                                                    $query2="UPDATE thongbao SET content='Điểm thi ngày " . format_dateup($buoi) . " của bạn là $diem điểm. $tb.' WHERE ID_HS='$data0[ID_HS]' AND object='$buoiID' AND danhmuc='diem-thi' AND ID_LM='$data0[ID_LM]'";
+//                                                    mysqli_query($db, $query2);
                                                 }
-
-                                                $content4 .= ",('$ddID','$data0[ID_HS]','$caCheck','0','0','0')";
                                             } else {
+                                                $content4 .= ",('$ddID','$data0[ID_HS]','$caCheck','0','0','0')";
                                                 $html .= "<td><span>Sai mã đề</span></td>";
+                                                $content2 .= ",('$buoiID','$data0[ID_HS]','0','3','$data0[de]','14','','$data0[ID_LM]','0')";
+                                                $content3 .= ",('$data0[ID_HS]','$buoiID','Điểm thi ngày " . format_dateup($buoi) . " của bạn là 0 điểm. Bạn bị hủy bài vì ghi hoặc tô sai mã!.','diem-thi','$data0[ID_LM]',now(),'small','new')";
                                             }
                                         }
                                     }
@@ -436,10 +421,9 @@
                                             <select class="input buoi" name="select-buoi" id="select-buoi" style="height:auto;width:100%;">
                                                 <option value="0" data-ngay="">Chọn buổi kiểm tra</option>
                                             <?php
-                                                $result5=get_all_buoikt($monID,10);
+                                                $result5=get_all_buoikt($monID,2);
                                                 while($data5=mysqli_fetch_assoc($result5)) {
                                                     echo"<option value='$data5[ID_BUOI]' data-ngay='$data5[ngay]'>".format_dateup($data5["ngay"])."</option>";
-                                                    break;
                                                 }
                                             ?>
                                             </select>

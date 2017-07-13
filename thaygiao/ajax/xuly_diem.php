@@ -46,6 +46,7 @@
 		$check=check_diemtb_thang($thang,$lmID);
 		
 		if(is_numeric($lmID) && $lmID!=0 && is_numeric($thongbao) && is_numeric($nhayde) && $thang!="") {
+		    $content=array();
 		    $monID=get_mon_of_lop($lmID);
             $tien = get_muctien("thach-dau");
 			$query="SELECT ID_HS,de FROM hocsinh_mon WHERE ID_LM='$lmID' AND date_in<'$nextm-01' ORDER BY ID_HS ASC";
@@ -86,7 +87,7 @@
                         $new_de = $data["de"];
                     }
 					if($data["de"]!=$new_de) {
-						if($nhayde==1) {
+						if($nhayde==1 && !check_done_options(date("Y-m"),"len-de-mid",$data["ID_HS"],$lmID)) {
 							update_de_hs($data["ID_HS"], $new_de, $lmID);
                             $result2=get_list_thachdau($data["ID_HS"],$next_CN,$lmID);
                             while($data2=mysqli_fetch_assoc($result2)) {
@@ -106,6 +107,11 @@
 
                                 }
                             }
+                            if($how==1) {
+                                $content[] = "('$data[ID_HS]','Thưởng thẻ miễn phạt lên đề $new_de tháng $temp[1]/$temp[0]','the-mien-phat',now())";
+                                $content[] = "('$data[ID_HS]','Thưởng thẻ miễn phạt lên đề $new_de tháng $temp[1]/$temp[0]','the-mien-phat',now())";
+                                $content[] = "('$data[ID_HS]','Thưởng thẻ miễn phạt lên đề $new_de tháng $temp[1]/$temp[0]','the-mien-phat',now())";
+                            }
 						}
 						insert_new_nhayde($data["ID_HS"], $new_de, $diemtb, $lmID);
 						if($thongbao==1) {
@@ -118,6 +124,11 @@
 					}
 				}
 			}
+			if(count($content)>0) {
+                $content = implode(",", $content);
+                $query = "INSERT INTO log(ID_HS,content,type,datetime) VALUES $content";
+                mysqli_query($db, $query);
+            }
 			echo"ok";
 		} else {
 			echo"none";

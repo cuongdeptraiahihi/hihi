@@ -1226,7 +1226,7 @@
 											} else {
 												$date_in="";
 											}
-											if($data["date"]) {
+											if(isset($data["date"])) {
 												echo"opacity:0.3;'><td><span class='nghi-hover check-nghi'><i class='fa fa-check-square-o' data-hsID='$data[ID_HS]' style='font-size:1.5em !important;'></i><span class='nghi-info'>".format_dateup($data["date"])."</span></span></td>";
 												if($xuat){$objPHPExcel->getActiveSheet()->SetCellValue("$col".$rowCount, format_dateup($data["date"]));$col++;}
 											} else {

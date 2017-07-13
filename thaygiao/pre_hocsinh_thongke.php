@@ -110,24 +110,24 @@
                                 </tr>
                                 <tr>
                                     <td class="hidden"><span>3</span></td>
+                                    <td><span class="fa fa-pencil"></span></td>
+                                    <td><span>Thêm điểm tổng</span></td>
+                                    <td><input class='submit' type='submit' value='Thêm' onclick="location.href='http://localhost/www/TDUONG/thaygiao/nhap-diem4/'" /></td>
+                                    <td class="hidden"><span>Chỉ nhập tổng điểm từ file excel</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="hidden"><span>4</span></td>
                                     <td><span class="fa fa-level-up"></span></td>
                                     <td><span>Xét chuyển đề</span></td>
                                     <td><input class='submit' type='submit' value='Xét' onclick="location.href='http://localhost/www/TDUONG/thaygiao/xet-nhay-de/'" /></td>
                                     <td class="hidden"><span>Xét chuyển đề hàng tháng</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="hidden"><span>4</span></td>
+                                    <td class="hidden"><span>5</span></td>
                                     <td><span class="fa fa-eye"></span></td>
                                     <td><span>Mới chuyển đề</span></td>
                                     <td><input class='submit' type='submit' value='Xem' onclick="location.href='http://localhost/www/TDUONG/thaygiao/moi-chuyen-de/<?php echo $lmID; ?>/G/'" /></td>
                                     <td class="hidden"><span>Danh sách các em học sinh mới chuyển đề</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="hidden"><span>5</span></td>
-                                    <td><span class="fa fa-trash-o"></span></td>
-                                    <td><span>Thống kê hủy bài</span></td>
-                                    <td><input class='submit' type='submit' value='Xem' onclick="location.href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-huy-bai/'" /></td>
-                                    <td class="hidden"><span>Xem số bài trợ giảng hủy</span></td>
                                 </tr>
                                 <tr>
                                     <td class="hidden"><span>6</span></td>

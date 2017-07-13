@@ -16,17 +16,6 @@
 	$mau="#FFF";
 	$result0=get_hs_short_detail($hsID, $lmID);
 	$data0=mysqli_fetch_assoc($result0);
-
-    $cagio=array();
-    $query1="SELECT ID_GIO,gio FROM cagio WHERE ID_LM='$lmID' AND ID_MON='$monID' ORDER BY ID_GIO ASC";
-    $result1=mysqli_query($db,$query1);
-    while($data1=mysqli_fetch_assoc($result1)) {
-        $cagio[]=array(
-            "gioID" => $data1["ID_GIO"],
-            "gio" => $data1["gio"]
-        );
-    }
-    $n=count($cagio);
 	
 	$ontime=true;
 	
@@ -237,7 +226,7 @@
 								$max_dem=0;
 								$tkb=array();
 								$dia_diem="";$first=false;
-								$result=get_all_cum($lmID,$monID);
+								$result=get_all_cum_link($lmID,$monID);
 								while($data=mysqli_fetch_assoc($result)) {
                             		echo"<tr style='text-transform:uppercase;' class='big-ca'>
 										<th colspan=''><span>$data[name]</span></th>
@@ -245,6 +234,9 @@
 									<tr style='text-transform:uppercase;'>";
 									$thu_array=array();
 									$dem=0;
+                                    if($data["link"]!=0) {
+                                        $data["ID_CUM"] = $data["link"];
+                                    }
 									$query5="SELECT DISTINCT thu FROM cahoc WHERE cum='$data[ID_CUM]' ORDER BY thu ASC";
 									$result5=mysqli_query($db,$query5);
 									while($data5=mysqli_fetch_assoc($result5)) {
@@ -254,14 +246,13 @@
 									}	
 									echo"</tr>";
 									for($i=0;$i<count($ca_gio);$i++) {
-										if($lmID!=$ca_gio[$i]["lmID"]) {
-											continue;
-										}
+//										if($lmID!=$ca_gio[$i]["lmID"]) {
+//											continue;
+//										}
 										echo"
 										<tr class='con-ca'>";
 											for($j=0;$j<count($thu_array);$j++) {
-                                                $query3="SELECT c.ID_CA,c.thu,d.name FROM cahoc AS c 
-												INNER JOIN ca_quyen AS q ON q.ID_HS='$hsID' AND q.ID_CA=c.ID_CA 
+                                                $query3="SELECT c.ID_CA,c.thu,d.name FROM cahoc AS c  
 												INNER JOIN dia_diem AS d ON d.ID_DD=c.ID_DD 
 												WHERE c.thu='".$thu_array[$j]."' AND c.ID_GIO='".$ca_gio[$i]["gioID"]."' AND c.cum='$data[ID_CUM]'";												$result3=mysqli_query($db,$query3);
 												if(mysqli_num_rows($result3)!=0) {

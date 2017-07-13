@@ -375,7 +375,7 @@
 							$(".add-new").attr("data-hsID", obj.hsID)
 										.val("Sửa");
 							get_info_mon(obj.hsID);
-                            get_hs_note(obj.hsID);
+//                            get_hs_note(obj.hsID);
 						} else {
 						    clean_data();
 						}
@@ -514,9 +514,10 @@
 						type: "post",
 						url: "http://localhost/www/TDUONG/thaygiao/xuly-hocsinh/",
 						success: function(result) {
-                            alert(result);
-                            location.reload();
-                            $(".add-new").val(result);
+						    var obj = jQuery.parseJSON(result);
+                            $(".add-new").val(obj.msg);
+                            alert(obj.msg);
+                            window.location.href="http://localhost/www/TDUONG/thaygiao/hoc-sinh-chi-tiet/ma/" + obj.cmt + "/";
 							$("#BODY").css("opacity","1");
 							$("#popup-loading").fadeOut("fast");
 						}
@@ -543,7 +544,7 @@
 			}
 
 			function get_new_mon() {
-				var content = "<tr style='background:#3E606F;'><th colspan='3'><span>Thông tin môn học</span></th></tr><?php $cum_sl=0;$result=get_all_lop_mon(); while($data=mysqli_fetch_assoc($result)) {if($data["ID_MON"]!=$monID){continue;}echo"<tr class='mon-big' data-monID='$data[ID_LM]'><td style='width:25%;'><span class='info-$data[ID_LM]'></span></td><td style='width:25%;'><span>$data[name]</span></td><td style='width:50%;'><span class='add-mon'><i class='fa fa-toggle-off' data-monID='$data[ID_LM]'></i></span></td></tr>";$result3=get_all_cum($data["ID_LM"],$data["ID_MON"]);$dem=1;while($data3=mysqli_fetch_assoc($result3)) {echo"<tr class='mon-lich mon-lich_$data[ID_LM]'><td></td><td><span>Buổi $dem</span></td><td><select class='input chose-ca' style='height:auto;width:100%'><option value='0'>Chọn ca</option>";$result2=get_cahoc_cum_lop($data3["ID_CUM"], $data["ID_LM"], $data["ID_MON"]);while($data2=mysqli_fetch_assoc($result2)) {echo"<option value='$data2[ID_CA]' data-cum='$data2[cum]'>".$thu_string[$data2["thu"]-1].", ca $data2[gio], sĩ số ".get_num_hs_ca_codinh($data2["ID_CA"])."</option>";}echo"</select></td></tr>";$dem++;}echo"<tr class='mon-lich mon-lich_$data[ID_LM]'><td colspan='2'><span>Lịch thi cuối tuần</span></td><td><select class='input chose-ca' style='height:auto;width:100%'><option value='0'>Chọn ca</option>";$stt=1;$result2=get_cakt_mon($data["ID_MON"]);while($data2=mysqli_fetch_assoc($result2)) {echo"<option value='$data2[ID_CA]' data-cum='$data2[cum]'>$stt - ".$thu_string[$data2["thu"]-1].", ca $data2[gio], sĩ số ".get_num_hs_ca_codinh($data2["ID_CA"])."</option>";$stt++;}echo"</select></td></tr>";}?>";
+				var content = "<tr style='background:#3E606F;'><th colspan='3'><span>Thông tin môn học</span></th></tr><?php $cum_sl=0;$result=get_all_lop_mon(); while($data=mysqli_fetch_assoc($result)) {if($data["ID_MON"]!=$monID) {continue;}echo"<tr class='mon-big' data-monID='$data[ID_LM]'><td style='width:25%;'><span class='info-$data[ID_LM]'></span></td><td style='width:25%;'><span>$data[name]</span></td><td style='width:50%;'><span class='add-mon'><i class='fa fa-toggle-off' data-monID='$data[ID_LM]'></i></span></td></tr>";$result3=get_all_cum($data["ID_LM"],$data["ID_MON"]);$dem=1;while($data3=mysqli_fetch_assoc($result3)) {echo"<tr class='mon-lich mon-lich_$data[ID_LM]'><td></td><td><span>Buổi $dem</span></td><td><select class='input chose-ca' style='height:auto;width:100%'><option value='0'>Chọn ca</option>";$result2=get_cahoc_cum_lop($data3["ID_CUM"], $data["ID_LM"], $data["ID_MON"]);while($data2=mysqli_fetch_assoc($result2)) {echo"<option value='$data2[ID_CA]' data-cum='$data2[cum]'>".$thu_string[$data2["thu"]-1].", ca $data2[gio], sĩ số ".get_num_hs_ca_codinh($data2["ID_CA"])."</option>";}echo"</select></td></tr>";$dem++;}echo"<tr class='mon-lich mon-lich_$data[ID_LM]'><td colspan='2'><span>Lịch thi cuối tuần</span></td><td><select class='input chose-ca' style='height:auto;width:100%'><option value='0'>Chọn ca</option>";$stt=1;$result2=get_cakt_mon($data["ID_MON"]);while($data2=mysqli_fetch_assoc($result2)) {echo"<option value='$data2[ID_CA]' data-cum='$data2[cum]'>$stt - ".$thu_string[$data2["thu"]-1].", ca $data2[gio], sĩ số ".get_num_hs_ca_codinh($data2["ID_CA"])."</option>";$stt++;}echo"</select></td></tr>";}?>";
 				$("#info-mon").html(content);
 			}
 
@@ -945,6 +946,7 @@
                     $("#add-cmt").hide();
                     $("#select-lop").show();
                 }
+                clean_data();
             });
 
             function get_hs_note(hsID) {
@@ -1063,7 +1065,7 @@
                 	<h2>THÔNG TIN CHI TIẾT HỌC SINH</h2>
                 	<div>
                     	<div class="status">
-                        	<table class="table table-2" style="width:29%;" id="info-hs">
+                        	<table class="table table-2" style="width:40%;" id="info-hs">
                             	<tr style="background:#3E606F;"><th colspan="2"><span>Thông tin học sinh</span></th></tr>
                                 <tr>
                                 	<td style="width:35%;">
@@ -1202,22 +1204,132 @@
                                     <td><input class="input" id="add-mail-me" type="text" /></td>
                                 </tr>
                             </table>
-                            <table class="table table-2" style="width:35%;" id="info-mon">
+                            <table class="table table-2" style="width:58%;" id="info-mon">
                             	<tr style="background:#3E606F;"><th colspan="3"><span>Thông tin môn học</span></th><td><input type="hidden" class="date_out" /></td></tr>
                                 <tr><td colspan="3" style="text-align:center;"><span>Nhập 1 mã học sinh để xem thông tin</span></td></tr>
-                            </table>
-                            <table class="table table-2" style="width:35%;" id="info-note">
-                                <tr class="tr-note" style="background:#3E606F;"><th colspan="3"><span>Ghi chú</span></th></tr>
-<!--                                <tr style="background:#3E606F;"><th colspan="3"><span>Ghi chú chính</span><a href="javascript:void(0)" id="special-note" style="float:right;margin-right: 10px;color:yellow;text-decoration: underline;">Đặc biệt</a></th></tr>-->
                             </table>
                             <table class="table">
                             	<tr>
                             		<th colspan="8"><input type="submit" style="width:25%;font-size:1.375em;height:50px;position: fixed;right:0;bottom:10px;z-index:99;" class="submit add-new" value="Nhập" data-hsID="0" /></th>
                               	</tr>
                           	</table>
-                        </div>
+                            <?php if($_SESSION["mobile"]==0) { ?>
+                            <table class="table" style="margin-top:25px;">
+                                <form action="http://localhost/www/TDUONG/thaygiao/hoc-sinh-chi-tiet/" method="post">
+                                    <tr>
+                                        <td colspan="5"><span>Xem danh sách học sinh đã nhập vào hệ thống theo ngày</span></td>
+                                        <td colspan="2"><input type="text" class="input" value="<?php echo date("Y-m")."-".format_month_db($ngay); ?>" id="hs-date" name="hs-date" placeholder="Chọn ngày mà bạn đã nhập học sinh mới" /></td>
+                                        <td><input type="submit" class="submit" value="Xem" name="xem-hs-date" /></td>
+                                    </tr>
+                                    <tr style="background:#3E606F;">
+                                        <th style="width:7%;"><span>Mã</span></th>
+                                        <th style="width:7%;"><span>Vân tay</span></th>
+                                        <th style="width:17%;"><span>Họ tên</span></th>
+                                        <th style="width:10%;"><span>Ngày sinh</span></th>
+                                        <th style="width:10%;"><span>Giới tính</span></th>
+                                        <th><span>Trường</span></th>
+                                        <th style="width:10%;"><span>SĐT</span></th>
+                                        <th style="width:15%;"><span>Môn học</span></th>
+                                    </tr>
+                                    <?php
+                                        function display_hocsinh($query, $is, $dem) {
+
+                                            $mon=array();
+                                            $result0=get_all_lop_mon();
+                                            while($data0=mysqli_fetch_assoc($result0)) {
+                                                $mon[$data0["ID_LM"]]=array(
+                                                    "name" => $data0["name"]
+                                                );
+                                            }
+
+                                            if($is) {
+                                                echo"<tr style='background:#3E606F;'><th colspan='8'><span>Học sinh đã được thêm</span></th></tr>";
+                                            } else {
+                                                echo"<tr style='background:#3E606F;'><th colspan='8'><span>Học sinh vừa được chỉnh sửa</span></th></tr>";
+                                            }
+
+                                            global $db;
+
+                                            $tempid=0;
+                                            $result=mysqli_query($db,$query);
+                                            while($data=mysqli_fetch_assoc($result)) {
+                                                if($is) {
+                                                    if(in_array($data["ID_HS"], $_SESSION["hs_in"])) {
+                                                        continue;
+                                                    }
+                                                }
+                                                $lich_hoc=get_hs_lich_hoc($data["ID_HS"], $data["ID_LM"], $data["ID_MON"]);
+                                                if($lich_hoc=="") {
+                                                    $lich_hoc="0";
+                                                }
+                                                if($dem%2!=0) {
+                                                    echo"<tr style='background:#D1DBBD'>";
+                                                } else {
+                                                    echo"<tr>";
+                                                }
+                                                    echo"<td><a href='http://localhost/www/TDUONG/thaygiao/hoc-sinh-chi-tiet/ma/$data[cmt]/'>$data[cmt]</a></td>
+                                                    <td><span>$data[vantay]</span></td>
+                                                    <td><span>$data[fullname]</span></td>
+                                                    <td><span>".format_date($data["birth"])."</span></td>
+                                                    <td><span>".get_gender($data["gender"])."</span></td>
+                                                    <td><span>".get_truong_hs($data["truong"])."</span></td>
+                                                    <td><span>$data[sdt]</span></td>
+                                                    <td><span>".$mon[$data["ID_LM"]]["name"].", $lich_hoc</span></td>
+                                                </tr>";
+                                                if($tempid!=$data["ID_HS"]) {
+                                                    $query3="SELECT * FROM phuhuynh WHERE ID_HS='$data[ID_HS]' ORDER BY gender ASC";
+                                                    $result3=mysqli_query($db,$query3);
+                                                    while($data3=mysqli_fetch_assoc($result3)) {
+                                                        if($dem%2!=0) {
+                                                            echo"<tr style='background:#D1DBBD'>";
+                                                        } else {
+                                                            echo"<tr>";
+                                                        }
+                                                            echo"<td colspan='2'><span>PHỤ HUYNH</span></td>
+                                                            <td><span>$data3[name]</span></td>
+                                                            <td><span>$data3[job]</span></td>
+                                                            <td><a href='$data3[face]'>Facebook</a></td>
+                                                            <td><span>".get_gender_ph($data3["gender"])."</span></td>
+                                                            <td><span>";
+                                                            if($data3["gender"]==1) {
+                                                                echo $data["sdt_bo"];
+                                                            } else {
+                                                                echo $data["sdt_me"];
+                                                            }
+                                                            echo"</span></td>
+                                                            <td><span>$data3[mail]</span></td>
+                                                        </tr>";
+                                                    }
+                                                }
+                                                if($tempid!=$data["ID_HS"]) {
+                                                    $tempid=$data["ID_HS"];
+                                                }
+                                                $dem++;
+                                            }
+                                            if($dem==0 && $is) {
+                                                echo"<tr><td colspan='8'><span>Bạn chưa nhập học sinh nào vào hôm nay!</span></td></tr>";
+                                            }
+                                            return $dem;
+                                        }
+
+                                        $hs_list = "'0'";
+                                        for ($i = 0; $i < count($_SESSION["hs_in"]); $i++) {
+                                            $hs_list .= ",'" . $_SESSION["hs_in"][$i] . "'";
+                                        }
+                                        $dem = 0;
+                                        if ($ngay == date("Y-m-d")) {
+                                            $query2 = "SELECT h.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,h.gender,h.truong,h.sdt,h.sdt_bo,h.sdt_me,m.ID_LM,l.ID_MON FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS INNER JOIN lop_mon AS l ON l.ID_LM=m.ID_LM WHERE h.ID_HS IN ($hs_list) ORDER BY m.ID_LM ASC";
+                                            $dem = display_hocsinh($query2, false, $dem);
+                                        }
+                                        $query = "SELECT h.ID_HS,h.cmt,h.vantay,h.fullname,h.birth,h.gender,h.truong,h.sdt,h.sdt_bo,h.sdt_me,m.ID_LM,l.ID_MON FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.date_in='$ngay' INNER JOIN lop_mon AS l ON l.ID_LM=m.ID_LM ORDER BY h.cmt ASC,m.ID_LM ASC";
+                                        display_hocsinh($query, true, $dem);
+                                    ?>
+                                </form>
+                          	</table>
+                        <?php } ?>
                     </div>
-                </div>
+               	</div>
+            </div>
             </div>
         
         </div>

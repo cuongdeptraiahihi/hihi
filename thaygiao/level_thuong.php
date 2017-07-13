@@ -185,7 +185,7 @@
                                 <?php
                                 $dem=0;
                                 if($hsID!=0) {
-                                    $query = "SELECT h.ID_HS,h.cmt,h.fullname,l.* FROM log AS l INNER JOIN hocsinh AS h ON h.ID_HS=l.ID_HS INNER JOIN hocsinh_mon AS m ON m.ID_HS=l.ID_HS AND m.ID_LM='$lmID' WHERE l.ID_HS='$hsID' AND l.content NOT LIKE '%(Đã nhận)' AND (l.type='len-level-$lmID' OR l.type='the-mien-phat') ORDER BY l.datetime DESC,h.cmt ASC";
+                                    $query = "SELECT h.ID_HS,h.cmt,h.fullname,l.* FROM log AS l INNER JOIN hocsinh AS h ON h.ID_HS=l.ID_HS WHERE l.ID_HS='$hsID' AND l.content NOT LIKE '%(Đã nhận)' AND (l.type='len-level-$lmID' OR l.type='the-mien-phat') ORDER BY l.datetime DESC,h.cmt ASC";
                                 } else {
                                     $query = "SELECT h.ID_HS,h.cmt,h.fullname,l.* FROM log AS l INNER JOIN hocsinh AS h ON h.ID_HS=l.ID_HS INNER JOIN hocsinh_mon AS m ON m.ID_HS=l.ID_HS AND m.ID_LM='$lmID' WHERE l.content NOT LIKE '%(Đã nhận)' AND (l.type='len-level-$lmID' OR l.type='the-mien-phat') ORDER BY l.datetime DESC,h.cmt ASC";
                                 }
@@ -215,7 +215,7 @@
                                         $dem++;
                                     }
                                 if($hsID!=0) {
-                                    $query = "SELECT h.ID_HS,h.cmt,h.fullname,l.* FROM log AS l INNER JOIN hocsinh AS h ON h.ID_HS=l.ID_HS INNER JOIN hocsinh_mon AS m ON m.ID_HS=l.ID_HS AND m.ID_LM='$lmID' WHERE l.ID_HS='$hsID' AND l.content LIKE '%(Đã nhận)' AND l.type='len-level-$lmID' ORDER BY l.datetime DESC,h.cmt ASC";
+                                    $query = "SELECT h.ID_HS,h.cmt,h.fullname,l.* FROM log AS l INNER JOIN hocsinh AS h ON h.ID_HS=l.ID_HS WHERE l.ID_HS='$hsID' AND l.content LIKE '%(Đã nhận)' AND l.type='len-level-$lmID' ORDER BY l.datetime DESC,h.cmt ASC";
                                 } else {
                                     $query = "SELECT h.ID_HS,h.cmt,h.fullname,l.* FROM log AS l INNER JOIN hocsinh AS h ON h.ID_HS=l.ID_HS INNER JOIN hocsinh_mon AS m ON m.ID_HS=l.ID_HS AND m.ID_LM='$lmID' WHERE l.content LIKE '%(Đã nhận)' AND l.type='len-level-$lmID' ORDER BY l.datetime DESC,h.cmt ASC";
                                 }

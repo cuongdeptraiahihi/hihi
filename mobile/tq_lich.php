@@ -17,9 +17,9 @@
 
     $num_ca=array();
     $query="SELECT c.ID_CA,COUNT(h.ID_STT) AS dem FROM cahoc AS c
-        INNER JOIN cagio AS g ON g.ID_GIO=c.ID_GIO AND (g.ID_LM='$lmID' OR g.ID_LM='0') AND g.ID_MON='$monID'
-        INNER JOIN ca_hientai AS h ON h.ID_CA=c.ID_CA AND h.cum=c.cum
-        GROUP BY c.ID_CA";
+    INNER JOIN cum AS u ON (u.ID_CUM=c.cum OR (u.link=c.cum AND u.link!='0')) AND u.ID_LM IN ('0','$lmID') AND u.ID_MON='$monID' 
+    INNER JOIN ca_hientai AS h ON h.ID_CA=c.ID_CA AND h.cum=c.cum
+    GROUP BY c.ID_CA";
     $result=mysqli_query($db,$query);
     while($data=mysqli_fetch_assoc($result)) {
         $num_ca[$data["ID_CA"]]=$data["dem"];
@@ -330,7 +330,7 @@
                                 <?php
                                 $max=0;
                                 $cum_arr=$list_cum=$tkb=array();
-                                $result=get_all_cum($lmID,$monID);
+                                $result=get_all_cum_link($lmID, $monID);
                                 while($data=mysqli_fetch_assoc($result)) {
                                     ?>
                                     <tr>
@@ -341,10 +341,13 @@
                                         <td style='padding-top: 0;padding-bottom: 0;'>
                                             <ul class='ul-ca'>
                                                 <?php
+                                                if($data["link"]!=0) {
+                                                    $data["ID_CUM"] = $data["link"];
+                                                }
                                                 $list_cum[]=$data["ID_CUM"];
                                                 $cum_arr[$data["ID_CUM"]]=array();
                                                 $query5="SELECT c.ID_CA,c.thu,c.siso,g.gio,g.buoi,a.ID_STT AS hientai,o.ID_STT AS codinh FROM cahoc AS c 
-                                                INNER JOIN cagio AS g ON g.ID_GIO=c.ID_GIO AND g.ID_LM='$lmID' AND g.ID_MON='$monID'
+                                                INNER JOIN cagio AS g ON g.ID_GIO=c.ID_GIO AND g.ID_MON='$data[ID_MON]'
                                                 LEFT JOIN ca_hientai AS a ON a.ID_CA=c.ID_CA AND a.ID_HS='$hsID' AND a.cum='$data[ID_CUM]'
                                                 LEFT JOIN ca_codinh AS o ON o.ID_CA=c.ID_CA AND o.ID_HS='$hsID' AND o.cum='$data[ID_CUM]'
                                                 WHERE c.cum='$data[ID_CUM]'

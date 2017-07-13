@@ -134,7 +134,7 @@
                                     <th style="width:5%;"><span>STT</span></th>
                                     <th style="width:30%;"><span>Tiêu đề</span></th>
                                     <th style="width:10%;"><span>Ngày up</span></th>
-                                    <th style="width:10%";><span>Like/Cmt</span></th>
+                                    <th style="width:10%";><span>View</span></th>
                                     <th style="width:10%;"><span>Giá</span></th>
                                     <th style='width:15%;'><span>Danh mục</span></th>
                                     <th style="width:20%;"><span></span></th>
@@ -153,12 +153,16 @@
 									$dem=0;
 									$result2=get_tailieu_dm(0,0);
 								}
+//                                <td><span>".count_tailieu_like($data2["ID_TL"])." / ".count_tailieu_cmt($data2["ID_TL"])."</span></td>
 									while($data2=mysqli_fetch_assoc($result2)) {
+									    $query="SELECT COUNT(ID_STT) AS dem FROM log WHERE content='$data2[ID_TL]' AND type='xem-tai-lieu'";
+                                        $result=mysqli_query($db,$query);
+                                        $data=mysqli_fetch_assoc($result);
 										echo"<tr>
 											<td><span>".($dem+1)."</span></td>
 											<td><span>$data2[name]</span></td>
 											<td><span>".format_dateup($data2["dateup"])."</span></td>
-											<td><span>".count_tailieu_like($data2["ID_TL"])." / ".count_tailieu_cmt($data2["ID_TL"])."</span></td>
+											<td><span>$data[dem]</span></td>
 											<td><span>";	
 												if($data2["price"]==0) {
 													echo"FREE";

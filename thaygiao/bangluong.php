@@ -56,12 +56,12 @@
         <script src="http://localhost/www/TDUONG/thaygiao/js/jquery-ui.js"></script>
         <script>
 			$(document).ready(function() {
-				$(".input-date").datepicker({
-					dateFormat: "dd/mm/yy",
-					changeMonth: true,
-					changeYear: true
-				});
                 $("#tong-luong-show").html($("#tong-luong").val());
+                $("input.update").click(function() {
+					t($("#thanh-toan tr.data-tr"), "thanh_toan", $(this))
+				}), $("input.update2").click(function() {
+					t($("#tro-giang tr.data-tr"), "tro_giang", $(this))
+				});
 
                 var tr_height = $("#table-all tr").length -1;
                 $("#table-all tr:eq(1)").append("<td rowspan='"+tr_height+"'><span class='span-boi'>"+$("#luong").val()+"</span></td><td rowspan='"+tr_height+"'><span class='span-boi'>"+$("#paid").val()+"</span></td><td rowspan='"+tr_height+"'><span class='span-boi'>"+$("#tong-pay").val()+"</span></td>");
@@ -115,6 +115,13 @@
                                         <td><span class='span-boi' id='tong-luong-show-$data[ID_LM]'></span></td>
                                     </tr>";
                                 }
+                                $result=get_lop_mon_old($monID);
+                                while($data=mysqli_fetch_assoc($result)) {
+                                    echo"<tr>
+                                        <td><span class='span-boi'>$data[content]</span></td>
+                                        <td><span class='span-boi' id='tong-luong-show-$data[note]'></span></td>
+                                    </tr>";
+                                }
                             ?>
                         </table>
                         <table class="table" style="margin-top:25px;float:left;width: 47.5%;margin-right: 5%;" id="thanh-toan">
@@ -133,10 +140,6 @@
                                 </tr>";
                                 $paid+=$data2["money"];
                             }
-                            echo"<tr class='data-tr' data-sttID='0'>
-                                <td><input type='text' class='input input-date' placeholder='Click để chọn ngày' /></td>
-                                <td><input type='text' class='input input-tien' placeholder='Số tiền' /></td>
-                            </tr>";
                             ?>
                         </table>
                         <table class="table" style="margin-top:25px;float:left;width: 47.5%;" id="tro-giang">
@@ -233,36 +236,77 @@
                                             }
                                             $hs_total = $hs_nghi = $num = $hs_new = 0;
                                             if ($nam < $year || ($nam == $year && $thang <= $month)) {
-                                                // Đếm tổng số học sinh ĐÃ đóng tiền mà là học sinh cũ (thời điểm vào học ở trước mùng 1 của tháng tính tiền)
-                                                $query="SELECT SUM(tien_hoc.money) AS tien,COUNT(tien_hoc.ID_STT) AS dem FROM tien_hoc INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$nam-$thang-".get_last_day("$nam-$thang")."' AND hocsinh_mon.ID_LM='$data5[ID_LM]' WHERE tien_hoc.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money>=$muc_tien AND tien_hoc.ID_LM='$data5[ID_LM]' AND tien_hoc.date_dong='$nam-$thang'";
+                                                $hs_arr = array("'0'");
+                                                $hs_arr[] = "'0'";
+                                                $tien = $hs_bt = 0;
+                                                $tien_giam = $hs_giam = 0;
+                                                $tien_new = $hs_new = 0;
+                                                $query="SELECT t.ID_HS,t.money AS tien,g.ID_STT FROM tien_hoc AS t
+                                                INNER JOIN hocsinh_mon AS m ON m.ID_HS=t.ID_HS AND m.ID_LM='$data5[ID_LM]'
+                                                LEFT JOIN giam_gia AS g ON g.ID_HS=t.ID_HS AND g.ID_MON='$monID'
+                                                WHERE t.ID_LM='$data5[ID_LM]' AND t.date_dong='$nam-$thang'";
                                                 $result = mysqli_query($db, $query);
-                                                $data = mysqli_fetch_assoc($result);
-                                                $hs_bt = $data["dem"];
-                                                $tien = $data["tien"];
+                                                while($data = mysqli_fetch_assoc($result)) {
+                                                    if($data["tien"] >= $muc_tien && !isset($data["ID_STT"])) {
+                                                        $tien += $data["tien"];
+                                                        $hs_bt++;
+                                                    } else if(isset($data["ID_STT"])) {
+                                                        $tien_giam += $data["tien"]*(2/3);
+                                                        $hs_giam++;
+                                                    } else {
+                                                        $tien_new += $data["tien"]*(2/3);
+                                                        $hs_new++;
+                                                    }
+                                                    $hs_arr[] = "'".$data["ID_HS"]."'";
+                                                }
+                                                $hs_str = implode(",",$hs_arr);
+
+
+
+
+
+                                                // Đếm tổng số học sinh ĐÃ đóng tiền mà là học sinh cũ (thời điểm vào học ở trước mùng 1 của tháng tính tiền)
+//                                                $query="SELECT SUM(tien_hoc.money) AS tien,COUNT(tien_hoc.ID_STT) AS dem FROM tien_hoc INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$nam-$thang-".get_last_day("$nam-$thang")."' AND hocsinh_mon.ID_LM='$data5[ID_LM]' WHERE tien_hoc.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money>=$muc_tien AND tien_hoc.ID_LM='$data5[ID_LM]' AND tien_hoc.date_dong='$nam-$thang'";
+//                                                $result = mysqli_query($db, $query);
+//                                                $data = mysqli_fetch_assoc($result);
+//                                                $hs_bt = $data["dem"];
+//                                                $tien = $data["tien"];
 
                                                 // Đếm số học sinh được giảm học phí (Bao gồm cả học sinh cũ và học sinh mới)
-                                                $query="SELECT SUM(tien_hoc.money) AS tien,COUNT(tien_hoc.ID_STT) AS dem FROM tien_hoc INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$nam-$thang-".get_last_day("$nam-$thang")."' AND hocsinh_mon.ID_LM='$data5[ID_LM]' INNER JOIN giam_gia ON giam_gia.ID_HS=tien_hoc.ID_HS AND giam_gia.ID_MON='$monID' WHERE tien_hoc.ID_LM='$data5[ID_LM]' AND tien_hoc.date_dong='$nam-$thang'";
-                                                $result = mysqli_query($db, $query);
-                                                $data = mysqli_fetch_assoc($result);
-                                                $hs_giam = $data["dem"];
-                                                $tien_giam = $data["tien"]*(2/3);
+//                                                $query="SELECT SUM(tien_hoc.money) AS tien,COUNT(tien_hoc.ID_STT) AS dem FROM tien_hoc INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$nam-$thang-".get_last_day("$nam-$thang")."' AND hocsinh_mon.ID_LM='$data5[ID_LM]' INNER JOIN giam_gia ON giam_gia.ID_HS=tien_hoc.ID_HS AND giam_gia.ID_MON='$monID' WHERE tien_hoc.ID_LM='$data5[ID_LM]' AND tien_hoc.date_dong='$nam-$thang'";
+//                                                $result = mysqli_query($db, $query);
+//                                                $data = mysqli_fetch_assoc($result);
+//                                                $hs_giam = $data["dem"];
+//                                                $tien_giam = $data["tien"]*(2/3);
 
                                                 // Lấy ra và đếm tổng số tiền học sinh mới đi học vào tháng này đã đóng, tức là chưa đủ buổi (cần phải có lịch học)
-                                                $query="SELECT SUM(tien_hoc.money) AS tien,COUNT(tien_hoc.ID_STT) AS dem FROM tien_hoc INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$nam-$thang-".get_last_day("$nam-$thang")."' AND hocsinh_mon.ID_LM='$data5[ID_LM]' WHERE tien_hoc.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money<$muc_tien AND tien_hoc.ID_LM='$data5[ID_LM]' AND tien_hoc.date_dong='$nam-$thang'";
-                                                $result = mysqli_query($db, $query);
-                                                $data = mysqli_fetch_assoc($result);
-                                                $hs_new = $data["dem"];
-                                                $tien_new = $data["tien"]*(2/3);
+//                                                $query="SELECT SUM(tien_hoc.money) AS tien,COUNT(tien_hoc.ID_STT) AS dem FROM tien_hoc INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$nam-$thang-".get_last_day("$nam-$thang")."' AND hocsinh_mon.ID_LM='$data5[ID_LM]' WHERE tien_hoc.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money<$muc_tien AND tien_hoc.ID_LM='$data5[ID_LM]' AND tien_hoc.date_dong='$nam-$thang'";
+//                                                $result = mysqli_query($db, $query);
+//                                                $data = mysqli_fetch_assoc($result);
+//                                                $hs_new = $data["dem"];
+//                                                $tien_new = $data["tien"]*(2/3);
 
                                                 // Đếm số học sinh chưa đóng học phí
                                                 /*$query1="SELECT h.ID_HS FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND (m.date_in<'$nam-$thang-01' OR m.date_in LIKE '$nam-$thang-%') AND m.ID_MON='$monID' WHERE h.ID_HS NOT IN (SELECT ID_HS FROM tien_hoc WHERE ID_MON='$monID' AND date_dong='$nam-$thang') AND h.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_MON='$monID' AND (date<'$nam-$thang-01' OR date LIKE '$nam-$thang-%')) AND h.lop='$lopID'";
                                                 $result1 = mysqli_query($db, $query1);
                                                 $hs_no = mysqli_num_rows($result1);*/
 
-                                                $query="SELECT COUNT(h.ID_HS) AS dem FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.date_in<='$nam-$thang-".get_last_day("$nam-$thang")."' AND m.ID_LM='$data5[ID_LM]' WHERE h.ID_HS NOT IN (SELECT ID_HS FROM tien_hoc WHERE ID_LM='$data5[ID_LM]' AND date_dong='$nam-$thang') AND h.ID_HS NOT IN (SELECT ID_HS FROM nghi_temp WHERE start='$nam-$thang-01' AND end='$nam-$thang-".get_last_day("$nam-$thang")."' AND ID_LM='$data5[ID_LM]') AND h.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE discount='100' AND ID_MON='$monID') AND h.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$data5[ID_LM]')";
+                                                $query="SELECT COUNT(m.ID_HS) AS dem FROM hocsinh_mon AS m 
+                                                WHERE m.date_in<='$nam-$thang-$last_day' 
+                                                AND m.ID_LM='$data5[ID_LM]' 
+                                                AND m.ID_HS NOT IN ($hs_str) 
+                                                AND m.ID_HS NOT IN (SELECT ID_HS FROM nghi_temp WHERE start<='$nam-$thang-01' AND end>='$nam-$thang-$last_day' AND ID_LM='$data5[ID_LM]') 
+                                                AND m.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE discount='100' AND ID_MON='$monID') 
+                                                AND m.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$data5[ID_LM]')
+                                                AND m.ID_HS NOT IN (SELECT note2 FROM options WHERE (content='0' OR content='0k') AND type='edit-tien-hoc-$data5[ID_LM]' AND note='$nam-$thang')";
                                                 $result = mysqli_query($db, $query);
                                                 $data = mysqli_fetch_assoc($result);
                                                 $hs_no = $data["dem"];
+
+                                                $query="SELECT COUNT(m.ID_HS) AS dem FROM hocsinh_mon AS m INNER JOIN options AS o ON o.content!='0' AND o.content!='0k' AND o.type='edit-tien-hoc-$data5[ID_LM]' AND o.note='$nam-$thang' AND o.note2=m.ID_HS WHERE m.date_in>='$nam-$thang-$last_day' AND m.ID_LM='$data5[ID_LM]' AND m.ID_HS NOT IN ($hs_str)";
+                                                $result = mysqli_query($db, $query);
+                                                $data = mysqli_fetch_assoc($result);
+                                                $hs_no += $data["dem"];
 
                                                 // Đếm số học sinh nghỉ trong tháng 8
 //                                                $query="SELECT COUNT(hocsinh_nghi.ID_HS) AS dem FROM hocsinh_nghi INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh_nghi.ID_HS AND hocsinh_mon.ID_LM='$data5[ID_LM]' WHERE hocsinh_nghi.ID_LM='$data5[ID_LM]' AND hocsinh_nghi.date LIKE '$nam-$thang-%'";
@@ -350,6 +394,44 @@
                             }
                             echo"<input type='hidden' value='".format_price($total_con)."' class='tong-luong' data-lmID='$data5[ID_LM]' />";
 						}
+						$result5=get_lop_mon_old($monID);
+                        while($data5=mysqli_fetch_assoc($result5)) {
+                            echo"<div style='padding: 20px 0 20px 0;margin-top: 25px;text-align: center;background: #3E606F;'><h2 style='color:#FFF;text-transform: uppercase;font-size:22px;'>Lớp $data5[content]</h2></div>";
+                            ?>
+                            <table class="table main-table" style="margin-top:25px;">
+                                <tr>
+                                    <td class="td-boi" style="border-bottom:1px solid #FFF;width:16%;"><span class='span-boi2'></span></td>
+                                    <td style="width:17%;"><span style="text-transform:uppercase">Học sinh đóng học bình thường</span>
+                                    </td>
+                                    <td style="width:16%;"><span style="text-transform:uppercase">Học sinh được giảm học phí</span>
+                                    </td>
+                                    <td style="width:16%;"><span style="text-transform:uppercase">Học sinh học không đóng đủ</span>
+                                    </td>
+                                    <td style="width:16%;"><span style="text-transform:uppercase">Học sinh chưa đóng học</span>
+                                    </td>
+                                    <!--                                        <td style="width:14%;"><span style="text-transform:uppercase">Số học sinh nghỉ hẳn</span></td>-->
+                                    <!--                                        <td style="width:12%;"><span style="text-transform:uppercase">Tiền thưởng</span>-->
+                                    </td>
+                                    <td><span class="span-boi">Tổng</span></td>
+                                </tr>
+                                <?php
+                                $total = 0;
+                                $query="SELECT SUM(money) AS price,date_dong FROM tien_hoc2 WHERE ID_LM='$data5[note]' GROUP BY date_dong ORDER BY date_dong ASC";
+                                $result=mysqli_query($db, $query);
+                                while($data=mysqli_fetch_assoc($result)) {
+                                    echo"<tr>
+                                        <td class='td-boi' style='border-bottom:1px solid #FFF'><span>".format_month($data["date_dong"])."</span></td>
+                                        <td colspan='4'><span></span></td>
+                                        <td><span>".format_price($data["price"]*(2/3))."</span></td>
+                                    </tr>";
+                                    $total+=$data["price"]*(2/3);
+                                }
+                                $total_all += $total;
+                                ?>
+                            </table>
+                            <?php
+                            echo"<input type='hidden' value='".format_price($total)."' class='tong-luong' data-lmID='$data5[note]' />";
+                        }
 						echo"<input type='hidden' value='".format_price($total_all-$paid-$luong)."' id='tong-pay' />
 						<input type='hidden' value='".format_price($paid)."' id='paid' />
 						<input type='hidden' value='".format_price($luong)."' id='luong' />";

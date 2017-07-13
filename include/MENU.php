@@ -71,11 +71,11 @@
 <div class="fixed-action-btn click-to-toggle animated bounceIn" style="bottom: 0;padding-bottom:45px; right: 0; padding-right:25px; width:150px;">
     <ul>
     <?php
-        $icon=array("fa-shopping-bag","fa-gamepad","fa-youtube-play","fa-edit","fa-list-alt","fa-trophy","fa-exchange","fa-dollar");
-        $title=array("Sách tham khảo","Phát vé","Video bài giảng","Trắc nghiệm","Bảng xếp hạng","Thách đấu","Đổi ca","Tài khoản");
-        $link=array("https://localhost/www/TDUONG/shop/","https://localhost/www/TDUONG/nhom-phat-ve/","https://localhost/www/TDUONG/video/","http://localhost/www/TDUONG/luyenthi/dang-nhap-xa/".encode_data($_SESSION["ID_HS"]."|".$_SESSION["cmt"]."|".$_SESSION["lmID"],md5("1241996"))."/","https://localhost/www/TDUONG/bang-xep-hang/","https://localhost/www/TDUONG/thach-dau/","https://localhost/www/TDUONG/lich-hoc/","https://localhost/www/TDUONG/tai-khoan/");
+        $icon=array("fa-shopping-bag","fa-list-alt","fa-trophy","fa-exchange","fa-dollar");
+        $title=array("Sách tham khảo","Bảng xếp hạng","Thách đấu","Đổi ca","Tài khoản");
+        $link=array("https://localhost/www/TDUONG/shop/","https://localhost/www/TDUONG/bang-xep-hang/","https://localhost/www/TDUONG/thach-dau/","https://localhost/www/TDUONG/lich-hoc/","https://localhost/www/TDUONG/tai-khoan/");
         $color=array("blue","brown","green","#365899","orange","#2C84BD","#69b42e","yellow","cyan");
-        for($i=1;$i<=8;$i++) {
+        for($i=1;$i<=5;$i++) {
             echo"<li>";
 //			if($i==3) {
 //				echo"<a href='".$link[$i-1]."' class='btn-floating'>";

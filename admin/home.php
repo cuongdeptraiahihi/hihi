@@ -230,17 +230,22 @@
                     $dem2=0;
                     $price=2000000;
                     while($data=mysqli_fetch_assoc($result)) {
-                        $price += 10000*count_hs_in_group($data["ID_LM"]);
+//                        $price += 10000*count_hs_in_group($data["ID_LM"]);
                         $max = 0;
                         $lmID_arr[$dem2] = array(
                             "ID_LM" => $data["ID_LM"],
                             "name" => $data["name"],
-                            "max" => $max
+                            "max" => $max,
+                            "sl" => 0
                         );
                         $pre_date = date("Y-m-d");
 
+                        $query2="SELECT ID_CUM FROM diemdanh_buoi WHERE ID_LM='$data[ID_LM]' AND ID_MON='$monID' AND date='".date('Y-m-d')."'";
+                        $result2 = mysqli_query($db, $query2);
+                        $data2 = mysqli_fetch_assoc($result2);
+
                         $string="";
-                        $query2 = "SELECT DISTINCT ID_CUM FROM diemdanh_buoi WHERE ID_LM = '$data[ID_LM]' AND ID_MON = '$monID' ORDER BY ID_CUM DESC,date DESC LIMIT 14";
+                        $query2 = "SELECT DISTINCT ID_CUM FROM diemdanh_buoi WHERE ID_LM = '$data[ID_LM]' AND ID_MON = '$monID' AND ID_CUM!='$data2[ID_CUM]' ORDER BY ID_CUM DESC,date DESC LIMIT 14";
                         $result2 = mysqli_query($db, $query2);
                         while ($data2 = mysqli_fetch_assoc($result2)) {
                             $string .= ",'$data2[ID_CUM]'";
@@ -251,9 +256,11 @@
                         $dem = 0;
                         $query4 = "SELECT ID_CUM,date FROM diemdanh_buoi WHERE ID_CUM IN (" . substr($string, 1) . ") AND ID_LM = '$data[ID_LM]' AND ID_MON = '$monID' ORDER BY ID_CUM DESC,date DESC";
                         $result4 = mysqli_query($db, $query4);
-                        while ($data4 = mysqli_fetch_assoc($result4)) {
+                        $num = mysqli_num_rows($result4);
+                        while ($dem <= $num) {
+                            $data4 = mysqli_fetch_assoc($result4);
                             $thu = date("w",strtotime($data4["date"])) + 1;
-                            if (($cumID != $data4["ID_CUM"] && $dem != 0)) {
+                            if (($cumID != $data4["ID_CUM"]) && $dem!=0) {
                                 $content0 = $content1 = $content2 = "";
                                 $query3 = "SELECT h.cmt,d.is_phep,d.confirm FROM diemdanh_nghi AS d INNER JOIN hocsinh AS h ON h.ID_HS=d.ID_HS WHERE d.ID_CUM = '$cumID' AND d.ID_LM = '$data[ID_LM]' AND d.ID_MON = '$monID' ORDER BY d.is_phep ASC,h.cmt ASC";
                                 $result3 = mysqli_query($db, $query3);
@@ -286,6 +293,7 @@
                                 $noidung0 = "{label: '" . substr($con, 3) . "', y: ".($dem30).", indexLabel: '";if($dem30!=0) {$noidung0.="$dem30";}$noidung0.="', name: '$dem30', content: 'http://localhost/www/TDUONG/admin/hoc-sinh-nghi-hoc/$cumID/$data[ID_LM]/$data[ID_LM]/0/'},";
                                 $noidung1 = "{label: '" . substr($con, 3) . "', y: ".(-$dem31).", indexLabel: '";if($dem31!=0) {$noidung1.="$dem31";}$noidung1.="', name: '$dem31', content: 'http://localhost/www/TDUONG/admin/hoc-sinh-nghi-hoc/$cumID/$data[ID_LM]/$data[ID_LM]/1/'},";
                                 $noidung2 = "{label: '" . substr($con, 3) . "', y: ".($dem32).", indexLabel: '', name: '$dem32', content: 'http://localhost/www/TDUONG/admin/hoc-sinh-nghi-hoc/$cumID/$data[ID_LM]/$data[ID_LM]/5/'},";
+                                $lmID_arr[$dem2]["sl"]++;
                                 $ngay=get_last_cum_date($cumID,$data["ID_LM"],$monID);
                                 $ketqua[$data["ID_LM"]][]=array(
                                     "ngay" => $ngay,
@@ -359,6 +367,7 @@
                                 $noidung0 = "{label: '" . substr($con, 3) . "', y: ".($dem30).", indexLabel: '";if($dem30!=0) {$noidung0.="$dem30";}$noidung0.="', name: '$dem30', content: 'http://localhost/www/TDUONG/admin/hoc-sinh-nghi-hoc/$cumID/0/".$lmID_arr[$i]["ID_LM"]."/0/'},";
                                 $noidung1 = "{label: '" . substr($con, 3) . "', y: ".(-$dem31).", indexLabel: '";if($dem31!=0) {$noidung1.="$dem31";}$noidung1.="', name: '$dem31', content: 'http://localhost/www/TDUONG/admin/hoc-sinh-nghi-hoc/$cumID/0/".$lmID_arr[$i]["ID_LM"]."/1/'},";
                                 $noidung2 = "{label: '" . substr($con, 3) . "', y: ".($dem32).", indexLabel: '', name: '$dem32', content: 'http://localhost/www/TDUONG/admin/hoc-sinh-nghi-hoc/$cumID/0/".$lmID_arr[$i]["ID_LM"]."/5/'},";
+                                $lmID_arr[$i]["sl"]++;
                                 $ngay=get_last_cum_date($cumID,$data["ID_LM"],$monID);
                                 $ketqua[$lmID_arr[$i]["ID_LM"]][]=array(
                                     "ngay" => $ngay,
@@ -603,7 +612,7 @@
                                     echo"<div class='main-top table3' style='display: block;position: absolute;margin-top: -102px;width:94%;'>
                                         <p style='border: 1px solid #3E606F;padding-left:1.2%;'>";
                                             for($i=count($cum_arr[$lmID_arr[$dem]["ID_LM"]])-1;$i>=0;$i--) {
-                                                echo"<span style='display:block;width:6.21%;float:left;margin-top:-5px;position: relative;' class='span-ex'>";
+                                                echo"<span style='display:block;width:".(99.3/$lmID_arr[$dem]["sl"])."%;float:left;margin-top:-5px;position: relative;' class='span-ex'>";
                                                 if(!check_done_options($cum_arr[$lmID_arr[$dem]["ID_LM"]][$i]["cumID"],"diemdanh-nghi",$cum_arr[$lmID_arr[$dem]["ID_LM"]][$i]["lmID"],$monID)) {
                                                     echo"<a href='javascript:void(0)' class='chot-nghi' data-lm='".$lmID_arr[$dem]["ID_LM"]."' data-lmID='".$cum_arr[$lmID_arr[$dem]["ID_LM"]][$i]["lmID"]."' data-cumID='".$cum_arr[$lmID_arr[$dem]["ID_LM"]][$i]["cumID"]."' style='background:yellow;border-radius:100px;display:block;height:10px;width:10px;margin:auto;'></a>
                                                     <a href='javascript:void(0)' class='a-explain' style='background:yellow;color:#3E606F;font-weight:600;'>".format_date($cum_arr[$lmID_arr[$dem]["ID_LM"]][$i]["ngay"])." chưa chốt!</a>";

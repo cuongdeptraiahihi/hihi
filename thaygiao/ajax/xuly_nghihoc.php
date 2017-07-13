@@ -140,6 +140,7 @@
         $hsID=$_POST["hsID_his"];
         $lmID=$_POST["lmID_his"];
         $monID=$_POST["monID_his"];
+        if($lmID==0) {$lmID=get_mon_first_hs($hsID,$monID);}
         echo get_history_nghi($hsID,get_date_in_hs($hsID,$lmID),$lmID,$monID);
     }
 

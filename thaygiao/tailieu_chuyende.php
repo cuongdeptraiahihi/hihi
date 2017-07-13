@@ -205,56 +205,56 @@
                 	<h2>Tài liệu chuyên đề <span style="font-weight:600;"><?php echo $data0["title"] ?></span></h2>
                 	<div>
                     	<div class="status">
-                            <?php if(isset($_SESSION["bieudo"]) && $_SESSION["bieudo"]==0) { ?>
-                            <div id="chartContainer" style="width: 100%;height:250px;">
-
-                            </div>
-                            <?php } ?>
-                            <form action="http://localhost/www/TDUONG/thaygiao/tai-lieu-chuyen-de/<?php echo $cdID; ?>/" method="post">
-                                <table class="table" id="list-hang" style="margin-top: 25px;">
-                                    <tr>
-                                        <td><input type="submit" name="bieu-do" id="bieu-do" class="submit" value="Thống kê" /></td>
-                                        <td colspan="2"><span>Chọn kiểu lọc</span></td>
-                                        <td colspan="3">
-                                            <select class="input" style="width: 100%;height: auto;" name="loc-chon">
-                                                <option value="1" <?php if($loai==1){echo"selected='selected'";} ?>>30 người thấp nhất</option>
-                                            </select>
-                                        </td>
-                                        <td><input type="submit" name="loc-ok" class="submit" value="Lọc" /></td>
-                                    </tr>
-                                    <?php if(isset($_SESSION["bieudo"]) && $_SESSION["bieudo"]==0 && $loai==1) { ?>
-                                        <tr style="background:#3E606F;">
-                                            <th style="width: 10%;"><span>STT</span></th>
-                                            <th style="width: 20%;"><span>Họ tên</span></th>
-                                            <th style="width: 10%;"><span>Mã số</span></th>
-                                            <th style="width: 15%;"><span>Ngày vào học</span></th>
-                                            <th style="width: 10%;"><span>Đề</span></th>
-                                            <th><span>Số lần không làm được</span></th>
-                                            <th style="width: 15%;"><span>Trang cá nhân</span></th>
-                                        </tr>
-                                        <?php
-                                        for ($i = 0; $i < count($data_arr); $i++) {
-                                            if ($i % 2 != 0) {
-                                                echo "<tr style='background: #D1DBBD;'>";
-                                            } else {
-                                                echo "<tr>";
-                                            }
-                                            echo "<td><span>" . ($i + 1) . "</span></td>
-                                                <td><span>" . $data_arr[$i]["fullname"] . "</span></td>
-                                                <td><span>" . $data_arr[$i]["cmt"] . "</span></td>
-                                                <td><span>" . format_dateup($data_arr[$i]["date_in"]) . "</span></td>
-                                                <td><span>" . $data_arr[$i]["de"] . "</span></td>
-                                                <td style='text-align:left;'><span>" . get_soc($data_arr[$i]["diemtb"]) . " " . $data_arr[$i]["diemtb"] . " lần</span></td>
-                                                <td><a href='https://localhost/www/TDUONG/dang-nhap/" . $data_arr[$i]["ID_HS"] . "//' target='_blank'>Xem</a></td>
-                                            </tr>";
-                                            if ($loai == 1 && $i == 19) {
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    ?>
-                                </table>
-                            </form>
+<!--                            --><?php //if(isset($_SESSION["bieudo"]) && $_SESSION["bieudo"]==0) { ?>
+<!--                            <div id="chartContainer" style="width: 100%;height:250px;">-->
+<!---->
+<!--                            </div>-->
+<!--                            --><?php //} ?>
+<!--                            <form action="http://localhost/www/TDUONG/thaygiao/tai-lieu-chuyen-de/--><?php //echo $cdID; ?><!--/" method="post">-->
+<!--                                <table class="table" id="list-hang" style="margin-top: 25px;">-->
+<!--                                    <tr>-->
+<!--                                        <td><input type="submit" name="bieu-do" id="bieu-do" class="submit" value="Thống kê" /></td>-->
+<!--                                        <td colspan="2"><span>Chọn kiểu lọc</span></td>-->
+<!--                                        <td colspan="3">-->
+<!--                                            <select class="input" style="width: 100%;height: auto;" name="loc-chon">-->
+<!--                                                <option value="1" --><?php //if($loai==1){echo"selected='selected'";} ?><!--><!--30 người thấp nhất</option>-->
+<!--                                            </select>-->
+<!--                                        </td>-->
+<!--                                        <td><input type="submit" name="loc-ok" class="submit" value="Lọc" /></td>-->
+<!--                                    </tr>-->
+<!--                                    --><?php //if(isset($_SESSION["bieudo"]) && $_SESSION["bieudo"]==0 && $loai==1) { ?>
+<!--                                        <tr style="background:#3E606F;">-->
+<!--                                            <th style="width: 10%;"><span>STT</span></th>-->
+<!--                                            <th style="width: 20%;"><span>Họ tên</span></th>-->
+<!--                                            <th style="width: 10%;"><span>Mã số</span></th>-->
+<!--                                            <th style="width: 15%;"><span>Ngày vào học</span></th>-->
+<!--                                            <th style="width: 10%;"><span>Đề</span></th>-->
+<!--                                            <th><span>Số lần không làm được</span></th>-->
+<!--                                            <th style="width: 15%;"><span>Trang cá nhân</span></th>-->
+<!--                                        </tr>-->
+<!--                                        --><?php
+//                                        for ($i = 0; $i < count($data_arr); $i++) {
+//                                            if ($i % 2 != 0) {
+//                                                echo "<tr style='background: #D1DBBD;'>";
+//                                            } else {
+//                                                echo "<tr>";
+//                                            }
+//                                            echo "<td><span>" . ($i + 1) . "</span></td>
+//                                                <td><span>" . $data_arr[$i]["fullname"] . "</span></td>
+//                                                <td><span>" . $data_arr[$i]["cmt"] . "</span></td>
+//                                                <td><span>" . format_dateup($data_arr[$i]["date_in"]) . "</span></td>
+//                                                <td><span>" . $data_arr[$i]["de"] . "</span></td>
+//                                                <td style='text-align:left;'><span>" . get_soc($data_arr[$i]["diemtb"]) . " " . $data_arr[$i]["diemtb"] . " lần</span></td>
+//                                                <td><a href='https://localhost/www/TDUONG/dang-nhap/" . $data_arr[$i]["ID_HS"] . "//' target='_blank'>Xem</a></td>
+//                                            </tr>";
+//                                            if ($loai == 1 && $i == 19) {
+//                                                break;
+//                                            }
+//                                        }
+//                                    }
+//                                    ?>
+<!--                                </table>-->
+<!--                            </form>-->
                             <table class="table" id="list-tailieu" style="margin-top: 25px;">
                                 <tr>
                                     <td colspan="5"></td>
@@ -264,7 +264,7 @@
                                     <th style="width:10%;"><span>STT</span></th>
                                     <th style="width:30%;"><span>Tiêu đề</span></th>
                                     <th style="width:10%;"><span>Ngày up</span></th>
-                                    <th style="width:10%";><span>Like/Cmt</span></th>
+                                    <th style="width:10%";><span>View</span></th>
                                     <th style="width:15%;"><span>Giá</span></th>
                                     <th style="width:20%;"><span></span></th>
                                 </tr>
@@ -272,11 +272,14 @@
 									$dem=0;
 									$result2=get_tailieu_dm($cdID,0);
 									while($data2=mysqli_fetch_assoc($result2)) {
+                                        $query="SELECT COUNT(ID_STT) AS dem FROM log WHERE content='$data2[ID_TL]' AND type='xem-tai-lieu'";
+                                        $result=mysqli_query($db,$query);
+                                        $data=mysqli_fetch_assoc($result);
 										echo"<tr>
 											<td><span>".($dem+1)."</span></td>
 											<td><span>$data2[name]</span></td>
 											<td><span>".format_dateup($data2["dateup"])."</span></td>
-											<td><span>".count_tailieu_like($data2["ID_TL"])." / ".count_tailieu_cmt($data2["ID_TL"])."</span></td>
+											<td><span>$data[dem]</span></td>
 											<td><span>";	
 												if($data2["price"]==0) {
 													echo"FREE";

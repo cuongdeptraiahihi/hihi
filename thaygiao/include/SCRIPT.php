@@ -10,6 +10,38 @@
             }
         });
 
+        $("#da-chi").click(function () {
+            $.ajax({
+                async: true,
+                data: "action=tien-chi-list",
+                type: "post",
+                url: "http://localhost/www/TDUONG/thaygiao/xuly-mon/",
+                success: function(result) {
+                    $(".popup").fadeOut("fast");
+                    $("#popup-tien-chi > div > table").html("<tr><td colspan='2'><input type='submit' class='submit add-chi' value='Thêm' /></td></tr><tr style='background:#3E606F'><th><span>Nội dung</span></th><th style='width:15%;'><span></span></th></tr>"+result);
+                    $("#popup-tien-chi").fadeIn("fast");
+                }
+            });
+        });
+
+        $("#chi-ok").click(function () {
+            var money = $("#tien-chi-add").val();
+            var content = $("#text-chi-add").val();
+            if(money != "" && content != "") {
+                $.ajax({
+                    async: false,
+                    data: "money=" + money + "&content=" + content,
+                    type: "post",
+                    url: "http://localhost/www/TDUONG/thaygiao/xuly-mon/",
+                    success: function(t) {
+                        location.reload();
+                    }
+                });
+            } else {
+                alert("Dữ liệu không chính xác!");
+            }
+        });
+
         $("#CHANGE_MON").change(function() {
             var lmID = $(this).val();
 			if($.isNumeric(lmID) && lmID!=0) {
@@ -141,6 +173,12 @@
                 }
             });
         });
+
+        $("#popup-tien-chi > div > table, #MAIN #main-mid .status .table").delegate("tr td input.add-chi","click",function() {
+            $(".popup").fadeOut("fast");
+            $("#popup-chi").fadeIn("fast");
+            $("#tien-chi-add, #text-chi-add").val("");
+        });
 		
 		$("#popup-list > div > table, #MAIN #main-mid .status .table").delegate("tr td input.add-note","click",function() {
 			$(".popup").fadeOut("fast");
@@ -227,6 +265,24 @@
 				}
 			}
 		});
+
+        $("#popup-tien-chi > div > table, #MAIN #main-mid .status .table").delegate("tr td:last-child span i.fa-close","click",function() {
+            if(confirm("Bạn có chắc chắn muốn xoá ý tưởng này?")) {
+                me = $(this);
+                oID = $(this).attr("data-oID");
+                if(oID!=0 && $.isNumeric(oID)) {
+                    $.ajax({
+                        async: false,
+                        data: "oID0=" + oID,
+                        type: "post",
+                        url: "http://localhost/www/TDUONG/thaygiao/xuly-mon/",
+                        success: function(result) {
+                            me.closest("tr").fadeOut("fast");
+                        }
+                    });
+                }
+            }
+        });
 		
 		$("div.popup-close").click(function() {
 			$(".popup").fadeOut("fast");

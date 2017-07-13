@@ -5647,7 +5647,7 @@
 		for($i=$ngay_dk;$i<=$days_of_month[$month_dong-1];$i++) {
 			$jd=gregoriantojd($month_dong,$i,$year_dong);
 			$now_thu=jddayofweek($jd,0)+1;
-            if($now_thu==1 && $monID!=1) {
+            if($now_thu==1 && ($monID==2 || $monID==3)) {
                 continue;
             }
 			// Nếu tồn tại thứ này (đã lưu ở trên)
@@ -6543,7 +6543,7 @@
 		global $db;
 		
 		$query="SELECT * FROM cum WHERE ma_cum!='4' AND link='0' AND ID_LM='$lmID' AND ID_MON='$monID' ORDER BY ma_cum ASC";
-		
+
 		$result=mysqli_query($db,$query);
 		
 		return $result;
@@ -6554,7 +6554,8 @@
 	
 		global $db;
 		
-		$query="SELECT * FROM cum WHERE ma_cum!='4' AND link!='0' AND ID_LM='$lmID' AND ID_MON='$monID' ORDER BY ma_cum ASC";
+		//$query="SELECT * FROM cum WHERE ma_cum!='4' AND link!='0' AND ID_LM='$lmID' AND ID_MON='$monID' ORDER BY ma_cum ASC";
+        $query="SELECT * FROM cum WHERE ma_cum!='4' AND ID_LM='$lmID' AND ID_MON='$monID' ORDER BY link ASC,ma_cum ASC";
 		
 		$result=mysqli_query($db,$query);
 		
@@ -11355,4 +11356,15 @@
         }
 
         return $data;
+    }
+
+    function get_lop_mon_old($monID) {
+
+        global $db;
+
+        $query="SELECT * FROM options WHERE type='mon-cu' AND note2='$monID'";
+
+        $result=mysqli_query($db,$query);
+
+        return $result;
     }

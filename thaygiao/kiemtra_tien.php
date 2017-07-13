@@ -201,7 +201,7 @@
                                             <select class="input" style="height:auto;width:100%;" id="select-staff" name="staff">
                                                 <option value="0" <?php if($staff2==0){echo"selected='selected'";} ?>>Tất cả</option>
                                                 <?php
-                                                    $query="SELECT o.ID_O,o.note,o.note2,i.* FROM options AS o INNER JOIN info_trogiang AS i ON i.ID_O=o.ID_O WHERE o.note LIKE '%(chính)' AND o.type='tro-giang-code' ORDER BY o.ID_O DESC";
+                                                    $query="SELECT o.ID_O,o.note,o.note2 FROM options AS o WHERE o.note LIKE '%(chính)' AND o.type='tro-giang-code' ORDER BY o.ID_O DESC";
                                                     $result=mysqli_query($db,$query);
                                                     while($data=mysqli_fetch_assoc($result)) {
                                                         echo"<option value='$data[ID_O]' ";if($data["ID_O"]==$staff2){echo"selected='selected'";}echo" >$data[note]</option>";

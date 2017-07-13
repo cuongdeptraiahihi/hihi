@@ -35,7 +35,7 @@
     	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js">
         </script><![endif]-->
                
-        <link rel="stylesheet" type="text/css" href="http://localhost/www/TDUONG/thaygiao/css/bocuc.css"/>
+        <link rel="stylesheet" type="text/css" href="http://localhost/www/TDUONG/thaygiao/css/bocuc.css"/>       
         <link href="http://localhost/www/TDUONG/thaygiao/images/favicon.ico" rel="shortcut icon" type="iamge/x-icon"/>
         <link rel="stylesheet" href="http://localhost/www/TDUONG/thaygiao/css/font-awesome.min.css">
         
@@ -53,6 +53,81 @@
 				}
             });
 			
+			$("#MAIN > #main-mid .status #bang-chon").delegate("tr td.chon-ca","click",function() {
+				if(confirm("Bạn có chắc chắn thêm ca học này?")) {
+					$("#popup-loading").fadeIn("fast");
+					$("#BODY").css("opacity","0.3");
+					thu = $(this).attr("data-thu");
+					cum = $("#hin-data").val();
+					gio = $(this).attr("data-gioID");
+					siso = 140;
+					toida = 150;
+					if(siso!="" && toida!="" && siso<=toida && cum>0 && thu>0 && thu<=7) {
+						$.ajax({
+							async: true,
+							data: "thu=" + thu + "&siso=" + siso + "&max=" + toida + "&gio=" + gio + "&cum=" + cum,
+							type: "post",
+							url: "http://localhost/www/TDUONG/thaygiao/xuly-ca/",
+							success: function(result) {
+								$("#popup-loading").fadeOut("fast");
+								$("#BODY").css("opacity","1");
+								location.reload();
+							}
+						});
+					} else {
+						alert("Thông tin không chính xác!");
+						$("#popup-loading").fadeOut("fast");
+						$("#BODY").css("opacity","1");
+					}
+				}
+			});
+			
+			$("#MAIN #main-mid #bang-ca tr th span > i.add_thu").click(function() {
+				thu = 0;
+				cum = $(this).attr("data-cum");
+				get_bang_ca(thu);
+				$("#hin-data").val(cum);
+				$("#MAIN > #main-mid .status #bang-chon").fadeIn("fast");
+			});
+			
+			$("#MAIN #main-mid #bang-ca tr td span > i.add_ca").click(function() {
+				thu = $(this).attr("data-thu");
+				cum = $(this).attr("data-cum");
+				get_bang_ca(thu);
+				$("#chon-thu > th").each(function(index, element) {
+                    if(thu==(index)) {
+						$(element).css("background","yellow");
+					}
+                });
+				$("#hin-data").val(cum);
+				$("#MAIN > #main-mid .status #bang-chon").fadeIn("fast");
+			});
+			
+			$("#MAIN > #main-mid .status #bang-chon").delegate("tr th span > i.close-bang","click",function() {
+				$(this).closest("#bang-chon").fadeOut("fast");
+			});
+			
+			$("#MAIN #main-mid #bang-ca tr td > nav > div > i.kill_ca").click(function() {
+				if(confirm("Bạn có muốn xóa ca này ko? Tất cả học sinh thuộc ca này sẽ bơ vơ!")) {
+					if(confirm("Bạn chắc chắn chứ?")) {
+						caID = $(this).attr("data-caID");
+						$.ajax({
+							async: true,
+							data: "caID=" + caID,
+							type: "post",
+							url: "http://localhost/www/TDUONG/thaygiao/xuly-ca/",
+							success: function(result) {
+								location.reload();
+							}
+						});
+					}
+				}
+			});
+			
+			$("#MAIN #main-mid #bang-ca tr td > nav > div > i.edit_siso").click(function() {
+				$(this).closest("nav").find("div.siso").fadeIn("fast");
+			});
+			
 			function get_bang_ca(thu) {
 				$.ajax({
 					async: false,
@@ -64,6 +139,63 @@
 					}
 				});
 			}
+			
+			$(".save_name").click(function() {
+				$("#popup-loading").fadeIn("fast");
+				$("#BODY").css("opacity","0.3");
+				me = $(this);
+				name = me.closest("td").find("input.input_name").val();
+				cum = $(this).attr("data-cumID");
+				conn = me.closest("td").find("select option:selected").val();
+				$.ajax({
+					async: true,
+					data: "name=" + name + "&cum0=" + cum + "&link=" + conn,
+					type: "post",
+					url: "http://localhost/www/TDUONG/thaygiao/xuly-ca/",
+					success: function(result) {
+						me.val("OK");
+						$("#popup-loading").fadeOut("fast");
+						$("#BODY").css("opacity","1");
+						location.reload();
+					}
+				});
+			});
+			
+			$(".del_cum").click(function() {
+				if(confirm("Bạn có chắc chắn muốn xóa cụm này?")) {
+					$("#popup-loading").fadeIn("fast");
+					$("#BODY").css("opacity","0.3");
+					me = $(this);
+					cum = $(this).attr("data-cumID");
+					$.ajax({
+						async: true,
+						data: "cum1=" + cum,
+						type: "post",
+						url: "http://localhost/www/TDUONG/thaygiao/xuly-ca/",
+						success: function(result) {
+							$("#popup-loading").fadeOut("fast");
+							$("#BODY").css("opacity","1");
+							location.reload();
+						}
+					});
+				}
+			});
+			
+			$("#add_cum").click(function() {
+				$("#popup-loading").fadeIn("fast");
+				$("#BODY").css("opacity","0.3");
+				$.ajax({
+					async: true,
+					data: "lmID0=" + <?php echo $lmID; ?>,
+					type: "post",
+					url: "http://localhost/www/TDUONG/thaygiao/xuly-ca/",
+					success: function(result) {
+						$("#popup-loading").fadeOut("fast");
+						$("#BODY").css("opacity","1");
+						location.reload();
+					}
+				});
+			});
 			
 			$("#MAIN > #main-mid .status #bang-ca tr.big-ca").each(function(index, element) {
                 cum = $(element).attr("data-cum");
@@ -83,6 +215,55 @@
 					$("#bang-ca tr.big-ca:eq("+index+")").find("td select").css("opacity","0.3").html("<option value='0'>Ca chính</option>");
 				}
             });
+			
+			$("input.input-siso").typeWatch({
+				captureLength: 2,
+				callback: function(value) {
+					text = value;
+					if($.isNumeric(text) && text>=10) {
+						me = $(this);
+						$("#popup-loading").fadeIn("fast");
+						$("#BODY").css("opacity","0.3");
+						caID = $(this).attr("data-caID");
+						$.ajax({
+							async: true,
+							data: "caID3=" + caID + "&siso1=" + text,
+							type: "post",
+							url: "http://localhost/www/TDUONG/thaygiao/xuly-ca/",
+							success: function(result) {
+								me.css("background","#96c8f3");
+								$("#popup-loading").fadeOut("fast");
+								$("#BODY").css("opacity","1");
+							}
+						});
+					}
+				}
+			});
+			
+			$("input.input-max").typeWatch({
+				captureLength: 1,
+				callback: function(value) {
+					text = value;
+					if($.isNumeric(text) && text>=0) {
+						me = $(this);
+						$("#popup-loading").fadeIn("fast");
+						$("#BODY").css("opacity","0.3");
+						caID = $(this).attr("data-caID");
+						full = parseInt($(this).closest("div.siso").find("input.input-siso").val()) + parseInt(text);
+						$.ajax({
+							async: true,
+							data: "caID3=" + caID + "&max1=" + full,
+							type: "post",
+							url: "http://localhost/www/TDUONG/thaygiao/xuly-ca/",
+							success: function(result) {
+								me.css("background","#96c8f3");
+								$("#popup-loading").fadeOut("fast");
+								$("#BODY").css("opacity","1");
+							}
+						});
+					}
+				}
+			});
 		});
 		</script>
         <script type="text/javascript">
@@ -204,6 +385,12 @@
                             <div class="main-bot" style="display:block;">
                                 <table class="table" style="margin-top: 25px;">
                                     <tr>
+                                        <td class="hidden"><span>Liên quan</span></td>
+                                        <th style="border: none;"><input type="submit" class="submit" value="Khung giờ" onclick="location.href='http://localhost/www/TDUONG/thaygiao/gio/<?php echo $lmID."/".$monID; ?>/'" /></th>
+                                        <th style="border: none;"></th>
+                                        <th style="border: none;"></th>
+                                    </tr>
+                                    <tr>
                                         <td class="hidden"><span>Dạng hiển thị</span></td>
                                         <th><input type="submit" class="submit" value="Liệt kê" onclick="location.href='http://localhost/www/TDUONG/thaygiao/ca/<?php echo $lmID."/".$monID; ?>/'" /></th>
                                         <th><input type="submit" class="submit" value="Bảng chọn" onclick="location.href='http://localhost/www/TDUONG/thaygiao/cai-dat-ca/<?php echo $lmID."/".$monID; ?>/'" /></th>
@@ -249,6 +436,8 @@
                                                         echo"<option value='$data1[ID_CUM]' ";if($data["link"]==$data1["ID_CUM"]){echo"selected='selected'";}echo">Liên kết $data1[name]</option>";
                                                     }
                                                 echo"</select>
+                                                <input type='submit' class='submit save_name' style='float:left;width:10%;' data-cumID='$data[ID_CUM]' value='Lưu' />
+                                                <input type='submit' class='submit del_cum' style='float:left;width:10%;' data-cumID='$data[ID_CUM]' value='Xóa' />
                                             </td>
                                         </tr>
                                         <tr style='background:#3E606F;'>";
@@ -332,6 +521,13 @@
                                                 }
                                             echo"</tr>";
                                         }
+                                        if($data["link"]==0) {
+                                            echo"<tr>";
+                                            for($i=0;$i<$dem;$i++) {
+                                                echo"<td><span><i class='fa fa-plus-circle add_ca' title='Thêm ca' data-thu='$thu_array[$i]' data-cum='$big_cum'></i></span></td>";
+                                            }
+                                            echo"</tr>";
+                                        }
                                         echo"<input type='hidden' value='$dem2' class='num-ca' data-cum='$big_cum' />";
                                         $max_dem=$max_dem>$dem?$max_dem:$dem;
                                     }
@@ -341,6 +537,9 @@
 <!--                                    </tr>-->
                                     <tr>
                                         <td style="border: none;" colspan="">
+                                        <?php
+                                            if($lmID!=0) {echo"<input type='submit' class='submit' id='add_cum' style='width:50%;font-size:1.375em;' value='Thêm cụm' />";}
+                                        ?>
                                             <input type="hidden" value="<?php echo $max_dem; ?>" id="max-dem" class="has-col" />
                                         </td>
                                     </tr>

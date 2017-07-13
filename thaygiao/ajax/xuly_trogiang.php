@@ -60,8 +60,9 @@
         $ngay = $_POST["ngay2"];
         $id = $_POST["id2"];
         if (valid_id($id)) {
-            if (check_diem_danh($ngay,$id)) {
-                diemdanhtrogiangcong($ngay,$id);
+            $check=check_diem_danh($ngay,$id);
+            if ($check != -1) {
+                diemdanhtrogiangcong($ngay,get_buoi_diem_danh_trogiang($id,$ngay,$check),$id);
                 echo "ok";
             } else {
                 echo "no";

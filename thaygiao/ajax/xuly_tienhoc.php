@@ -15,7 +15,7 @@
         $result=mysqli_query($db,$query);
         if(mysqli_num_rows($result) != 0) {
             $data = mysqli_fetch_assoc($result);
-            echo $data["content"];
+            echo str_replace("k","",$data["content"]);
         } else {
             echo "none";
         }
