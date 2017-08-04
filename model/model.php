@@ -112,6 +112,17 @@
 			return false;
 		}
 	}
+
+    function get_admin($id) {
+
+        global $db;
+
+        $query="SELECT * FROM admin WHERE ID='$id' AND level='1' AND note='boss'";
+
+        $result=mysqli_query($db,$query);
+
+        return $result;
+    }
 	
 	function login_thaygiao($name, $password, $monID) {
 	
@@ -3216,6 +3227,18 @@
 		$data=mysqli_fetch_assoc($result);
 		$diemtb=number_format((float)$data["diemtb"], 2, '.', '');
 
+		return $diemtb;
+	}
+
+	function tinh_diemtb_month_de($hsID, $now, $lmID) {
+		
+		global $db;
+		
+        $query="SELECT AVG(d.diem) AS diemtb FROM buoikt AS b INNER JOIN diemkt AS d ON d.ID_BUOI=b.ID_BUOI AND d.ID_HS='$hsID' AND d.diem!='X' AND d.diem!='0' AND d.loai='0' AND d.ID_LM='$lmID' WHERE b.ngay LIKE '$now-%' GROUP BY d.de ORDER BY FIELD(d.de,'G','B','Y')";
+        $result=mysqli_query($db,$query);
+		$data=mysqli_fetch_assoc($result);
+		$diemtb=number_format((float)$data["diemtb"], 2, '.', '');
+		
 		return $diemtb;
 	}
 

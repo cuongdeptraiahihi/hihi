@@ -460,10 +460,7 @@
                         date_out="";
                     }
                     mon_i = $(element).find("td:last-child span.add-mon i");
-                    discount = $(element).closest("table").find("tr.tien-hoc_"+lmID+" td:first-child input.giam-gia").val();
-                    if(!discount) {
-                        discount=0;
-                    }
+                    discount = $(element).closest("table").find("tr.tien-hoc_"+lmID+" td input.giam-gia").val();
                     if(hsID!=0) {
                         remove = 0;
                         if(mon_i.attr("class") == "fa fa-toggle-on") {

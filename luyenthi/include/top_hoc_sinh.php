@@ -17,17 +17,19 @@
         $hsID = $_SESSION["my_id"];
         $code = $_SESSION["my_code"];
         $monID = $_SESSION["my_monbig"];
-        if(!isset($_SESSION["global_fullname"]) || !isset($_SESSION["global_avata"]) || !isset($_SESSION["global_cmt"])) {
+        if(!isset($_SESSION["global_fullname"]) || !isset($_SESSION["global_avata"]) || !isset($_SESSION["global_cmt"]) || !isset($_SESSION["global_id"])) {
             $result = $db->getHocSinhDetail($hsID);
             $global = $result->fetch_assoc();
             $_SESSION["global_fullname"] = $global["fullname"];
             $_SESSION["global_avata"] = $global["avata"];
             $_SESSION["global_cmt"] = $global["cmt"];
+            $_SESSION["global_id"] = $hsID;
         } else {
             $global = array();
             $global["fullname"] = $_SESSION["global_fullname"];
             $global["cmt"] = $_SESSION["global_cmt"];
             $global["avata"] = $_SESSION["global_avata"];
+            $global["ID_HS"] = $_SESSION["global_id"];
         }
     } else if (isset($_COOKIE["my_mon"]) && isset($_COOKIE["my_monbig"]) && isset($_COOKIE["my_id"]) && isset($_COOKIE["is_ct"])) {
         global $lmID, $is_ct, $hsID, $code;
@@ -41,17 +43,19 @@
         $_SESSION["my_id"] = $hsID;
         $_SESSION["my_code"] = $code;
         $_SESSION["my_monbig"] = $monID;
-        if(!isset($_SESSION["global_fullname"]) || !isset($_SESSION["global_avata"]) || !isset($_SESSION["global_cmt"])) {
+        if(!isset($_SESSION["global_fullname"]) || !isset($_SESSION["global_avata"]) || !isset($_SESSION["global_cmt"]) || !isset($_SESSION["global_id"])) {
             $result = $db->getHocSinhDetail($hsID);
             $global = $result->fetch_assoc();
             $_SESSION["global_fullname"] = $global["fullname"];
             $_SESSION["global_avata"] = $global["avata"];
             $_SESSION["global_cmt"] = $global["cmt"];
+            $_SESSION["global_id"] = $hsID;
         } else {
             $global = array();
             $global["fullname"] = $_SESSION["global_fullname"];
             $global["cmt"] = $_SESSION["global_cmt"];
             $global["avata"] = $_SESSION["global_avata"];
+            $global["ID_HS"] = $_SESSION["global_id"];
         }
     } else {
         $url=$_SERVER['REQUEST_URI'];
@@ -62,6 +66,7 @@
         $global["fullname"] = "Guest";
         $global["avata"] = "placeholder.jpg";
         $global["cmt"] = "xxx";
+        $global["ID_HS"] = 0;
         $lmID = $is_ct = $hsID = $monID = 0;
     }
 ?>
@@ -371,7 +376,7 @@
                 $("a#mon-show").hide();
             }
 
-            $("ul#mon-access li a").click(function () {
+            $("ul#mon-access li a, li.mon a").click(function () {
                 var lmID = $(this).attr("data-lmID");
                 if(valid_id(lmID)) {
                     $.ajax({

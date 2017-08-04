@@ -203,9 +203,13 @@
                     }
                 });
 
+                var mydem = 0;
                 $("table#list-nghihoc tr td:last-child").each(function(index,element) {
                     if($(element).hasClass("noneed")) {
                         $(this).closest("tr").remove();
+                    } else {
+                        $(element).closest("tr").find("th:first-child span").html(mydem);
+                        mydem++;
                     }
                 });
 

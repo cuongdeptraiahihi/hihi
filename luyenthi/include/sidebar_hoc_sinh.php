@@ -36,6 +36,13 @@
                     <li><a href="http://localhost/www/TDUONG/luyenthi/thi-thu/"><i class="icon-clipboard3"></i> <span>Đề thi thử của Sở</span></a></li>
                     <li><a href="https://www.messenger.com/t/hotroloptoan" target="_blank"><i class="icon-bubble2"></i> <span>Hỗ trợ</span></a></li>
                     <li class="navigation-header"><span>Môn học</span> <i class="icon-file-spreadsheet" title="Môn học"></i></li>
+                    <?php
+                        $dbx = new Mon_Hoc();
+                        $resultx = $dbx->getAllLopMonHs($global["ID_HS"]);
+                        while ($datax = $resultx->fetch_assoc()) {
+                            echo"<li class='mon'><a href='javascript:void(0)' data-lmID='$datax[ID_LM]'><span>Môn $datax[name]</span></a></li>";
+                        }
+                    ?>
                     <!-- /main -->
                 </ul>
             </div>

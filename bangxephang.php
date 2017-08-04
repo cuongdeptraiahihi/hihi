@@ -31,7 +31,7 @@
 		$de_temp="B";
 	} else if(isset($_GET["loai"]) && $_GET["loai"]==2) {
 		$de_temp = "G";
-	} else if(isset($_GET["loai"]) && $_GET["loai"]==-1) {
+	} else if(isset($_GET["loai"]) && $_GET["loai"]==4) {
 		$de_temp = "Y";
 	} else {
 		$de_temp=$de;
@@ -41,7 +41,8 @@
 	$temp=explode("-",$date_in);
 	$temp_thang=$temp[1];
 	$temp_nam=$temp[0];
-	
+
+	$hs_nghi = array();
 	$dem_tbt=0;
 	$thang=get_last_month(date("m"));
 	$nam=get_last_year(date("m"),date("Y"));
@@ -61,16 +62,22 @@
 			/*if($nam==$temp_nam && $thang==$temp_thang) {
 				$query7="SELECT h.ID_HS,t.diemtb,t.detb,n.date FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_MON='$monID' AND m.date_in<'$nextm-01' INNER JOIN diemtb_thang AS t ON t.ID_HS=h.ID_HS AND t.ID_MON='$monID' AND t.detb='B' AND t.datetime='$curr' LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=h.ID_HS AND n.ID_MON='$monID' WHERE h.lop='$lopID' ORDER BY t.diemtb DESC,h.cmt ASC";
 			} else {*/
-				$query7="SELECT h.ID_HS,t.diemtb,t.detb FROM hocsinh AS h 
-				INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_LM='$lmID' AND m.date_in<'$nextm-01' 
-				INNER JOIN diemtb_thang AS t ON t.ID_HS=h.ID_HS AND t.ID_LM='$lmID' AND t.datetime='$curr' 
-				WHERE h.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID') ORDER BY t.diemtb DESC,h.cmt ASC";
+				$query7="SELECT m.ID_HS,t.diemtb,t.detb,n.ID_N FROM hocsinh_mon AS m 
+				INNER JOIN diemtb_thang AS t ON t.ID_HS=m.ID_HS AND t.ID_LM='$lmID' AND t.datetime='$curr' 
+				LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=m.ID_HS AND n.ID_LM='$lmID'
+				WHERE m.ID_LM='$lmID' AND m.date_in<'$nextm-01' 
+				ORDER BY t.diemtb DESC";
 			//}
 		//}
 		$result7=mysqli_query($db,$query7);
 		$demtb_B=$demtb_G=$demtb_Y=$tb_tong_B=$tb_tong_G=$tb_tong_Y=$rankB=$rankG=$rankY=0;
 		$has=false;
 		while($data7=mysqli_fetch_assoc($result7)) {
+		    if(isset($data7["ID_N"])) {
+		        $hs_nghi["hs-" . $data7["ID_HS"]] = 1;
+		        continue;
+            }
+
             //$diemtb=number_format((float)$data7["diemtb"], 2, '.', '');
             $diemtb=$data7["diemtb"];
             $detb=$data7["detb"];
@@ -357,7 +364,7 @@
 						?>
 						]
 					},
-					{        
+					{
 						indexLabelFontFamily:"helvetica" ,
 						type: "splineArea",
 						lineThickness: 0,
@@ -381,7 +388,7 @@
 						?>
 						]
 					},
-					{        
+					{
 						indexLabelFontFamily:"helvetica" ,
 						type: "splineArea",
 						lineThickness: 0,
@@ -534,7 +541,7 @@
                                     <td><span>Lọc dữ liệu</span></td>
                                     <td colspan="2">
                                         <select class="submit" style="width:100%;height:auto;" id="select-loc" name="select-loc">
-											<option value="-1" <?php if($loai_loc==-1){echo"selected='selected'";} ?>>Xếp hạng đề Y</option>
+											<option value="4" <?php if($loai_loc==4){echo"selected='selected'";} ?>>Xếp hạng đề Y</option>
                                             <option value="1" <?php if($loai_loc==1){echo"selected='selected'";} ?>>Xếp hạng đề B</option>
                                             <option value="2" <?php if($loai_loc==2){echo"selected='selected'";} ?>>Xếp hạng đề G</option>
                                             <option value="3" <?php if($loai_loc==3){echo"selected='selected'";} ?>>Tìm theo mã số</option>
@@ -563,32 +570,36 @@
 									/*if($year==date("Y") && $month==date("m")) {
 										$query="SELECT h.ID_HS,h.cmt,h.fullname,n.date,(SELECT AVG(d.diem) AS diem FROM buoikt AS b INNER JOIN diemkt AS d ON d.ID_BUOI=b.ID_BUOI AND d.diem!='X' WHERE b.ngay LIKE '$year-$month-%' AND d.ID_HS=h.ID_HS ORDER BY b.ID_BUOI DESC) AS diemtb FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_MON='$monID' AND m.de='G' LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=h.ID_HS AND n.ID_MON='$monID' WHERE h.lop='$lopID' ORDER BY diemtb DESC";
 									} else {*/
-										$query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.detb='G' AND diemtb_thang.datetime='$year-$month' WHERE hocsinh.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID') ORDER BY diemtb_thang.diemtb DESC,hocsinh.cmt ASC";
+										$query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.detb='G' AND diemtb_thang.datetime='$year-$month' ORDER BY diemtb_thang.diemtb DESC,hocsinh.cmt ASC";
 									//}
 								} else if($loai_loc==3) {
 									/*if($year==date("Y") && $month==date("m")) {
 										$query="SELECT h.ID_HS,h.cmt,h.fullname,m.de,n.date,(SELECT AVG(d.diem) AS diem FROM buoikt AS b INNER JOIN diemkt AS d ON d.ID_BUOI=b.ID_BUOI AND d.diem!='X' WHERE b.ngay LIKE '$year-$month-%' AND d.ID_HS=h.ID_HS ORDER BY b.ID_BUOI DESC) AS diemtb FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_MON='$monID' LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=h.ID_HS AND n.ID_MON='$monID' WHERE h.cmt LIKE '%$ma%' AND h.lop='$lopID'";
 									} else {*/
-										$query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname,hocsinh_mon.de FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.datetime='$year-$month' WHERE hocsinh.cmt LIKE '%$ma%' AND hocsinh.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID')";
+										$query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname,hocsinh_mon.de FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.datetime='$year-$month' WHERE hocsinh.cmt LIKE '%$ma%'";
 									//}
 								} else if($loai_loc==1) {
 									/*if($year==date("Y") && $month==date("m")) {
 										$query="SELECT h.ID_HS,h.cmt,h.fullname,n.date,(SELECT AVG(d.diem) AS diem FROM buoikt AS b INNER JOIN diemkt AS d ON d.ID_BUOI=b.ID_BUOI AND d.diem!='X' WHERE b.ngay LIKE '$year-$month-%' AND d.ID_HS=h.ID_HS ORDER BY b.ID_BUOI DESC) AS diemtb FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_MON='$monID' AND m.de='B' LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=h.ID_HS AND n.ID_MON='$monID' WHERE h.lop='$lopID' ORDER BY diemtb DESC";
 									} else {*/
-										$query = "SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.detb='B' AND diemtb_thang.datetime='$year-$month' WHERE hocsinh.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID') ORDER BY diemtb_thang.diemtb DESC,hocsinh.cmt ASC";
+										$query = "SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.detb='B' AND diemtb_thang.datetime='$year-$month' ORDER BY diemtb_thang.diemtb DESC,hocsinh.cmt ASC";
 									//}
-								} else if($loai_loc==-1) {
-										$query = "SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.detb='Y' AND diemtb_thang.datetime='$year-$month' WHERE hocsinh.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID') ORDER BY diemtb_thang.diemtb DESC,hocsinh.cmt ASC";
+								} else if($loai_loc==4) {
+										$query = "SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.detb='Y' AND diemtb_thang.datetime='$year-$month' ORDER BY diemtb_thang.diemtb DESC,hocsinh.cmt ASC";
 								} else {
 									/*if($year==date("Y") && $month==date("m")) {
 										$query="SELECT h.ID_HS,h.cmt,h.fullname,n.date,(SELECT AVG(d.diem) AS diem FROM buoikt AS b INNER JOIN diemkt AS d ON d.ID_BUOI=b.ID_BUOI AND d.diem!='X' WHERE b.ngay LIKE '$year-$month-%' AND d.ID_HS=h.ID_HS ORDER BY b.ID_BUOI DESC) AS diemtb FROM hocsinh AS h INNER JOIN hocsinh_mon AS m ON m.ID_HS=h.ID_HS AND m.ID_MON='$monID' AND m.de='$de' LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=h.ID_HS AND n.ID_MON='$monID' WHERE h.lop='$lopID' ORDER BY diemtb DESC,h.cmt ASC";
 									} else {*/
 									    $de=get_de_thang($hsID,$lmID,"$year-$month");
-										$query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.detb='$de' AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.datetime='$year-$month' WHERE hocsinh.ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$lmID') ORDER BY diemtb_thang.diemtb DESC,hocsinh.cmt ASC";
+										$query="SELECT hocsinh.ID_HS,hocsinh.cmt,hocsinh.fullname FROM hocsinh INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=hocsinh.ID_HS AND hocsinh_mon.ID_LM='$lmID' AND hocsinh_mon.date_in<'$nextm-01' INNER JOIN diemtb_thang ON diemtb_thang.ID_HS=hocsinh.ID_HS AND diemtb_thang.detb='$de' AND diemtb_thang.ID_LM='$lmID' AND diemtb_thang.datetime='$year-$month' ORDER BY diemtb_thang.diemtb DESC,hocsinh.cmt ASC";
 									//}
 								}
 								$result=mysqli_query($db,$query);
 								while($data=mysqli_fetch_assoc($result)) {
+								    if(isset($hs_nghi["hs-" . $data["ID_HS"]])) {
+								        continue;
+                                    }
+
 //                                    $check=check_exited_thachdau($hsID, $data["ID_HS"], $next_CN, $lmID);
                                     if($hsID==$data["ID_HS"]) {
                                         echo"<tr id='tr-me' class='me-here'>
@@ -601,7 +612,7 @@
                                         } else if($loai_loc==1 || ($loai_loc==0 && $de=="B") || ($loai_loc==3 && $data["de"]=="B")) {
                                             echo"<td><span>".$hs_rankB[$data["ID_HS"]]["diemtb"]."</span></td>
                                             <td><span>".$hs_rankB[$data["ID_HS"]]["rank"]."</span></td>";
-										} else if($loai_loc==-1 || ($loai_loc==0 && $de=="Y") || ($loai_loc==3 && $data["de"]=="Y")) {
+										} else if($loai_loc==4 || ($loai_loc==0 && $de=="Y") || ($loai_loc==3 && $data["de"]=="Y")) {
 											echo"<td><span>".$hs_rankY[$data["ID_HS"]]["diemtb"]."</span></td>
                                             <td><span>".$hs_rankY[$data["ID_HS"]]["rank"]."</span></td>";
                                         } else {
@@ -622,7 +633,7 @@
                                         } else if($loai_loc==1 || ($loai_loc==0 && $de=="B") || ($loai_loc==3 && $data["de"]=="B")) {
                                             echo"<td><span>".$hs_rankB[$data["ID_HS"]]["diemtb"]."</span></td>
                                             <td><span>".$hs_rankB[$data["ID_HS"]]["rank"]."</span></td>";
-										} else if($loai_loc==-1 || ($loai_loc==0 && $de=="Y") || ($loai_loc==3 && $data["de"]=="Y")) {
+										} else if($loai_loc==4 || ($loai_loc==0 && $de=="Y") || ($loai_loc==3 && $data["de"]=="Y")) {
 											echo"<td><span>".$hs_rankY[$data["ID_HS"]]["diemtb"]."</span></td>
                                             <td><span>".$hs_rankY[$data["ID_HS"]]["rank"]."</span></td>";
                                         } else {

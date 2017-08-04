@@ -235,9 +235,20 @@
                 $total = 0;
                 $dem = 0;
                 $num_count = 0;
-                $me = $temp_name = "";
-                while ($data5 = mysqli_fetch_assoc($result5)) {
-                    if (($temp_cd != 0 && $temp_cd != $data5["ID_CD"]) || $num_count == $num - 1) {
+                $me = $temp_name = $temp_diem = "";
+                while ($num >= 0) {
+                    $data5 = mysqli_fetch_assoc($result5);
+                    if ($temp_cd != 0 && $temp_cd != $data5["ID_CD"]) {
+                        if($num_count == 0) {
+                            $temp = explode("/", $data5["diem"]);
+                            $total += $temp[0];
+                            $dem += $temp[1];
+                        }
+                        if($num_count == 0 && $num == 0) {
+                            $temp = explode("/", $temp_diem);
+                            $total += $temp[0];
+                            $dem += $temp[1];
+                        }
                         if ($dem == 0) {
                             $diemtb = 0;
                         } else {
@@ -247,14 +258,19 @@
                         $str.= "<li><p><span style='width: 80%;float:left;'>$temp_name</span><span style='float:right;'>$indexLabel</span></p><div class='clear'></div></li>";
                         $total = 0;
                         $dem = 0;
+                        $num_count = 0;
                     } else {
                         $temp = explode("/", $data5["diem"]);
-                        $total += $temp[0];
-                        $dem += $temp[1];
+                        if(count($temp) == 2) {
+                            $total += $temp[0];
+                            $dem += $temp[1];
+                            $num_count++;
+                        }
                     }
                     $temp_cd = $data5["ID_CD"];
                     $temp_name = $data5["title"];
-                    $num_count++;
+                    $temp_diem = $data5["diem"];    
+                    $num--;
                 }
                 $me2.=$str;
                 $_SESSION["chuyende2-".$data["ID_CD"]] = $str;

@@ -21,19 +21,6 @@
     $thang_toi=$temp[1]+1-1;
 
     $tien_hoc2=$tien_hoc3=array();
-    $tien_hoc2["tien_toan_du"]=get_muctien("cuoi_thang_truoc_toan");
-    $tien_hoc2["tien_toan_muon"]=get_muctien("dau_thang_sau_toan");
-    $tien_hoc2["tien_ly_du"]=get_muctien("cuoi_thang_truoc_ly");
-    $tien_hoc2["tien_ly_muon"]=get_muctien("dau_thang_sau_ly");
-    $tien_hoc2["tien_anh_du"]=get_muctien("cuoi_thang_truoc_anh");
-    $tien_hoc2["tien_anh_muon"]=get_muctien("dau_thang_sau_anh");
-
-    $tien_hoc3["tien_toan_du"]=format_price_sms($tien_hoc2["tien_toan_du"]);
-    $tien_hoc3["tien_toan_muon"]=format_price_sms($tien_hoc2["tien_toan_muon"]);
-    $tien_hoc3["tien_ly_du"]=format_price_sms($tien_hoc2["tien_ly_du"]);
-    $tien_hoc3["tien_ly_muon"]=format_price_sms($tien_hoc2["tien_ly_muon"]);
-    $tien_hoc3["tien_anh_du"]=format_price_sms($tien_hoc2["tien_anh_du"]);
-    $tien_hoc3["tien_anh_muon"]=format_price_sms($tien_hoc2["tien_anh_muon"]);
 
     $rowCount=2;
 
@@ -41,7 +28,12 @@
     $result=get_all_lop_mon();
     while($data=mysqli_fetch_assoc($result)) {
         $lop_mon[$data["ID_LM"]]=$data["date_in"];
-        $mon[$data["ID_MON"]]=unicode_convert(get_mon_name($data["ID_MON"]));
+        $name=unicode_convert(get_mon_name($data["ID_MON"]));
+        $mon[$data["ID_MON"]]=$name;
+        $tien_hoc2["tien_".$name."_du"]=get_muctien("cuoi_thang_truoc_".$name);
+        $tien_hoc2["tien_".$name."_muon"]=get_muctien("dau_thang_sau_".$name);
+        $tien_hoc3["tien_".$name."_du"]=format_price_sms($tien_hoc2["tien_".$name."_du"]);
+        $tien_hoc3["tien_".$name."_muon"]=format_price_sms($tien_hoc2["tien_".$name."_muon"]);
     }
 
 	$query="SELECT ID_HS,cmt,fullname,sdt_bo,sdt_me FROM hocsinh ORDER BY cmt ASC";
@@ -53,7 +45,7 @@
 //        $thang=$temp[1];
         $content="KINH GUI PHU HUYNH EM ".mb_strtoupper(str_replace("-"," ",unicode_convert($data["fullname"])),"UTF-8").".\n+ De quan ly ket qua hoc tap, lich hoc,... cua con, phu huynh truy cap vao www.bgo.edu.vn voi ten dang nhap: \"$data[cmt]\" va mat khau: \"{sdt}\". Neu can tro giup, phu huynh co the an nut \"Ho tro\" tren website hoac goi 09.827.827.64\n";
         $query2="SELECT m.date_in,m.ID_LM,l.ID_MON,n.ID_N,g.discount FROM hocsinh_mon AS m 
-        INNER JOIN lop_mon AS l ON l.ID_LM=m.ID_LM AND l.ID_LM IN ('2','5')
+        INNER JOIN lop_mon AS l ON l.ID_LM=m.ID_LM AND l.ID_LM NOT IN ('2','5','12','13','15')
         LEFT JOIN giam_gia AS g ON g.ID_HS='$data[ID_HS]' AND g.ID_MON=l.ID_MON 
         LEFT JOIN hocsinh_nghi AS n ON n.ID_HS=m.ID_HS AND n.ID_LM=m.ID_LM 
         WHERE m.ID_HS='$data[ID_HS]' ORDER BY m.ID_LM ASC";
@@ -76,11 +68,13 @@
                     $check = false;
                     continue;
                 }
+                $name = str_replace("-c", " Co ", $mon_name);
+                $name = str_replace("-t", " Thay ", $name);
                 if($discount==0) {
-                    $pre = " Hoc phi mon ".ucfirst($mon_name)." T$thang_toi la " . $tien_hoc3["tien_" . $mon_name . "_muon"] . ", neu dong truoc 1/$thang_toi thi se giam con " . $tien_hoc3["tien_" . $mon_name . "_du"] . ".\n";
+                    $pre = " Hoc phi mon ".ucwords($mon_name)." T$thang_toi la " . $tien_hoc3["tien_" . $mon_name . "_muon"] . ", neu dong truoc 1/$thang_toi thi se giam con " . $tien_hoc3["tien_" . $mon_name . "_du"] . ".\n";
                 } else {
                     $price=$tien_hoc2["tien_".$mon_name."_du"] - ($tien_hoc2["tien_".$mon_name."_du"]*$discount/100);
-                    $pre = " Hoc phi mon ".ucfirst($mon_name)." T$thang_toi la " . format_price_sms($price) . " (da giam ".$discount."%).\n";
+                    $pre = " Hoc phi mon ".ucwords($mon_name)." T$thang_toi la " . format_price_sms($price) . " (da giam ".$discount."%).\n";
                 }
                 $tien_con=0;
                 $con="";

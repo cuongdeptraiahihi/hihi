@@ -297,7 +297,7 @@
                                             </td>";
                                         } else {
                                             echo "<td style='width: 30%;'>
-                                                <p><span class='cau'>" . $da_arr[$dap - 1] . ".</span><span style='text-align: left;display: block;'><img src='http://localhost/www/TDUONG/luyenthi/".$db2->getUrlDe($data2["ID_MON"],$dapan_all[$data2["ID_C"]][$i]["content"])."' style='max-height:250px;' class='img-thumbnail img-responsive' /></span></p>
+                                                <p><span class='cau'>" . $da_arr[$dap - 1] . ".</span><span style='text-align: left;display: block;'><img src='http://localhost/www/TDUONG/luyenthi/".$db2->getUrlDe($data2["ID_MON"],$dapan_all[$data2["ID_C"]][$i]["content"])."' style='max-height:250px;max-width:80%;' class='img-thumbnail img-responsive' /></span></p>
                                             </td>";
                                         }
                                     } else {
@@ -307,7 +307,7 @@
                                             </td>";
                                         } else {
                                             echo "<td colspan='2' style='width: 50%;'>
-                                                <p><span class='cau'>" . $da_arr[$dap - 1] . ".</span><span style='text-align: left;display: block;'><img src='http://localhost/www/TDUONG/luyenthi/".$db2->getUrlDe($data2["ID_MON"],$dapan_all[$data2["ID_C"]][$i]["content"])."' style='max-height:250px;' class='img-thumbnail img-responsive' /></span></p>
+                                                <p><span class='cau'>" . $da_arr[$dap - 1] . ".</span><span style='text-align: left;display: block;'><img src='http://localhost/www/TDUONG/luyenthi/".$db2->getUrlDe($data2["ID_MON"],$dapan_all[$data2["ID_C"]][$i]["content"])."' style='max-height:250px;max-width:80%;' class='img-thumbnail img-responsive' /></span></p>
                                             </td>";
                                         }
                                     }

@@ -48,11 +48,11 @@
 		if(is_numeric($lmID) && $lmID!=0 && is_numeric($thongbao) && is_numeric($nhayde) && $thang!="") {
 		    $content=array();
 		    $monID=get_mon_of_lop($lmID);
-            $tien = get_muctien("thach-dau");
+//            $tien = get_muctien("thach-dau");
 			$query="SELECT ID_HS,de FROM hocsinh_mon WHERE ID_LM='$lmID' AND date_in<'$nextm-01' ORDER BY ID_HS ASC";
 			$result=mysqli_query($db,$query);
 			while($data=mysqli_fetch_assoc($result)) {
-				$diemtb=tinh_diemtb_month($data["ID_HS"], $thang, $lmID);
+				$diemtb=tinh_diemtb_month_de($data["ID_HS"], $thang, $lmID);
 				if($diemtb!=NULL) {
 					if($check) {
 						update_diemtb_thang($data["ID_HS"], $diemtb, $data["de"], $lmID, $thang);
@@ -63,11 +63,12 @@
 					$is_nhayde = get_nhay_de($monID);
 					if($is_nhayde != 0) {
 					    if($diemtb >= $is_nhayde) {
-					        $how=1;
 					        if($data["de"] == "Y") {
 					            $new_de = "B";
+                                $how=1;
                             } else if($data["de"] == "B") {
                                 $new_de = "G";
+                                $how=1;
                             } else {
                                 $new_de = $data["de"];
                             }
@@ -89,24 +90,24 @@
 					if($data["de"]!=$new_de) {
 						if($nhayde==1 && !check_done_options(date("Y-m"),"len-de-mid",$data["ID_HS"],$lmID)) {
 							update_de_hs($data["ID_HS"], $new_de, $lmID);
-                            $result2=get_list_thachdau($data["ID_HS"],$next_CN,$lmID);
-                            while($data2=mysqli_fetch_assoc($result2)) {
-                                if($data2["status"]=="accept") {
-                                    cong_tien_hs($data2["ID_HS"], $tien, "Hoàn tiền do Admin hủy thách đấu (do chuyển đề) cho ngày thi " . format_dateup($data2["buoi"]), "thach-dau", "");
-                                    add_thong_bao_hs($data2["ID_HS"], $data2["ID_STT"], "Admin đã hủy trận thách đấu (do chuyển đề) của bạn vào ngày thi " . format_dateup($data2["buoi"]), "thach-dau", $lmID);
-                                    cong_tien_hs($data2["ID_HS2"], $tien, "Hoàn tiền do Admin hủy thách đấu (do chuyển đề) cho ngày thi " . format_dateup($data2["buoi"]), "thach-dau", "");
-                                    add_thong_bao_hs($data2["ID_HS2"], $data2["ID_STT"], "Admin đã hủy trận thách đấu (do chuyển đề) của bạn vào ngày thi " . format_dateup($data2["buoi"]), "thach-dau", $lmID);
-                                    $query = "DELETE FROM thachdau WHERE ID_STT='$data2[ID_STT]'";
-                                    mysqli_query($db, $query);
-                                } else if($data2["status"]=="pending") {
-                                    cong_tien_hs($data2["ID_HS"], $tien, "Hoàn tiền do Admin hủy thách đấu (do chuyển đề) cho ngày thi " . format_dateup($data2["buoi"]), "thach-dau", "");
-                                    add_thong_bao_hs($data2["ID_HS"], $data2["ID_STT"], "Admin đã hủy trận thách đấu (do chuyển đề) của bạn vào ngày thi " . format_dateup($data2["buoi"]), "thach-dau", $lmID);
-                                    $query = "DELETE FROM thachdau WHERE ID_STT='$data2[ID_STT]'";
-                                    mysqli_query($db, $query);
-                                } else {
-
-                                }
-                            }
+//                            $result2=get_list_thachdau($data["ID_HS"],$next_CN,$lmID);
+//                            while($data2=mysqli_fetch_assoc($result2)) {
+//                                if($data2["status"]=="accept") {
+//                                    cong_tien_hs($data2["ID_HS"], $tien, "Hoàn tiền do Admin hủy thách đấu (do chuyển đề) cho ngày thi " . format_dateup($data2["buoi"]), "thach-dau", "");
+//                                    add_thong_bao_hs($data2["ID_HS"], $data2["ID_STT"], "Admin đã hủy trận thách đấu (do chuyển đề) của bạn vào ngày thi " . format_dateup($data2["buoi"]), "thach-dau", $lmID);
+//                                    cong_tien_hs($data2["ID_HS2"], $tien, "Hoàn tiền do Admin hủy thách đấu (do chuyển đề) cho ngày thi " . format_dateup($data2["buoi"]), "thach-dau", "");
+//                                    add_thong_bao_hs($data2["ID_HS2"], $data2["ID_STT"], "Admin đã hủy trận thách đấu (do chuyển đề) của bạn vào ngày thi " . format_dateup($data2["buoi"]), "thach-dau", $lmID);
+//                                    $query = "DELETE FROM thachdau WHERE ID_STT='$data2[ID_STT]'";
+//                                    mysqli_query($db, $query);
+//                                } else if($data2["status"]=="pending") {
+//                                    cong_tien_hs($data2["ID_HS"], $tien, "Hoàn tiền do Admin hủy thách đấu (do chuyển đề) cho ngày thi " . format_dateup($data2["buoi"]), "thach-dau", "");
+//                                    add_thong_bao_hs($data2["ID_HS"], $data2["ID_STT"], "Admin đã hủy trận thách đấu (do chuyển đề) của bạn vào ngày thi " . format_dateup($data2["buoi"]), "thach-dau", $lmID);
+//                                    $query = "DELETE FROM thachdau WHERE ID_STT='$data2[ID_STT]'";
+//                                    mysqli_query($db, $query);
+//                                } else {
+//
+//                                }
+//                            }
                             if($how==1) {
                                 $content[] = "('$data[ID_HS]','Thưởng thẻ miễn phạt lên đề $new_de tháng $temp[1]/$temp[0]','the-mien-phat',now())";
                                 $content[] = "('$data[ID_HS]','Thưởng thẻ miễn phạt lên đề $new_de tháng $temp[1]/$temp[0]','the-mien-phat',now())";

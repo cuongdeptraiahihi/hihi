@@ -1803,20 +1803,67 @@ if($string != "") {
 //        $query="UPDATE hocsinh SET password='".md5($maso)."' WHERE cmt='$maso'";
 //        mysqli_query($db,$query);
 //    }
-    $result=get_all_lop_mon();
-    while($data=mysqli_fetch_assoc($result)) {
-        $total = $dem = 0;
-        $query2="SELECT ID_HS FROM hocsinh_mon WHERE ID_LM='$data[ID_LM]' AND ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$data[ID_LM]')";
-        $result2=mysqli_query($db,$query2);
-        while($data2=mysqli_fetch_assoc($result2)) {
-            $query3="SELECT ID_STT FROM hocsinh_mon WHERE ID_HS='$data2[ID_HS]' AND ID_LM IN ('2','14')";
-            $result3=mysqli_query($db,$query3);
-            if(mysqli_num_rows($result3) != 0) {
-                $dem++;
-            }
-            $total++;
+//    $result=get_all_lop_mon();
+//    while($data=mysqli_fetch_assoc($result)) {
+//        $total = $dem = 0;
+//        $query2="SELECT ID_HS FROM hocsinh_mon WHERE ID_LM='$data[ID_LM]' AND ID_HS NOT IN (SELECT ID_HS FROM hocsinh_nghi WHERE ID_LM='$data[ID_LM]')";
+//        $result2=mysqli_query($db,$query2);
+//        while($data2=mysqli_fetch_assoc($result2)) {
+//            $query3="SELECT ID_STT FROM hocsinh_mon WHERE ID_HS='$data2[ID_HS]' AND ID_LM IN ('2','14')";
+//            $result3=mysqli_query($db,$query3);
+//            if(mysqli_num_rows($result3) != 0) {
+//                $dem++;
+//            }
+//            $total++;
+//        }
+//        echo $data["name"]. ": $dem/$total (".format_phantram($dem*100/$total).")<br />";
+//    }
+//    $year_in = 2017;
+//    $month_in = 6;
+//
+//    $now = date("Y-m");
+//    $temp = explode("-", $now);
+//    $year = $temp[0];
+//    $month = $temp[1];
+//
+//    $mon_arr = array();
+//    for($i = -2; $i <= 2; $i++) {
+//        if($month + $i < 1) {
+//            $year_cur = $year - 1;
+//            $month_cur = 12 + ($month + $i);
+//        } else if($month + $i > 12) {
+//            $year_cur = $year + 1;
+//            $month_cur = ($month + $i - 12);
+//        } else {
+//            $year_cur = $year;
+//            $month_cur = $month + $i;
+//        }
+//
+//        if($year_cur < $year_in || ($year_cur == $year_in && $month_cur < $month_in)) {
+//            continue;
+//        }
+//
+//        $mon_arr[] = "'" . $year_cur . "-" . format_month_db($month_cur) . "'";
+//    }
+//
+//    $mon_str = implode(",", $mon_arr);
+//
+//    $query2 = "SELECT ID_STT,date_dong,money FROM tien_hoc WHERE ID_HS='$data[ID_HS]' AND ID_LM='$data1[ID_LM]' AND date_dong IN ($month_need) ORDER BY date_dong DESC LIMIT 5";
+//    $result2 = mysqli_query($db,$query2);
+//
+//    echo $mon_str;
+
+    $query = "SELECT ID_HS FROM hocsinh_mon WHERE ID_LM='2'";
+    $result = mysqli_query($db,$query);
+    while($data = mysqli_fetch_assoc($result)) {
+        $query2 = "SELECT de FROM diemkt WHERE ID_HS='$data[ID_HS]' AND ID_BUOI='187'";
+        $result2 = mysqli_query($db,$query2);
+        if(mysqli_num_rows($result2) == 0) {
+            echo $data["ID_HS"] . "<br />";
+        } else {
+            $data2 = mysqli_fetch_assoc($result2);
+            update_de_hs($data["ID_HS"], $data2["de"], 2);
         }
-        echo $data["name"]. ": $dem/$total (".format_phantram($dem*100/$total).")<br />";
     }
 
     ob_end_flush();

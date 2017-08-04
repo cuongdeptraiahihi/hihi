@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 	ob_start();
 	session_start();
 	require("../../model/open_db.php");
@@ -264,15 +264,10 @@
                                     $string .= "<strong style='color:red;'>CẦN đóng ".format_price_sms($price)."</strong>";
                                 } else {
                                     $lich = "";
-                                    if (get_day_from_date($data["date_in"]) < 7) {
-                                        $price = $price0;
-                                        $price = $price - ($price * $discount / 100);
-                                    } else {
-                                        $temp = du_kien_tien_hoc_buoi2("$nam-$thang", get_day_from_date($data["date_in"]), $hsID, $data["ID_LM"], $data["ID_MON"]);
+                                    $temp = du_kien_tien_hoc_buoi2("$nam-$thang", get_day_from_date($data["date_in"]), $hsID, $data["ID_LM"], $data["ID_MON"]);
                                         $price = $temp[0] - ($temp[0] * $discount / 100);
                                         $lich = $temp[1];
-                                    }
-                                    if ($price == 0) {
+                                    if ($price == 0 || $price > $price0) {
                                         $price = $price0;
                                         $price = $price - ($price * $discount / 100);
                                     }
@@ -406,7 +401,7 @@
 				}
 				$lmID=0;
 				for($i=0;$i<$n;$i++) {
-					if($lmID != $data[$i]["lmID"] && is_numeric($data[$i]["lmID"]) && $data[$i]["lmID"]!=0 && $data[$i]["date_in"]!="" && is_numeric($data[$i]["discount"]) && $data[$i]["discount"]>=0 && $data[$i]["discount"]<=100) {
+					if($lmID != $data[$i]["lmID"] && is_numeric($data[$i]["lmID"]) && $data[$i]["lmID"]!=0 && $data[$i]["date_in"]!="") {
 						$lmID=$data[$i]["lmID"];
                         $monID=get_mon_of_lop($lmID);
 						$date_in=format_date_o($data[$i]["date_in"]);
@@ -439,7 +434,7 @@
                             }
 
 						}
-                        update_discount_hs($hsID,$monID,$data[$i]["discount"]);
+                        if(is_numeric($data[$i]["discount"])){update_discount_hs($hsID,$monID,$data[$i]["discount"]);}
 					}
 					if(isset($data[$i]["caID"]) && isset($data[$i]["cum"]) && $data[$i]["remove"]==0) {
 						add_hs_to_ca_codinh($data[$i]["caID"], $hsID, $data[$i]["cum"]);
@@ -474,12 +469,12 @@
                 }
                 $lmID = 0;
                 for ($i = 0; $i < $n; $i++) {
-                    if ($lmID != $data[$i]["lmID"] && is_numeric($data[$i]["lmID"]) && $data[$i]["lmID"] != 0 && is_numeric($data[$i]["discount"]) && $data[$i]["discount"] >= 0 && $data[$i]["discount"] <= 100) {
+                    if ($lmID != $data[$i]["lmID"] && is_numeric($data[$i]["lmID"]) && $data[$i]["lmID"] != 0) {
                         $lmID = $data[$i]["lmID"];
                         $date_in = date("Y-m-d");
                         add_hs_mon($hsID, "B", $date_in, $lmID);
                         unlock_all_ca_hoc($hsID,$lmID);
-                        update_discount_hs($hsID, get_mon_of_lop($lmID), $data[$i]["discount"]);
+                        if(is_numeric($data[$i]["discount"])){update_discount_hs($hsID,get_mon_of_lop($lmID),$data[$i]["discount"]);}
                         //hoc_lai($hsID, $monID);
                     }
                     if (isset($data[$i]["caID"]) && isset($data[$i]["cum"])) {

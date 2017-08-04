@@ -24,6 +24,7 @@
 	//$lop_name=get_lop_name($lopID);
 	$muc_tien=get_muctien("tien_hoc_".unicode_convert($mon_name));
     $tien_tra=get_muctien("tien_hoc_tra_".unicode_convert($mon_name));
+    $tien_tra_old=$tien_tra;
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -266,19 +267,20 @@
                                     <?php
                                     while ($thang <= 12) {
                                         $thang = format_month_db($thang);
-                                        if (($nam < $year) || ($nam == $year && $thang <= $month)) {
+                                        if (($nam < $year) || ($nam == $year && $thang <= $month + 2)) {
                                             if ($nam % 4 == 0) {
                                                 $last_day = 29;
                                             } else {
                                                 $last_day = $days_of_month[$thang - 1];
                                             }
                                             $hs_total = $hs_nghi = $num = $hs_new = 0;
-                                            if ($nam < $year || ($nam == $year && $thang <= $month)) {
+                                            if ($nam < $year || ($nam == $year && $thang <= $month + 2)) {
                                                 $hs_arr = array("'0'");
                                                 $hs_arr[] = "'0'";
                                                 $tien = $hs_bt = 0;
                                                 $tien_giam = $hs_giam = 0;
                                                 $tien_new = $hs_new = 0;
+                                                $tien_tra = 0;
                                                 $query="SELECT t.ID_HS,t.money AS tien,g.ID_STT FROM tien_hoc AS t
                                                 INNER JOIN hocsinh_mon AS m ON m.ID_HS=t.ID_HS AND m.ID_LM='$data5[ID_LM]'
                                                 LEFT JOIN giam_gia AS g ON g.ID_HS=t.ID_HS AND g.ID_MON='$monID'
@@ -298,10 +300,6 @@
                                                     $hs_arr[] = "'".$data["ID_HS"]."'";
                                                 }
                                                 $hs_str = implode(",",$hs_arr);
-
-
-
-
 
                                                 // Đếm tổng số học sinh ĐÃ đóng tiền mà là học sinh cũ (thời điểm vào học ở trước mùng 1 của tháng tính tiền)
 //                                                $query="SELECT SUM(tien_hoc.money) AS tien,COUNT(tien_hoc.ID_STT) AS dem FROM tien_hoc INNER JOIN hocsinh_mon ON hocsinh_mon.ID_HS=tien_hoc.ID_HS AND hocsinh_mon.date_in<='$nam-$thang-".get_last_day("$nam-$thang")."' AND hocsinh_mon.ID_LM='$data5[ID_LM]' WHERE tien_hoc.ID_HS NOT IN (SELECT ID_HS FROM giam_gia WHERE giam_gia.ID_MON='$monID') AND tien_hoc.money>=$muc_tien AND tien_hoc.ID_LM='$data5[ID_LM]' AND tien_hoc.date_dong='$nam-$thang'";
@@ -363,14 +361,22 @@
                                             echo "<tr>
                                                 <td class='td-boi' style='border-bottom:1px solid #FFF'><span>Tháng $thang</span></td>";
                                             if ($hs_bt != 0) {
-                                                if ($hs_bt * $muc_tien > $tien) {
-                                                    echo "<td class='need-ex' style='background:yellow'>
-                                                            <a href='http://localhost/www/TDUONG/admin/bang-luong-chi-tiet/$data5[ID_LM]/$nam-$thang/1/' target='_blank'>$hs_bt em x " . format_price($tien_tra) . "<br /> = " . format_price($hs_bt*$tien_tra) . "</a>
-                                                        </td>";
-                                                } else {
+                                                if($nam >= 2017 && $thang >= 6) {
                                                     echo "<td class='need-ex'>
-                                                            <a href='http://localhost/www/TDUONG/admin/bang-luong-chi-tiet/$data5[ID_LM]/$nam-$thang/1/' target='_blank'>$hs_bt em x " . format_price($tien_tra) . "<br /> = " . format_price($hs_bt*$tien_tra) . "</a>
+                                                        <a href='http://localhost/www/TDUONG/admin/bang-luong-chi-tiet/$data5[ID_LM]/$nam-$thang/1/' target='_blank'>$hs_bt em = " . format_price($tien*(2/3)) . "<br /> = " . format_price($hs_bt * $tien * (2/3)) . "</a>
+                                                    </td>";
+                                                    $tien_tra = $tien * (2/3);
+                                                } else {
+                                                    if ($hs_bt * $muc_tien > $tien) {
+                                                        echo "<td class='need-ex' style='background:yellow'>
+                                                            <a href='http://localhost/www/TDUONG/admin/bang-luong-chi-tiet/$data5[ID_LM]/$nam-$thang/1/' target='_blank'>$hs_bt em x " . format_price($tien_tra) . "<br /> = " . format_price($hs_bt * $tien_tra) . "</a>
                                                         </td>";
+                                                    } else {
+                                                        echo "<td class='need-ex'>
+                                                            <a href='http://localhost/www/TDUONG/admin/bang-luong-chi-tiet/$data5[ID_LM]/$nam-$thang/1/' target='_blank'>$hs_bt em x " . format_price($tien_tra) . "<br /> = " . format_price($hs_bt * $tien_tra) . "</a>
+                                                        </td>";
+                                                    }
+                                                    $tien_tra = $hs_bt * $tien_tra;
                                                 }
                                             } else {
                                                 echo "<td><span></span></td>";
@@ -406,7 +412,7 @@
 //                                            echo "<td>
 //                                                    <a href='http://localhost/www/TDUONG/admin/bang-luong-chi-tiet/$data5[ID_LM]/$nam-$thang/6/' target='_blank'>-" . format_price($tien_thuong) . "</a>
 //                                                </td>";
-                                            $total = $hs_bt * $tien_tra + $tien_giam + $tien_new - $tien_thuong;
+                                            $total = $tien_tra + $tien_giam + $tien_new - $tien_thuong;
                                             if(date("Y-m") != "$nam-$thang") {
                                                 $total_all += $total;
                                                 $total_con += $total;
