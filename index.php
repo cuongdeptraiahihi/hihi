@@ -15,15 +15,15 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, target-densitydpi=device-dpi">
         <meta name="google-site-verification" content="JvlmqF4fpxzH1FcpDInX26Bpye0GSBdmkYfmtr1ClcM" />
-        <link rel="stylesheet" type="text/css" href="https://localhost/www/TDUONG/css/hover.css" />
-        <link rel="stylesheet" type="text/css" href="https://localhost/www/TDUONG/css/animate.css" />
-        <link href="https://localhost/www/TDUONG/images/favicon.ico" rel="shortcut icon" type="iamge/x-icon"/>
+        <link rel="stylesheet" type="text/css" href="/css/hover.css" />
+        <link rel="stylesheet" type="text/css" href="/css/animate.css" />
+        <link href="/images/favicon.ico" rel="shortcut icon" type="iamge/x-icon"/>
 		<style type="text/css">
 			#viewport,body{overflow:hidden}*{margin:0;padding:0}body{background:#000;font-family:Tahoma,Geneva,sans-serif;letter-spacing:.5px;width:100%;height:100%}a{text-decoration:none}.my-form{position:absolute;z-index:9;width:250px;border:2px solid #12C8F0;padding:7px}.my-form .my-in{padding:0 10px;height:60px;background:rgba(18,200,240,.3);text-align:center}.my-form .my-in:hover a{color:#FFF}.my-form .my-in a{color:#12C8F0;font-size:12px;text-transform:uppercase;font-weight:600;line-height:60px;display:block}.my-conner{background-color:transparent;width:20px;height:20px;position:absolute;z-index:99}.conner1{top:-4px;left:-4px;border-left:6px solid #12C8F0;border-top:6px solid #12C8F0}#viewport,#world{left:0;top:0;position:absolute}.conner2{bottom:-4px;right:-4px;border-right:6px solid #12C8F0;border-bottom:6px solid #12C8F0}.jtap{-webkit-transform:translateZ(0);-moz-transform:translateZ(0);-ms-transform:translateZ(0);-o-transform:translateZ(0);transform:translateZ(0)}#world,#world div{-webkit-transform-style:preserve-3d;-moz-transform-style:preserve-3d;-o-transform-style:preserve-3d}.jtap.jtap-cursor.jtap-idle:after{-moz-animation:blink 1.1s steps(5,start) infinite;-webkit-animation:blink 1.1s steps(5,start) infinite;animation:blink 1.1s steps(5,start) infinite}@-moz-keyframes blink{to{visibility:hidden}}@-webkit-keyframes blink{to{visibility:hidden}}@keyframes blink{to{visibility:hidden}} #viewport{bottom:0;perspective:400;right:0}#world{height:100%;width:100%}.cloudBase{position:absolute;left:256px;top:256px;width:20px;height:20px;margin-left:-10px;margin-top:-10px}.cloudLayer{position:absolute;left:0;top:0;width:256px;height:256px;margin-left:256px;-webkit-transition:opacity .5s ease-out;-moz-transition:opacity .5s ease-out;-o-transition:opacity .5s ease-out;opacity:.05}
             #SMS {  border-top-left-radius:10px;  border-top-right-radius:10px;  position:fixed;  z-index:999;  bottom:0;  left:33px;  background:#365899;  width:130px;  height:25px;  padding:5px 10px;  }  #SMS a {  display:block;  font-size:22px;  margin-left:5px;  }  #SMS a i {  line-height:26px;  color:#FFF;  }  #SMS a span {  font-weight:600;  color:#FFF;  font-size:14px;  margin-left:20px;  line-height:26px;}
         </style>
-        <script src="https://localhost/www/TDUONG/js/jquery.min.js"></script>
-        <script src="https://localhost/www/TDUONG/js/jtap.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/jtap.js"></script>
         <script>
 			$(document).ready(function() {
 				var vid = document.getElementById("back-music");
@@ -63,22 +63,22 @@
           	</div>
 <!--            <div class="my-form animated bounceInLeft" style="left:5%;bottom:10%;">-->
 <!--            	<div class="my-conner conner1"></div>-->
-<!--                <div class="my-in hvr-shutter-out-horizontal"><a href='https://localhost/www/TDUONG/codepen.html' class='text'>Solar System</a></div>-->
+<!--                <div class="my-in hvr-shutter-out-horizontal"><a href='/codepen.html' class='text'>Solar System</a></div>-->
 <!--                <div class="my-conner conner2"></div>-->
 <!--          	</div>-->
             <div id="SMS">
                 <a href='http://m.me/Bgo.edu.vn' target="_blank" class='sms-new'><i class='fa fa-commenting'></i><span>Hỗ trợ</span></a>
             </div>
-		<script type="text/javascript" src="https://localhost/www/TDUONG/js/three.min.js"></script>
-		<script type="text/javascript" src="https://localhost/www/TDUONG/js/Tween.js"></script>
-		<script type="text/javascript" src="https://localhost/www/TDUONG/js/RequestAnimationFrame.js"></script>
-		<script type="text/javascript" src="https://localhost/www/TDUONG/js/THREEx.WindowResize.js"></script>
-		<script type="text/javascript" src="https://localhost/www/TDUONG/js/info.js"></script>
-        <script type="text/javascript" src="https://localhost/www/TDUONG/js/OrbitControls.js"></script>
-        <script type="text/javascript" src='https://localhost/www/TDUONG/js/loaders/OBJLoader.js'></script>
-        <script type="text/javascript" src='https://localhost/www/TDUONG/js/loaders/MTLLoader.js'></script>
-        <script type="text/javascript" src='https://localhost/www/TDUONG/js/loaders/OBJMTLLoader.js'></script>
-        <!--<script type="text/javascript" src="https://localhost/www/TDUONG/js/threex.spaceships.js"></script>-->
+		<script type="text/javascript" src="/js/three.min.js"></script>
+		<script type="text/javascript" src="/js/Tween.js"></script>
+		<script type="text/javascript" src="/js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="/js/THREEx.WindowResize.js"></script>
+		<script type="text/javascript" src="/js/info.js"></script>
+        <script type="text/javascript" src="/js/OrbitControls.js"></script>
+        <script type="text/javascript" src='/js/loaders/OBJLoader.js'></script>
+        <script type="text/javascript" src='/js/loaders/MTLLoader.js'></script>
+        <script type="text/javascript" src='/js/loaders/OBJMTLLoader.js'></script>
+        <!--<script type="text/javascript" src="/js/threex.spaceships.js"></script>-->
         <script>
 		</script>
 
@@ -120,15 +120,15 @@
                 var e = new THREE.SphereGeometry(100, 64, 64),
 					n = new THREE.MeshPhongMaterial({
 						color: 16777215,
-						map: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/diffuse.jpg"),
-						bumpMap: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/bump.jpg"),
+						map: THREE.ImageUtils.loadTexture("/images/diffuse.jpg"),
+						bumpMap: THREE.ImageUtils.loadTexture("/images/bump.jpg"),
 						bumpScale: 2.75,
-						specularMap: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/specular.jpg"),
+						specularMap: THREE.ImageUtils.loadTexture("/images/specular.jpg"),
 						specular: new THREE.Color("grey"),
 					});
 				world = new THREE.Mesh(e, n), world.rotation.x = -.15, world.rotation.z = -.15, scene.add(world), hitMesh = new THREE.Mesh(e, new THREE.MeshBasicMaterial), hitMesh.scale.set(1.1, 1.1, 1.1), hitMesh.visible = !1, world.add(hitMesh);
 				var t = new THREE.MeshBasicMaterial({
-						map: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/night.jpg"),
+						map: THREE.ImageUtils.loadTexture("/images/night.jpg"),
 						color: 16776960,
 						opacity: .4,
 						transparent: !0,
@@ -138,35 +138,35 @@
 				i.scale.set(1.0001, 1.0001, 1.0001), world.add(i);
 				var a = new THREE.MeshPhongMaterial({
 					depthWrite: !1,
-					map: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/clouds.png"),
+					map: THREE.ImageUtils.loadTexture("/images/clouds.png"),
 					opacity: .8,
 					transparent: !0,
 					color: 16777215,
 					blending: THREE.AdditiveBlending
 				});
 				clouds = new THREE.Mesh(e, a), clouds.scale.set(1.003, 1.003, 1.003), world.add(clouds), glow = new THREE.Sprite({
-					map: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/glow.png"),
+					map: THREE.ImageUtils.loadTexture("/images/glow.png"),
 					useScreenCoordinates: !1,
 					color: 16777215
 				}), glow.scale.set(.43, .43, 0), glow.opacity = .4, world.add(glow);
 				var o = new THREE.MeshPhongMaterial({
 						color: 16777215,
-						map: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/moon.jpg"),
-						bumpMap: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/moon_bump.jpg"),
+						map: THREE.ImageUtils.loadTexture("/images/moon.jpg"),
+						bumpMap: THREE.ImageUtils.loadTexture("/images/moon_bump.jpg"),
 						bumpScale: 2.75
 					}),
 					s = new THREE.SphereGeometry(25, 54, 54);
 				world2 = new THREE.Mesh(s, o), world2.rotation.x = -.15, world2.rotation.z = -.15, world2.position.set(-220, 0, 0), scene.add(world2), hitMesh2 = new THREE.Mesh(s, new THREE.MeshBasicMaterial), hitMesh2.scale.set(1, 1, 1), hitMesh2.visible = !1, world2.add(hitMesh2);
 				var r = new THREE.MeshPhongMaterial({
 						color: 16777215,
-						map: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/spacesif.jpg")
+						map: THREE.ImageUtils.loadTexture("/images/spacesif.jpg")
 					}),
 					l = new THREE.SphereGeometry(6, 32, 32, 0, 7, 0, 1.8);
 				world3 = new THREE.Mesh(l, r), world3.position.set(-100, 60, 0), scene.add(world3), hitMesh3 = new THREE.Mesh(l, new THREE.MeshBasicMaterial), hitMesh3.scale.set(1, 1, 1), hitMesh3.visible = !1, world3.add(hitMesh3);
 				var d = new THREE.TorusGeometry(7, 2, 3, 100, 7),
 					w = new THREE.MeshPhongMaterial({
 						color: 16777215,
-						map: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/space_ring.jpg"),
+						map: THREE.ImageUtils.loadTexture("/images/space_ring.jpg"),
 						side: THREE.DoubleSide,
 						opacity: 1
 					});
@@ -176,10 +176,10 @@
 					p = 1.5,
 					E = 16639;
 				light1 = new THREE.PointLight(E, h, c, p), light1.add(new THREE.Mesh(new THREE.SphereGeometry(2, 16, 8), new THREE.MeshPhongMaterial({
-					map: THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/spacesif.jpg")
+					map: THREE.ImageUtils.loadTexture("/images/spacesif.jpg")
 				}))), world3.add(light1), createPoint(1500, 30, 3e3);
 				var m = new THREE.AmbientLight(394763);
-				scene.add(m), pointLight = new THREE.PointLight(16774343, 1.2), pointLight.position.set(-300, 0, -300), scene.add(pointLight), textureFlare0 = THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/lensflare0.png"), textureFlare3 = THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/flare3.jpg"), textureFlare2 = THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/flare2.jpg"), textureFlare4 = THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/flare4.jpg"), lens0 = new THREE.Sprite({
+				scene.add(m), pointLight = new THREE.PointLight(16774343, 1.2), pointLight.position.set(-300, 0, -300), scene.add(pointLight), textureFlare0 = THREE.ImageUtils.loadTexture("/images/lensflare0.png"), textureFlare3 = THREE.ImageUtils.loadTexture("/images/flare3.jpg"), textureFlare2 = THREE.ImageUtils.loadTexture("/images/flare2.jpg"), textureFlare4 = THREE.ImageUtils.loadTexture("/images/flare4.jpg"), lens0 = new THREE.Sprite({
 					map: textureFlare0,
 					useScreenCoordinates: !1,
 					affectedByDistance: !1,
@@ -275,7 +275,7 @@
 			}
 			
 			function createDeco() {
-				var url		= 'https://localhost/www/TDUONG/images/lensflare0_alpha.png';
+				var url		= '/images/lensflare0_alpha.png';
 				var texture	= THREE.ImageUtils.loadTexture(url);
 				// do the material	
 				var geometry	= new THREE.PlaneGeometry(10,10)
@@ -419,7 +419,7 @@
 			}
 			
 			function createPoint(e, n, t) {
-				var i = THREE.ImageUtils.loadTexture("https://localhost/www/TDUONG/images/flare_trans.png");
+				var i = THREE.ImageUtils.loadTexture("/images/flare_trans.png");
 				attributes = {
 					size: {
 						type: "f",
@@ -568,7 +568,7 @@
 				e.style.webkitTransform = a, e.style.MozTransform = a, e.style.oTransform = a, worldc.appendChild(e);
 				for (var o = 0; o < 2 + Math.round(10 * Math.random()); o++) {
 					var s = document.createElement("img");
-					src_temp = Math.floor(7 * Math.random()) + 1, s.setAttribute("src", "https://localhost/www/TDUONG/images/may" + src_temp + ".png"), s.className = "cloudLayer";
+					src_temp = Math.floor(7 * Math.random()) + 1, s.setAttribute("src", "/images/may" + src_temp + ".png"), s.className = "cloudLayer";
 					var n = dodai - 512 * Math.random(),
 						t = dodai - 512 * Math.random(),
 						i = dodai / 5 - 200 * Math.random(),
@@ -616,12 +616,12 @@
 						particle.scale.x = particle.scale.y = 8;
 						scene.add( particle );*/
 						if(intersects[0].object.id==12 || intersects[0].object.id==10) {
-							window.location="https://localhost/www/TDUONG/tai-lieu-cong-cong/";
+							window.location="/tai-lieu-cong-cong/";
 							dem=0;
 						} 
 						/*else if(intersects[0].object.id==4) {
 							if(dem==5) {
-								window.location="https://localhost/www/TDUONG/codepen.html";
+								window.location="/codepen.html";
 							}
 							dem++;
 						} else {
@@ -669,7 +669,7 @@
 				init(), animate();
 		</script>
         <audio id="back-music" loop autoplay style="display:none;">
-          <source src="https://localhost/www/TDUONG/include/back.mp3" type="audio/mpeg">
+          <source src="/include/back.mp3" type="audio/mpeg">
           Trình duyệt không hỗ trợ
         </audio>
         </div>
