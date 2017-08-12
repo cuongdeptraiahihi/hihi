@@ -53,9 +53,9 @@
                 <div class="my-in hvr-shutter-out-horizontal">
                 <?php
 					if (!isset($_SESSION["ID_HS"]) || !isset($_SESSION["fullname"])) {
-						echo"<a href='https://localhost/www/TDUONG/dang-nhap/' class='text'>Login</a>";
+						echo"<a href='/dang-nhap' class='text'>Login</a>";
 					} else {
-						echo"<a href='https://localhost/www/TDUONG/mon/' class='text'>Homepage</a>";
+						echo"<a href='/mon' class='text'>Homepage</a>";
 					}
 				?>
                 </div>
